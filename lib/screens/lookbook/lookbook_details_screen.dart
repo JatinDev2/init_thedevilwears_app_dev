@@ -43,7 +43,6 @@ class _LookbookDetailsState extends State<LookbookDetailsScreen> with SingleTick
         isLoading = false;
       });
     });
-
     super.initState();
   }
 

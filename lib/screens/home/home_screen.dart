@@ -6,6 +6,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 import 'package:lookbook/screens/lookbook/lookbook_screen.dart';
 import 'package:lookbook/screens/listing/listing_screen.dart';
+import 'package:lookbook/screens/search/HomePage.dart';
 import 'package:lookbook/screens/search/search_screen.dart';
 import 'package:lookbook/screens/profile/profile_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
@@ -28,8 +29,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _tabController.animateTo(indx);
   }
 
-  final List<Widget> _tabItems = [LookbookScreen(), SearchScreen(), ListingScreen(), ProfileScreen()];
-
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -45,6 +44,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _tabItems = [
+      LookbookScreen(),
+      SearchScreen(
+        height: MediaQuery.of(context).viewInsets.bottom > 0 ? MediaQuery.of(context).size.height : 0,
+      ),
+      ListingScreen(),
+      ProfileScreen()
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: StatusBarAppBar(),

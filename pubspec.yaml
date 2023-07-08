@@ -47,6 +47,8 @@ dependencies:
   equatable: ^2.0.5
   alphabet_list_view: ^0.1.4
   flutter_keyboard_visibility: ^5.4.1
+  faker: ^2.1.0
+  azlistview: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:lookbook/screens/home/home_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';

@@ -184,8 +184,6 @@ class _LookbookScreenState extends State<LookbookScreen> {
     );
   }
 
-
-
   @override
   void dispose() {
     super.dispose();
