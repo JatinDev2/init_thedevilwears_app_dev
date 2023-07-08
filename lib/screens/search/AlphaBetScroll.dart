@@ -30,12 +30,12 @@ class AlphaBetScrollPage extends StatefulWidget {
 }
 
 class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBindingObserver {
+  String selectedTag="A";
   List<_AZItem> items = [];
   @override
   void initState() {
     super.initState();
   }
-
 
   void initList(List<String> items) {
     this.items = items.map((item) => _AZItem(
@@ -51,6 +51,7 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
   Widget build(BuildContext context) {
     initList(widget.items);
     return AzListView(
+      physics: NeverScrollableScrollPhysics(),
       data: items,
       itemCount: items.length,
       itemBuilder: (context, index) {
@@ -58,6 +59,10 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         return _buildListItem(item);
       },
       indexBarOptions: IndexBarOptions(
+        selectTextStyle:TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+      ),
         indexHintTextStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -67,13 +72,14 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         indexHintOffset: Offset(-10, 0),
         selectItemDecoration: BoxDecoration(
           shape: BoxShape.rectangle,
-          color: Colors.orange,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
       indexBarHeight:widget.height,
 
-      indexHintBuilder: (context, hint) {
+      indexHintBuilder: (context, hint){
+          selectedTag=hint;
         return Container(
           width: 60,
           height: 60,
@@ -116,6 +122,7 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
               item.title,
               style: TextStyle(
                 fontSize: 14,
+                color: Color(0xff0F1015),
               ),
             ),
           ),
@@ -126,17 +133,17 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
 
   Widget buildHeader(String tag) {
     return Container(
-      margin: EdgeInsets.only(right: 16),
-      padding: EdgeInsets.only(left: 16),
-      color: Colors.grey.shade100,
-      height: 20,
-      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.only(
+        left: 8,
+        top: 20,
+        bottom: 4,
+      ),
       child: Text(
         tag,
-        softWrap: false,
         style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
+          fontSize: 18,
+          fontWeight: selectedTag==tag? FontWeight.bold : FontWeight.w500,
+          color: Color(0xff0F1015),
         ),
       ),
     );

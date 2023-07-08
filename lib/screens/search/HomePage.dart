@@ -1,5 +1,6 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'AlphaBetScroll.dart';
 import 'FiltersScreen.dart';
 
@@ -25,8 +26,6 @@ class _SearchScreenState extends State<SearchScreen>{
   List<String> filteredStylists=[];
   List<String> filteredSeasons = [];
 
-  List<String> yearOptions = ['All', '2022', '2023', '2024'];
-  String selectedYear = 'All';
 
   @override
   void initState() {
@@ -74,49 +73,69 @@ class _SearchScreenState extends State<SearchScreen>{
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 8,),
           Container(
-            padding: EdgeInsets.all(16),
+            margin: EdgeInsets.only(
+              top: 32,
+              bottom: 8,
+              left: 9,
+              right: 9,
+            ),
             child: Container(
-              height: 40,
+              height: 44,
+              width: 396,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30.0),
-                color: Colors.black12,
+                color: Color(0xffF7F7F7),
               ),
-              child:TextField(
-                onChanged: (value) {
-                  setState(() {
-                    query_check = value;
-                    filteredBrands = items_brands
-                        .where((brand) =>
-                        brand.toLowerCase().contains(value.toLowerCase()))
-                        .toList();
-
-                    filteredStylists =items_stylists
-                        .where((stylist) =>
-                        stylist.toLowerCase().contains(value.toLowerCase()))
-                        .toList();
-                  },);
-                },
-                decoration: InputDecoration(
-                  hintText: "Search a Brand, Product, Stylist or Season",
-                  hintStyle: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600
-                  ),
-                  prefixIcon: Icon(Icons.search),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 1), // Adjust the value as needed
-                  suffixIcon: IconButton(
-                    onPressed: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                        return FiltersScreen();
-                      }));
-                    },
-                    icon: Icon(Icons.filter_list),
-                  ),
+              child:Container(
+                margin: EdgeInsets.only(
+                  // bottom: 10,
                 ),
+                child: TextField(
+                  textAlignVertical: TextAlignVertical.center,
+                  onChanged: (value) {
+                    setState(() {
+                      query_check = value;
+                      filteredBrands = items_brands
+                          .where((brand) => brand.toLowerCase().contains(value.toLowerCase()))
+                          .toList();
 
+                      filteredStylists = items_stylists
+                          .where((stylist) => stylist.toLowerCase().contains(value.toLowerCase()))
+                          .toList();
+                    });
+                  },
+                  cursorColor: Colors.black,  // Set the cursor color
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                    isDense: true,
+                    hintText: "Search a Brand, Product, Stylist or Season",
+                    hintStyle: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xff9D9D9D),
+                    ),
+                    prefixIcon: Container(
+                      margin: EdgeInsets.only(left: 14, bottom: 14, top: 10),
+                      child: Icon(IconlyLight.search, size: 20),
+                    ),
+                    border: InputBorder.none,
+                    suffixIcon: IconTheme(
+                      data: IconThemeData(color: Colors.black),  // Set the search icon color
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                            return FiltersScreen();
+                          }));
+                        },
+                        icon: Icon(IconlyLight.filter),
+                      ),
+                    ),
+                  ),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+                ),
               ),
             ),
           ),
@@ -126,31 +145,67 @@ class _SearchScreenState extends State<SearchScreen>{
               child: Scaffold(
                   appBar: TabBar(
                     tabs: [
-                      Tab(child: Text("Brands", style: TextStyle(
-                        fontSize: 15,
-                      ),),),
-                      Tab(child: Text(
-                        'Stylists',
-                        style: TextStyle(
-                          fontSize: 15,
+                      Tab(child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Text("Brands", style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),),
                         ),
                       ),),
-                      Tab(child:  Text(
-                        'Seasons',
-                        style: TextStyle(
-                          fontSize: 15,
+                      Tab(child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Text(
+                            'Stylists',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),),
+                      Tab(child:  Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Text(
+                            'Seasons',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),),
                     ],
-                    indicatorColor: Colors.black,
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.grey,
+                    // isScrollable: true,
+                    indicatorColor: Color(0xff282828),
+                    labelColor: Color(0xff282828),
+                    unselectedLabelColor: Color(0xff9D9D9D),
                   ),
                 body: TabBarView(
                   children: [
                     Container(
                       margin: EdgeInsets.all(8.0),
-                      child: AlphaBetScrollPage(
+                      child: query_check.isNotEmpty&&filteredBrands.isEmpty?
+                      Container(
+                        margin: EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "No Search Results Found",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xff9D9D9D),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : AlphaBetScrollPage(
                         height:  query_check.isEmpty
                             ?(
                             widget.height==MediaQuery.of(context).size.height
@@ -167,16 +222,35 @@ class _SearchScreenState extends State<SearchScreen>{
                         items: query_check.isNotEmpty?filteredBrands:items_brands,
                       ),
                     ),
+                    query_check.isNotEmpty&&filteredStylists.isEmpty?
                     Container(
+                      margin: EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "No Search Results Found",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xff9D9D9D),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ):  Container(
                       margin: EdgeInsets.all(8.0),
                       child: AlphaBetScrollPage(
                         height:   query_check.isEmpty
-                            ?(MediaQuery.of(context).viewInsets.bottom > 0
-                            ? 0
-                            : MediaQuery.of(context).size.height) :
-                           filteredStylists.isEmpty?0 : (MediaQuery.of(context).viewInsets.bottom > 0
-                            ? 0
-                            : MediaQuery.of(context).size.height),
+                            ?(
+                            widget.height==MediaQuery.of(context).size.height
+                                ? 0 : MediaQuery.of(context).size.height
+                        ) :
+                           filteredStylists.isEmpty?0 : (
+                               widget.height==MediaQuery.of(context).size.height
+                                   ? 0
+                                   : MediaQuery.of(context).size.height
+                           ),
                         query_check: query_check,
                         onClickedItem: (item) {},
                         items: query_check.isNotEmpty?filteredStylists:items_stylists,
@@ -214,85 +288,87 @@ class _SearchScreenState extends State<SearchScreen>{
             .toList();
 
         // Sort the years in ascending order
-        uniqueYears.sort();
 
         // Filter seasons based on the selected year
-        if (selectedYear != 'All') {
-          filteredSeasons = filteredSeasons
-              .where((season) => season.endsWith(selectedYear))
-              .toList();
-        }
 
-        return filteredSeasons.isEmpty? Container() : Column(
+        return query_check.isNotEmpty&&filteredSeasons.isEmpty?
+        Container(
+          margin: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "No Search Results Found",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xff9D9D9D),
+                ),
+              ),
+            ],
+          ),
+        )
+
+            : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DropdownButton<String>(
-              value: selectedYear,
-              items: yearOptions.map((String year) {
-                return DropdownMenuItem<String>(
-                  value: year,
-                  child: Text(year),
-                );
-              }).toList(),
-              onChanged: (String? year) {
-                setState(() {
-                  selectedYear = year!;
-                });
-              },
-            ),
-            SizedBox(height: 16),
+            SizedBox(height:16),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: filteredSeasons.map((season) {
-                    String year = season.substring(season.length - 4);
-                    String currentYear = prevYear ?? '';
+                child: Container(
+                  margin: EdgeInsets.all(8.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: filteredSeasons.map((season) {
+                      String year = season.substring(season.length - 4);
+                      String currentYear = prevYear ?? '';
+                      prevYear = year;
 
-                    prevYear = year;
-
-                    if (currentYear != year) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 8),
-                          Text(
-                            year,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 11.0,
-                              horizontal: 11.0,
-                            ),
-                            child: Text(
-                              season,
+                      if (currentYear != year) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 8),
+                            Text(
+                              year,
                               style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: 11.0,
+                                // horizontal: 11.0,
+                              ),
+                              child: Text(
+                                season,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 11.0,
+                            // horizontal: 11.0,
                           ),
-                        ],
-                      );
-                    } else {
-                      return Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 11.0,
-                          horizontal: 11.0,
-                        ),
-                        child: Text(
-                          season,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
+                          child: Text(
+                            season,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  }).toList(),
+                        );
+                      }
+                    }).toList(),
+                  ),
                 ),
               ),
             ),

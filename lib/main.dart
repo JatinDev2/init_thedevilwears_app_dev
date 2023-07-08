@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           title: 'LookBook',
           theme: ThemeData(
             primaryColor: Colors.black,
-            useMaterial3: true,
+            // useMaterial3: true,
             textTheme: GoogleFonts.poppinsTextTheme(),
           ),
           home: HomeScreen(),
