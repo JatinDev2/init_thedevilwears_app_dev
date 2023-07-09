@@ -136,7 +136,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   Widget _buildFilterTabs() {
     return Container(
-      height: MediaQuery.of(context).size.height - 220,
+      height: _selectedOptions.isEmpty?MediaQuery.of(context).size.height - 150  : MediaQuery.of(context).size.height - 220,
       child: ListView.builder(
         itemCount: _filterTabs.length,
         itemBuilder: (context, index) {
@@ -197,7 +197,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget _buildFilterOptions() {
     List<String> options = _filterData[_selectedTab] ?? [];
     return Container(
-      height: MediaQuery.of(context).size.height - 220,
+      height: _selectedOptions.isEmpty?MediaQuery.of(context).size.height - 150  : MediaQuery.of(context).size.height - 220,
       child: ListView.builder(
         itemCount: options.length,
         itemBuilder: (context, index) {
@@ -243,6 +243,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   Widget _buildSelectedOptions() {
+    if(_selectedOptions.isEmpty){
+      return SizedBox(
+        height: 0,
+      );
+    }
     return Container(
       height: 60,
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -312,6 +317,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        leading: IconButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, icon: Icon(Icons.arrow_back_rounded, color: Colors.black,)),
         title: Text(
           'Filters',
           style: TextStyle(
@@ -372,8 +380,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ],
           ),
           // SizedBox(height: 4,),
-          _buildSelectedOptions(),
+           _buildSelectedOptions(),
           // SizedBox(height: 4,),
+          if(!_selectedOptions.isEmpty)
           Divider(),
           GestureDetector(
             onTap: (){

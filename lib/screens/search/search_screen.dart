@@ -70,202 +70,234 @@ class _SearchScreenState extends State<SearchScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
+        body: Stack(
           children: [
-            Container(
-              margin: EdgeInsets.only(
-                top: 32,
-                bottom: 8,
-                left: 9,
-                right: 9,
-              ),
-              child: Container(
-                height: 44,
-                width: 396,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
-                  color: Color(0xffF7F7F7),
-                ),
-                child:Container(
-                  margin: EdgeInsets.only(),
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.center,
-                    onChanged: (value) {
-                      setState(() {
-                        query_check = value;
-                        filteredBrands = items_brands
-                            .where((brand) => brand.toLowerCase().contains(value.toLowerCase()))
-                            .toList();
-
-                        filteredStylists = items_stylists
-                            .where((stylist) => stylist.toLowerCase().contains(value.toLowerCase()))
-                            .toList();
-                      });
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-                      isDense: true,
-                      hintText: "Search a Brand, Product, Stylist or Season",
-                      hintStyle: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff9D9D9D),
-                      ),
-                      prefixIcon: Container(
-                        margin: EdgeInsets.only(left: 14, bottom: 14, top: 10),
-                        child: Icon(
-                          IconlyLight.search,
-                          size: 18,
-                          color: Color(0xFF4B4B4B),
-                        ),
-                      ),
-                      border: InputBorder.none,
-                      suffixIcon: IconTheme(
-                        data: IconThemeData(color: Colors.black),
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                              return FiltersScreen();
-                            }));
-                          },
-                          icon: Icon(IconlyLight.filter),
-                        ),
-                      ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 32,
+                    bottom: 8,
+                    left: 9,
+                    right: 9,
+                  ),
+                  child: Container(
+                    height: 44,
+                    width: 396,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      color: Color(0xffF7F7F7),
                     ),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
+                    child:Container(
+                      margin: EdgeInsets.only(),
+                      child: TextField(
+                        textAlignVertical: TextAlignVertical.center,
+                        onChanged: (value) {
+                          setState(() {
+                            query_check = value;
+                            filteredBrands = items_brands
+                                .where((brand) => brand.toLowerCase().contains(value.toLowerCase()))
+                                .toList();
+
+                            filteredStylists = items_stylists
+                                .where((stylist) => stylist.toLowerCase().contains(value.toLowerCase()))
+                                .toList();
+                          });
+                        },
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+                          isDense: true,
+                          hintText: "Search a Brand, Product, Stylist or Season",
+                          hintStyle: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff9D9D9D),
+                          ),
+                          prefixIcon: Container(
+                            margin: EdgeInsets.only(left: 14, bottom: 14, top: 10),
+                            child: Icon(
+                              IconlyLight.search,
+                              size: 18,
+                              color: Color(0xFF4B4B4B),
+                            ),
+                          ),
+                          border: InputBorder.none,
+                          suffixIcon: IconTheme(
+                            data: IconThemeData(color: Colors.black),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                                  return FiltersScreen();
+                                }));
+                              },
+                              icon: Icon(IconlyLight.filter),
+                            ),
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: DefaultTabController(
+                    length: 3,
+                    child: Column(
+                        children: [
+                    TabBar(
+                    tabs: [
+                    Tab(
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Text(
+                        "Brands",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Text(
+                        'Stylists',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Text(
+                        'Seasons',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              indicatorColor: Color(0xff282828),
+              labelColor: Color(0xff282828),
+              unselectedLabelColor: Color(0xff9D9D9D),
             ),
             Expanded(
-              child: DefaultTabController(
-                length: 3,
+              child: TabBarView(
+                  children: [
+              Container(
+              margin: EdgeInsets.all(8.0),
+              child: query_check.isNotEmpty && filteredBrands.isEmpty
+                  ? Container(
+                margin: EdgeInsets.all(16.0),
                 child: Column(
-                    children: [
-                TabBar(
-                tabs: [
-                Tab(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "No Search Results Found",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff9D9D9D),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  : AlphaBetScrollPage(
+                height: query_check.isEmpty
+                    ? (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height)
+                    : filteredBrands.isEmpty
+                    ? 0
+                    : (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height),
+                query_check: query_check,
+                onClickedItem: (item) {},
+                items: query_check.isNotEmpty ? filteredBrands : items_brands,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(8.0),
+              child: query_check.isNotEmpty && filteredStylists.isEmpty
+                  ? Container(
+                margin: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "No Search Results Found",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff9D9D9D),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  : AlphaBetScrollPage(
+                height: query_check.isEmpty
+                    ? (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height)
+                    : filteredStylists.isEmpty
+                    ? 0
+                    : (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height),
+                query_check: query_check,
+                onClickedItem: (item) {},
+                items: query_check.isNotEmpty ? filteredStylists : items_stylists,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(8.0),
+              child: _buildSeasonSearchResults(items_seasons),
+            ),
+    ],),),],),))],),
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                  return FiltersScreen();
+                }));
+              },
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: Container(
-                    width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    "Brands",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  padding: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 10,
                   ),
+                  decoration: BoxDecoration(
+                    color: Color(0xffFF9431),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text("Find what you're looking for", style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),),
                 ),
               ),
             ),
-            Tab(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    'Stylists',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Tab(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    'Seasons',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+
           ],
-          indicatorColor: Color(0xff282828),
-          labelColor: Color(0xff282828),
-          unselectedLabelColor: Color(0xff9D9D9D),
-        ),
-        Expanded(
-          child: TabBarView(
-              children: [
-          Container(
-          margin: EdgeInsets.all(8.0),
-          child: query_check.isNotEmpty && filteredBrands.isEmpty
-              ? Container(
-            margin: EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "No Search Results Found",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff9D9D9D),
-                  ),
-                ),
-              ],
-            ),
-          )
-              : AlphaBetScrollPage(
-            height: query_check.isEmpty
-                ? (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height)
-                : filteredBrands.isEmpty
-                ? 0
-                : (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height),
-            query_check: query_check,
-            onClickedItem: (item) {},
-            items: query_check.isNotEmpty ? filteredBrands : items_brands,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.all(8.0),
-          child: query_check.isNotEmpty && filteredStylists.isEmpty
-              ? Container(
-            margin: EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "No Search Results Found",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff9D9D9D),
-                  ),
-                ),
-              ],
-            ),
-          )
-              : AlphaBetScrollPage(
-            height: query_check.isEmpty
-                ? (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height)
-                : filteredStylists.isEmpty
-                ? 0
-                : (widget.height == MediaQuery.of(context).size.height ? 0 : MediaQuery.of(context).size.height),
-            query_check: query_check,
-            onClickedItem: (item) {},
-            items: query_check.isNotEmpty ? filteredStylists : items_stylists,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.all(8.0),
-          child: _buildSeasonSearchResults(items_seasons),
-        ),
-    ],),),],),))],));
+        ));
   }
 
-        Widget _buildSeasonSearchResults(List<String> seasons) {
+
+  Widget _buildSeasonSearchResults(List<String> seasons) {
     return Builder(
       builder: (BuildContext context) {
         String? prevYear;
@@ -273,7 +305,8 @@ class _SearchScreenState extends State<SearchScreen>{
 
         if (query_check.isNotEmpty) {
           filteredSeasons = seasons
-              .where((season) => season.toLowerCase().contains(query_check.toLowerCase()))
+              .where((season) =>
+              season.toLowerCase().contains(query_check.toLowerCase()))
               .toList();
         }
 
@@ -283,12 +316,11 @@ class _SearchScreenState extends State<SearchScreen>{
             .toSet()
             .toList();
 
-        // Sort the years in ascending order
+        // Sort the years in descending order
+        uniqueYears.sort((a, b) => b.compareTo(a));
 
-        // Filter seasons based on the selected year
-
-        return query_check.isNotEmpty&&filteredSeasons.isEmpty?
-        Container(
+        return query_check.isNotEmpty && filteredSeasons.isEmpty
+            ? Container(
           margin: EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -304,11 +336,10 @@ class _SearchScreenState extends State<SearchScreen>{
             ],
           ),
         )
-
             : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height:16),
+            SizedBox(height: 16),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
@@ -316,53 +347,36 @@ class _SearchScreenState extends State<SearchScreen>{
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: filteredSeasons.map((season) {
-                      String year = season.substring(season.length - 4);
-                      String currentYear = prevYear ?? '';
-                      prevYear = year;
+                    children: uniqueYears.map((year) {
+                      List<String> seasonsOfYear = filteredSeasons
+                          .where((season) => season.endsWith(year))
+                          .toList();
 
-                      if (currentYear != year) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 8),
-                            Text(
-                              year,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical: 11.0,
-                                // horizontal: 11.0,
-                              ),
-                              child: Text(
-                                season,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 11.0,
-                            // horizontal: 11.0,
-                          ),
-                          child: Text(
-                            season,
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 8),
+                          Text(
+                            year,
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        );
-                      }
+                          ...seasonsOfYear.map((season) => Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 11.0,
+                            ),
+                            child: Text(
+                              season,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )),
+                        ],
+                      );
                     }).toList(),
                   ),
                 ),
