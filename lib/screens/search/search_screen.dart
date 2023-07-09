@@ -274,12 +274,8 @@ class _SearchScreenState extends State<SearchScreen>{
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  padding: EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    top: 10,
-                    bottom: 10,
-                  ),
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 24),
                   decoration: BoxDecoration(
                     color: Color(0xffFF9431),
                     borderRadius: BorderRadius.circular(8.0),
