@@ -6,7 +6,6 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 import 'package:lookbook/screens/lookbook/lookbook_screen.dart';
 import 'package:lookbook/screens/listing/listing_screen.dart';
-import 'package:lookbook/screens/search/HomePage.dart';
 import 'package:lookbook/screens/search/search_screen.dart';
 import 'package:lookbook/screens/profile/profile_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
