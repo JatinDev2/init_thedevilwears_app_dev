@@ -51,7 +51,6 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
   Widget build(BuildContext context) {
     initList(widget.items);
     return AzListView(
-      physics: NeverScrollableScrollPhysics(),
       data: items,
       itemCount: items.length,
       itemBuilder: (context, index) {
