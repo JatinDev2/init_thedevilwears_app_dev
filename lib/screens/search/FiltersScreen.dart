@@ -136,7 +136,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   Widget _buildFilterTabs() {
     return Container(
-      height: MediaQuery.of(context).size.height / 1.3,
+      height: MediaQuery.of(context).size.height - 220,
       child: ListView.builder(
         itemCount: _filterTabs.length,
         itemBuilder: (context, index) {
@@ -144,10 +144,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
           int selectedOptionsCount = _getSelectedOptionsCount(tab);
           return Container(
             decoration: BoxDecoration(
-              color:  _selectedTab == tab ? Colors.white : Colors.grey.shade300,
+              color:  _selectedTab == tab ? Colors.white : Color(0xFFEFEFEF),
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.black12,
+                  color: Color(0xFFDDDDDD),
                   width: 1.0,
                 ),
               ),
@@ -197,7 +197,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget _buildFilterOptions() {
     List<String> options = _filterData[_selectedTab] ?? [];
     return Container(
-      height: MediaQuery.of(context).size.height / 1.3,
+      height: MediaQuery.of(context).size.height - 220,
       child: ListView.builder(
         itemCount: options.length,
         itemBuilder: (context, index) {
@@ -244,8 +244,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   Widget _buildSelectedOptions() {
     return Container(
-      height: 30,
-      // padding: EdgeInsets.symmetric(horizontal: 16),
+      height: 60,
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _selectedOptions.length,
@@ -311,6 +311,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         title: Text(
           'Filters',
           style: TextStyle(
@@ -370,18 +371,16 @@ class _FiltersScreenState extends State<FiltersScreen> {
               ),
             ],
           ),
-          SizedBox(height: 4,),
+          // SizedBox(height: 4,),
           _buildSelectedOptions(),
-          SizedBox(height: 4,),
+          // SizedBox(height: 4,),
           Divider(),
           GestureDetector(
             onTap: (){
               Navigator.of(context).pop();
             },
             child: Container(
-              margin: EdgeInsets.only(
-                top: 8.0,
-              ),
+              height: 50,
               child: Center(
                 child: Text("Apply Filters", style: TextStyle(
                     fontWeight: FontWeight.bold,

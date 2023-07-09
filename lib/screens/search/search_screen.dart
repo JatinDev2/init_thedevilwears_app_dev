@@ -69,6 +69,7 @@ class _SearchScreenState extends State<SearchScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -113,7 +114,11 @@ class _SearchScreenState extends State<SearchScreen>{
                       ),
                       prefixIcon: Container(
                         margin: EdgeInsets.only(left: 14, bottom: 14, top: 10),
-                        child: Icon(IconlyLight.search, size: 20),
+                        child: Icon(
+                          IconlyLight.search,
+                          size: 18,
+                          color: Color(0xFF4B4B4B),
+                        ),
                       ),
                       border: InputBorder.none,
                       suffixIcon: IconTheme(

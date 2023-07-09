@@ -141,7 +141,8 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         tag,
         style: TextStyle(
           fontSize: 18,
-          fontWeight: selectedTag==tag? FontWeight.bold : FontWeight.w500,
+          // fontWeight: selectedTag==tag? FontWeight.bold : FontWeight.w500,
+          fontWeight: FontWeight.w500,
           color: Color(0xff0F1015),
         ),
       ),
