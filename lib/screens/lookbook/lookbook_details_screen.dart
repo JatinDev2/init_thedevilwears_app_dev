@@ -168,8 +168,6 @@ class _LookbookDetailsState extends State<LookbookDetailsScreen> with SingleTick
     );
   }
 
-
-
   /// Grid Item
   _gridItem() {
     return GestureDetector(
