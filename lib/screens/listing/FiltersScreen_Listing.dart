@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FiltersScreen_Listing extends StatefulWidget {
-  List<String> selectedOptionsSourceing;
+  List<String> selectedOptionsSourcing;
 
   FiltersScreen_Listing({
-   required this.selectedOptionsSourceing,
+   required this.selectedOptionsSourcing,
 });
 
   @override
@@ -16,7 +16,7 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
 
   void initState() {
     super.initState();
-    _selectedOptions.addAll(widget.selectedOptionsSourceing);
+    _selectedOptions.addAll(widget.selectedOptionsSourcing);
   }
 
   List<String> _filterTabs = [

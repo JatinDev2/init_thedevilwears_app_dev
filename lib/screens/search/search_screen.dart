@@ -127,9 +127,8 @@ class _SearchScreenState extends State<SearchScreen>{
                             data: IconThemeData(color: Colors.black),
                             child: IconButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                                  return FiltersScreen();
-                                }));
+                                Navigator.pushNamed(context,'/searchFilterScreen');
+
                               },
                               icon: Icon(IconlyLight.filter),
                             ),
@@ -267,9 +266,7 @@ class _SearchScreenState extends State<SearchScreen>{
     ],),),],),))],),
             GestureDetector(
               onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                  return FiltersScreen();
-                }));
+                Navigator.pushNamed(context,'/searchFilterScreen');
               },
               child: Align(
                 alignment: Alignment.bottomCenter,

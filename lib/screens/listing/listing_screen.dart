@@ -112,15 +112,18 @@ class _ListingScreenState extends State<ListingScreen> {
                   width: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                        return FiltersScreen_Listing(selectedOptionsSourceing: selectedOptions,);
-                      })).then((data){
+                      Navigator.pushNamed(
+                        context,
+                        '/listingFilterScreen',
+                        arguments: selectedOptions,
+                      ).then((data){
                         if(data !=null){
                           setState(() {
                             selectedOptions=data as List<String>;
                           });
                         }
                       });
+
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -150,7 +153,7 @@ class _ListingScreenState extends State<ListingScreen> {
                         onTap: () {
                           toggleOption(option);
                           setState(() {
-                            showListView = false; // Set showListView to false when an option is selected
+                            showListView = false;
                           });
                         },
                       );
@@ -172,19 +175,19 @@ class _ListingScreenState extends State<ListingScreen> {
                         },
                       );
                     }).toList(),
-                    if (selectedOptions.isNotEmpty) // Show the "Modify Filters" button if any option is selected
+                    if (selectedOptions.isNotEmpty)
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                            return FiltersScreen_Listing(
-                              selectedOptionsSourceing: selectedOptions,
-                            );
-                          })).then((data){
+
+                          Navigator.pushNamed(
+                            context,
+                            '/listingFilterScreen',
+                            arguments: selectedOptions,
+                          ).then((data){
                             if(data !=null){
                               setState(() {
                                 selectedOptions=data as List<String>;
                               });
-                              print(selectedOptions);
                             }
                           });
                         },
@@ -253,9 +256,7 @@ class _ListingScreenState extends State<ListingScreen> {
       margin: EdgeInsets.all(16),
       child: InkWell(
         onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-            return Details_Screen();
-          }));
+          Navigator.pushNamed(context, 'listingDetailsScreen');
         },
         child: Column(
           children: [
