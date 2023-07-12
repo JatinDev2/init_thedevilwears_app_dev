@@ -42,40 +42,56 @@ class _ListingScreenState extends State<ListingScreen> {
   @override
 
     Widget build(BuildContext context) {
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: TabBar(
-              tabs: [
-                Tab(
-                  child: Text(
-                    "Sourcing",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    "Collab",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            indicatorColor: Color(0xff282828),
-            labelColor: Color(0xff282828),
-            unselectedLabelColor: Color(0xff9D9D9D),
-            ),
-          body: TabBarView(
-            children: [
-              _buildSourceTab(),
-              _buildCollabTab(),
-            ],
+      return Scaffold(
+        body: DefaultTabController(
+          length: 2,
+          child:Container(
+            color: Colors.white,
+            child: Column(
+                 children: [
+                   SizedBox(height: 13,),
+                   Container(
+                     color: Colors.white,
+                     child: TabBar(
+                        tabs: [
+                          Tab(
+                            child: Text(
+                              "Sourcing",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Tab(
+                            child: Text(
+                              "Collab",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      indicatorColor: Color(0xff282828),
+                      labelColor: Color(0xff282828),
+                      unselectedLabelColor: Color(0xff9D9D9D),
+                      ),
+                   ),
+               Expanded(
+                 child: Container(
+                   color: Colors.white,
+                   child: TabBarView(
+                    children: [
+                      _buildSourceTab(),
+                      _buildCollabTab(),
+                    ],
+              ),
+                 ),
+               ),
+    ],),
           ),
+
         ),
       );
     }
@@ -107,6 +123,7 @@ class _ListingScreenState extends State<ListingScreen> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
+                      elevation: 0,
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
@@ -217,7 +234,7 @@ class _ListingScreenState extends State<ListingScreen> {
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: Color(0xff424242),
                   ),
@@ -270,11 +287,11 @@ class _ListingScreenState extends State<ListingScreen> {
                     radius: 20,
                     backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
                   ),
-                  SizedBox(width: 8,),
+                  SizedBox(width: 6,),
                   Expanded(
                       child: Text("Tanya Ghavri", style: TextStyle(
                         color: Color(0xff0F1015),
-                        fontSize: 19,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),)
                   ),
@@ -284,13 +301,13 @@ class _ListingScreenState extends State<ListingScreen> {
                         Text(
                           "Required on", style: TextStyle(
                           color: Color(0xff9D9D9D),
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                         ),
                         Text("18 OCT",style: TextStyle(
                           color: Color(0xff0F1015),
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),),
                       ],
@@ -333,6 +350,7 @@ class _ListingScreenState extends State<ListingScreen> {
                     text: TextSpan(
                       text: 'Requirements',
                       style: TextStyle(
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: Color(0xff2F2F2F),
                       ),
@@ -340,6 +358,7 @@ class _ListingScreenState extends State<ListingScreen> {
                         TextSpan(
                           text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
                           style: TextStyle(
+                            fontSize: 12,
                             fontWeight: FontWeight.normal,
                             color: Color(0xff424242),
                           ),
@@ -353,7 +372,7 @@ class _ListingScreenState extends State<ListingScreen> {
                   Row(
                     children: [
                       Text("37 mins ago", style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Color(0xff8B8B8B)
                       ),),
                       Spacer(),
@@ -396,7 +415,7 @@ class FilterOptionChip extends StatelessWidget {
         ),
         padding: selected? EdgeInsets.all(0): EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: selected? Colors.transparent : Color(0xffF9F9F9),
+          color: selected? Colors.transparent : Color(0xffF7F7F7),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
