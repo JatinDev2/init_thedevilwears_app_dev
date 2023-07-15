@@ -128,7 +128,6 @@ class _SearchScreenState extends State<SearchScreen>{
                             child: IconButton(
                               onPressed: () {
                                 Navigator.pushNamed(context,'/searchFilterScreen');
-
                               },
                               icon: Icon(IconlyLight.filter),
                             ),

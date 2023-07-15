@@ -52,6 +52,7 @@ class _Details_ScreenState extends State<Details_Screen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(onPressed: (){
+          // Navigator.pushNamed(context, '/listingScreen');
           Navigator.of(context).pop();
         }, icon: Icon(Icons.arrow_back_ios_new, color: Colors.black,)),
         title: Text(
@@ -285,7 +286,9 @@ class _Details_ScreenState extends State<Details_Screen> {
               ),
                SizedBox(height: 8,),
                GestureDetector(
-                 onTap: (){},
+                 onTap: (){
+                   Navigator.pushNamed(context, '/listingResponseScreen');
+                 },
                  child: Container(
                    height: 50,
                    decoration: BoxDecoration(

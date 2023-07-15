@@ -23,7 +23,7 @@ class _LookbookScreenState extends State<LookbookScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
+      setState((){
         isLoading = false;
       });
     });
@@ -67,7 +67,7 @@ class _LookbookScreenState extends State<LookbookScreen> {
             ],
           ),
         ),
-        onRefresh: () {
+        onRefresh: (){
           setState(() => isLoading = true);
           return Future.delayed(const Duration(seconds: 1), () {
             setState(() => isLoading = false);

@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
+import 'package:lookbook/screens/listing/Confirmation_screen.dart';
 import 'package:lookbook/screens/listing/Details_Screen.dart';
 import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
+import 'package:lookbook/screens/listing/PreviewScreen_first.dart';
+import 'package:lookbook/screens/listing/PriviewScreen_second.dart';
+import 'package:lookbook/screens/listing/listing_screen.dart';
+import 'package:lookbook/screens/listing/lookbook_details_grid.dart';
+import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_image_details.dart';
@@ -42,6 +48,36 @@ class MyApp extends StatelessWidget {
               );
             }
             // Handle other named routes here if needed
+
+            if (settings.name == '/listingPreviewScreenFirst') {
+              // Retrieve the arguments passed when navigating to '/listingFilterScreen'
+              final arguments = settings.arguments as List;
+              return MaterialPageRoute(
+                builder: (context) => PreviewScreen_First(selectedItems: arguments,),
+              );
+            }
+
+            if (settings.name == '/listingPreviewScreenSecond') {
+              // Retrieve the arguments passed when navigating to '/listingFilterScreen'
+              final arguments = settings.arguments as List;
+              return MaterialPageRoute(
+                builder: (context) => PreviewScreen_Second(selectedItems: arguments,),
+              );
+            }
+
+
+            if (settings.name == '/listinglookbookdetails') {
+              // Retrieve the arguments passed when navigating to '/listingFilterScreen'
+              final arguments = settings.arguments as Map<String, dynamic>;
+
+              return MaterialPageRoute(
+                builder: (context) => LookbookGridScreen(
+                  headText: arguments['headText'],
+                  subText: arguments['subText'],
+                  previousSelectedItems: arguments['previousSelectedItems'],
+                ),
+              );
+            }
           },
           routes: <String, WidgetBuilder>{
             '/homeScreen': (BuildContext ctx) => HomeScreen(),
@@ -49,8 +85,13 @@ class MyApp extends StatelessWidget {
             '/lookbookImagesSliderScreen': (BuildContext ctx) => LookbookImagesSliderScreen(),
             '/lookbookImageDetailsScreen': (BuildContext ctx) => LookbookImageDetailsScreen(),
             '/searchFilterScreen': (BuildContext ctx) => FiltersScreen(),
+            '/listingScreen' : (BuildContext ctx) => ListingScreen(),
             'listingDetailsScreen' : (BuildContext ctx) => Details_Screen(),
+            '/listingResponseScreen' : (BuildContext ctx) => ResponseScreen(),
+            '/listingConfirmResponseScreen' : (BuildContext ctx) => ConfirmScreen(),
           },
+
+
           debugShowCheckedModeBanner: false,
         );
 
