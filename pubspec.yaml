@@ -51,6 +51,10 @@ dependencies:
   azlistview: ^2.0.0
   draggable_scrollbar: ^0.1.0
   flutter_svg: ^2.0.3
+  dropdown_button2: ^2.0.0
+  image_picker: ^1.0.1
+  multi_image_picker: ^4.8.01
+
 
 
 dev_dependencies:

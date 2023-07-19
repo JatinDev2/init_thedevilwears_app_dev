@@ -76,129 +76,135 @@ class _LookbookDetailsState extends State<LookbookGridScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pop(context,widget.previousSelectedItems);
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop(widget.previousSelectedItems);
-          },
-          icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
-        ),
-        title: Text(
-          "${widget.headText} | ${widget.subText}",
-          style: TextStyle(
-            color: Color(0xff0F1015),
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop(widget.previousSelectedItems);
+            },
+            icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
           ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
-                      childAspectRatio: 100 / 150,
-                    ),
-                    itemCount: isLoading ? 18 : lookBookItems.length,
-                    itemBuilder: (context, index) {
-                      return isLoading
-                          ? _shimmerItem()
-                          : _gridItem(lookBookItems[index]);
-                    },
-                  ),
-                ),
-              ),
-              widget.previousSelectedItems.isNotEmpty? SizedBox(
-                height: 220,
-              ) : Container(),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            child: widget.previousSelectedItems.isEmpty? Container() :  Container(
-              color: Colors.white,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Container(
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.previousSelectedItems.length,
-                      itemBuilder: (context, index) {
-                        var item=widget.previousSelectedItems[index];
-                        if (item.isTapped == true){
-                          currentIndex = index;
-                        }
-                        if(item is GridItemData){
-                          return _selectedItemGrid(index);
-                        }
-                        else{
-                          return _selectedItem(index);
-                        }
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(5.0),
-                    width: MediaQuery.of(context).size.width - 20,
-                    decoration: BoxDecoration(
-                      color: Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: TextField(
-                      maxLines: 2,
-                      controller: captionController,
-                      onChanged: (value) {
-                        widget.previousSelectedItems[currentIndex].caption = value;
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10.0),
-                        hintText: "Add a caption or skip it...",
-                        hintStyle: TextStyle(
-                          fontSize: 14,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.pushNamed(context, '/listingPreviewScreenFirst', arguments: widget.previousSelectedItems );
-                    },
-                    child: Container(
-                      height: 56,
-                      width: 182,
-                      margin: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Center(
-                        child: Text("Preview", style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
-                        ),),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          title: Text(
+            "${widget.headText} | ${widget.subText}",
+            style: TextStyle(
+              color: Color(0xff0F1015),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ],
+        ),
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                        childAspectRatio: 100 / 150,
+                      ),
+                      itemCount: isLoading ? 18 : lookBookItems.length,
+                      itemBuilder: (context, index) {
+                        return isLoading
+                            ? _shimmerItem()
+                            : _gridItem(lookBookItems[index]);
+                      },
+                    ),
+                  ),
+                ),
+                widget.previousSelectedItems.isNotEmpty? SizedBox(
+                  height: 220,
+                ) : Container(),
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              child: widget.previousSelectedItems.isEmpty? Container() :  Container(
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 70,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.previousSelectedItems.length,
+                        itemBuilder: (context, index) {
+                          var item=widget.previousSelectedItems[index];
+                          if (item.isTapped == true){
+                            currentIndex = index;
+                          }
+                          if(item is GridItemData){
+                            return _selectedItemGrid(index);
+                          }
+                          else{
+                            return _selectedItem(index);
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(5.0),
+                      width: MediaQuery.of(context).size.width - 20,
+                      decoration: BoxDecoration(
+                        color: Color(0xffF7F7F7),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: TextField(
+                        maxLines: 2,
+                        controller: captionController,
+                        onChanged: (value) {
+                          widget.previousSelectedItems[currentIndex].caption = value;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10.0),
+                          hintText: "Add a caption or skip it...",
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/listingPreviewScreenFirst', arguments: widget.previousSelectedItems );
+                      },
+                      child: Container(
+                        height: 56,
+                        width: 182,
+                        margin: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Center(
+                          child: Text("Preview", style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                          ),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

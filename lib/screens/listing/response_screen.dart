@@ -383,13 +383,13 @@ class _ResponseScreenState extends State<ResponseScreen> {
             item.isSelected = false;
             selectedItems.remove(item);
           });
-        } else {
+        } else{
           Navigator.pushNamed(context, '/listinglookbookdetails', arguments: {
             'headText':item.name,
             'subText' : item.companyName,
             'previousSelectedItems' : selectedItems,
           }).then((value) {
-            setState(() {
+            setState((){
               selectedItems = value as List;
               captionController.clear();
             });

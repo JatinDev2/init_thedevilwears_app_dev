@@ -97,88 +97,23 @@ class _ListingScreenState extends State<ListingScreen> {
     }
 
   Widget _buildSourceTab(){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        Container(
-          margin: EdgeInsets.all(5.0),
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            children: [
-              Container(
-                child: selectedOptions.isEmpty?
-                SizedBox(
-                  // height: 24,
-                  width: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/listingFilterScreen',
-                        arguments: selectedOptions,
-                      ).then((data){
-                        if(data !=null){
-                          setState(() {
-                            selectedOptions=data as List<String>;
-                          });
-                        }
-                      });
-
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24), // Adjust the radius as needed
-                      ),
-                    ),
-                    child: Icon(
-                      IconlyBold.filter,
-                      size: 20,
-                    ),
-                  ),
-                ) : Container(),
-              ),
-              selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
-              Expanded(
-                child: Container(
-                  height: 50,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: filterOptions.map((option) {
-                      return FilterOptionChip(
-                        title: option,
-                        selected: selectedOptions.contains(option),
-                        onTap: () {
-                          toggleOption(option);
-                          setState(() {
-                            showListView = false;
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-              )
-                  : Expanded(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ...selectedOptions.map((option) {
-                      return FilterOptionChip(
-                        title: option,
-                        selected: true,
-                        onTap: () {
-                          toggleOption(option);
-                        },
-                      );
-                    }).toList(),
-                    if (selectedOptions.isNotEmpty)
-                      TextButton(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(5.0),
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Container(
+                    child: selectedOptions.isEmpty?
+                    SizedBox(
+                      // height: 24,
+                      width: 50,
+                      child: ElevatedButton(
                         onPressed: () {
-
                           Navigator.pushNamed(
                             context,
                             '/listingFilterScreen',
@@ -190,21 +125,117 @@ class _ListingScreenState extends State<ListingScreen> {
                               });
                             }
                           });
+
                         },
-                        child: Text(
-                          "Modify Filters",
-                          style: TextStyle(
-                            color: Colors.orange,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.orange,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24), // Adjust the radius as needed
                           ),
                         ),
+                        child: Icon(
+                          IconlyBold.filter,
+                          size: 20,
+                        ),
                       ),
-                  ],
-                ),
+                    ) : Container(),
+                  ),
+                  selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
+                  Expanded(
+                    child: Container(
+                      height: 50,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: filterOptions.map((option) {
+                          return FilterOptionChip(
+                            title: option,
+                            selected: selectedOptions.contains(option),
+                            onTap: () {
+                              toggleOption(option);
+                              setState(() {
+                                showListView = false;
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  )
+                      : Expanded(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ...selectedOptions.map((option) {
+                          return FilterOptionChip(
+                            title: option,
+                            selected: true,
+                            onTap: () {
+                              toggleOption(option);
+                            },
+                          );
+                        }).toList(),
+                        if (selectedOptions.isNotEmpty)
+                          TextButton(
+                            onPressed: () {
+
+                              Navigator.pushNamed(
+                                context,
+                                '/listingFilterScreen',
+                                arguments: selectedOptions,
+                              ).then((data){
+                                if(data !=null){
+                                  setState(() {
+                                    selectedOptions=data as List<String>;
+                                  });
+                                }
+                              });
+                            },
+                            child: Text(
+                              "Modify Filters",
+                              style: TextStyle(
+                                color: Colors.orange,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
+            _buildCustomCard(),
+          ],
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: (){
+              Navigator.pushNamed(context, '/newlistingOptionsScreen');
+            },
+            child: Container(
+              height: 50,
+              width: 170,
+              margin: EdgeInsets.all(10.0),
+              padding: EdgeInsets.only(),
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Text("Create a listing", style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                  ),),
+              ),
+
+            ),
           ),
         ),
-        _buildCustomCard(),
+
       ],
     );
   }

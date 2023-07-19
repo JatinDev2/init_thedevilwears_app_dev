@@ -9,6 +9,8 @@ import 'package:lookbook/screens/listing/PreviewScreen_first.dart';
 import 'package:lookbook/screens/listing/PriviewScreen_second.dart';
 import 'package:lookbook/screens/listing/listing_screen.dart';
 import 'package:lookbook/screens/listing/lookbook_details_grid.dart';
+import 'package:lookbook/screens/listing/new_listing/new_listing_form.dart';
+import 'package:lookbook/screens/listing/new_listing/options_screen.dart';
 import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';
@@ -65,6 +67,13 @@ class MyApp extends StatelessWidget {
               );
             }
 
+            if (settings.name == '/newlistingform') {
+              // Retrieve the arguments passed when navigating to '/listingFilterScreen'
+              final arguments = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => NewListingForm(listingType: arguments,),
+              );
+            }
 
             if (settings.name == '/listinglookbookdetails') {
               // Retrieve the arguments passed when navigating to '/listingFilterScreen'
@@ -89,9 +98,8 @@ class MyApp extends StatelessWidget {
             'listingDetailsScreen' : (BuildContext ctx) => Details_Screen(),
             '/listingResponseScreen' : (BuildContext ctx) => ResponseScreen(),
             '/listingConfirmResponseScreen' : (BuildContext ctx) => ConfirmScreen(),
+            '/newlistingOptionsScreen' : (BuildContext ctx) => OptionsScreen(),
           },
-
-
           debugShowCheckedModeBanner: false,
         );
 
