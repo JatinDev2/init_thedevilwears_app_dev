@@ -64,13 +64,12 @@ class _NewListingFormState extends State<NewListingForm> {
                   GestureDetector(
                     onTap: () async {
                       Navigator.pop(context);
-                      List<Asset> images = await MultiImagePicker.pickImages(
-                        maxImages: 100 - selectedImages.length,
-                        enableCamera: true,
-                      );
-                      setState(() {
-                        selectedImages.addAll(images);
-                      });
+                      final XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
+                      if (image != null) {
+                        setState(() {
+                          imageFileList.add(image);
+                        });
+                      }
                     },
                     child: Column(
                       children: [
