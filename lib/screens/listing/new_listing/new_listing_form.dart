@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/screens/listing/new_listing/List_Model.dart';
@@ -37,6 +37,35 @@ class _NewListingFormState extends State<NewListingForm> {
   TextEditingController detailConnroller=TextEditingController();
   final ImagePicker imagePicker=ImagePicker();
   List<XFile>imageFileList=[XFile("")];
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != eventDateConnroller.text) {
+      setState(() {
+        eventDateConnroller.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
+  Future<void> _selectProductDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != productDateConnroller.text) {
+      setState(() {
+        productDateConnroller.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
 
   void _showDialogue(){
     showDialog(
@@ -490,30 +519,37 @@ class _NewListingFormState extends State<NewListingForm> {
                           ),
                           textAlign: TextAlign.left,
                         ),
-                        TextFormField(
-                          controller: eventDateConnroller,
-                          decoration: InputDecoration(
-                            hintText: "DD/MM/YYYY",
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xffb2b2b2),
-                              height: 21 / 14,
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: AbsorbPointer(
+                            child: TextFormField(
+                              controller: eventDateConnroller,
+                              decoration: InputDecoration(
+                                hintText: "DD/MM/YYYY",
+                                hintStyle: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xffb2b2b2),
+                                  height: 21 / 14,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              cursorColor: Colors.black,
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a date.';
+                                }
+                                return null;
+                              },
                             ),
-                            border: InputBorder.none,
                           ),
-                          cursorColor: Colors.black,
-                          keyboardType: TextInputType.name,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a date.';
-                            }
-                            return null;
-                          },
                         ),
                       ],
                     ),
                   ),
+
+
                   Divider(
                     height: 2,
                     color: Color(0xffE7E7E7),
@@ -525,7 +561,7 @@ class _NewListingFormState extends State<NewListingForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "By when do you need the products?* ",
+                          "By when do you need the products?*",
                           style: const TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
@@ -535,26 +571,31 @@ class _NewListingFormState extends State<NewListingForm> {
                           ),
                           textAlign: TextAlign.left,
                         ),
-                        TextFormField(
-                          controller: productDateConnroller,
-                          decoration: InputDecoration(
-                            hintText: "DD/MM/YYYY",
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xffb2b2b2),
-                              height: 21 / 14,
+                        GestureDetector(
+                          onTap: () => _selectProductDate(context),
+                          child: AbsorbPointer(
+                            child: TextFormField(
+                              controller: productDateConnroller,
+                              decoration: InputDecoration(
+                                hintText: "DD/MM/YYYY",
+                                hintStyle: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xffb2b2b2),
+                                  height: 21 / 14,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              cursorColor: Colors.black,
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a date.';
+                                }
+                                return null;
+                              },
                             ),
-                            border: InputBorder.none,
                           ),
-                          cursorColor: Colors.black,
-                          keyboardType: TextInputType.name,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a date.';
-                            }
-                            return null;
-                          },
                         ),
                       ],
                     ),
