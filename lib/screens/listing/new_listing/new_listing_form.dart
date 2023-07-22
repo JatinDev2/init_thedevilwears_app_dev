@@ -238,7 +238,7 @@ class _NewListingFormState extends State<NewListingForm> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 7,),
+              SizedBox(height: 15,),
               Image.asset("assets/emoji.png"),
               SizedBox(height: 20,),
               Row(
@@ -336,12 +336,16 @@ class _NewListingFormState extends State<NewListingForm> {
         _showquitDialogue();
       },
       ),),
-          title: Text(
-            "Listing", style: TextStyle(
-            color: Color(0xff0F1015),
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          title:const Text(
+            "Create a new listing",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff0f1015),
+              height: 20/16,
+            ),
+            textAlign: TextAlign.left,
           ),
         ),
         body: SingleChildScrollView(
@@ -358,9 +362,9 @@ class _NewListingFormState extends State<NewListingForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 16),
-                        Text(
+                        const Text(
                           "Listing type",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -384,7 +388,7 @@ class _NewListingFormState extends State<NewListingForm> {
                       ],
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     height: 2,
                     color: Color(0xffE7E7E7),
                   ),
@@ -393,9 +397,9 @@ class _NewListingFormState extends State<NewListingForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Who do you want to style?*",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

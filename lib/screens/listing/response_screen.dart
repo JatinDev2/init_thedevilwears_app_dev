@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -29,7 +30,88 @@ class _ResponseScreenState extends State<ResponseScreen> {
   void initState() {
     super.initState();
     gridItems = GridItemData.generateItems();
+    Future.delayed(Duration.zero, () {
+      _showEntryDialogue();
+    });
   }
+
+  void _showEntryDialogue(){
+    showDialog(
+      context: context,
+      builder: (context) => Theme(
+        data: ThemeData(
+          dialogTheme: DialogTheme(
+            elevation: 0,
+          ),
+        ),
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          contentPadding: EdgeInsets.only(
+            top: 40,
+            bottom: 40,
+            left: 15,
+            right: 15
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Your application is private.",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff2d2d2d),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const Text(
+                "Only the owner of the listing can view it.",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff2d2d2d),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20,),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      height: 44,
+                      width: 198,
+                      decoration: BoxDecoration(
+                        color: Color(0xffFF9431),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Great, let’s begin",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            height: 24/16,
+                          ),
+                          textAlign: TextAlign.left,
+                        )
+                      ),
+                    ),
+                  ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +211,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
               child: Column(
                 children: [
                   Container(
-                    height: 70,
+                    height: 68,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -151,7 +233,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                     margin: EdgeInsets.all(5.0),
                     width: MediaQuery.of(context).size.width - 20,
                     decoration: BoxDecoration(
-                      color: Color(0xffF7F7F7),
+                      color: const Color(0xffF7F7F7),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: TextField(
@@ -160,7 +242,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                       onChanged: (value) {
                         selectedItems[currentIndex].caption = value;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(10.0),
                         hintText: "Add a caption or skip it...",
                         hintStyle: TextStyle(
@@ -182,7 +264,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                         color: Colors.orange,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "Preview",
                           style: TextStyle(
@@ -218,26 +300,41 @@ class _ResponseScreenState extends State<ResponseScreen> {
         });
       },
       child: Container(
-        width: 80,
+        width: 74,
         margin: EdgeInsets.all(2.0),
         decoration: BoxDecoration(
           border: Border.all(color: item.isTapped ? Colors.black : Colors.transparent, width: 2),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(9),
         ),
         child: Stack(
           children: [
             Positioned(
-              right: 2,
+              right: 0, // Adjusted positioning
               child: Container(
                 width: 60,
-                height: 80,
+                height: 60,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
-                  image: DecorationImage(
-                    image: NetworkImage(selectedItems[index].imageUrl),
-                    fit: BoxFit.cover,
-                  ),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child:Image.network(selectedItems[index].imageUrl, fit: BoxFit.cover, height: 58,) ,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 5, // Adjusted positioning
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child:Image.network(selectedItems[index].imageUrl, fit: BoxFit.cover, height: 58,) ,
                 ),
               ),
             ),
@@ -245,51 +342,143 @@ class _ResponseScreenState extends State<ResponseScreen> {
               right: 10, // Adjusted positioning
               child: Container(
                 width: 60,
-                height: 80,
+                height: 60,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
-                  image: DecorationImage(
-                    image: NetworkImage(selectedItems[index].imageUrl),
-                    fit: BoxFit.cover,
-                  ),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child:Image.network(selectedItems[index].imageUrl, fit: BoxFit.cover, height: 58,) ,
                 ),
               ),
             ),
-            Container(
-              width: 60,
-              height: 80,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8.0),
-                image: DecorationImage(
-                  image: NetworkImage(selectedItems[index].imageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () {
-                    setState((){
-                      selectedItems[index].isSelected = false;
-                      selectedItems.remove(selectedItems[index]);
-                      captionController.clear();
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 4, right: 6),
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () {
+                  setState((){
+                      showDialog(
+                        context: context,
+                        builder: (context) => Theme(
+                          data: ThemeData(
+                            dialogTheme: DialogTheme(
+                              elevation: 0,
+                            ),
+                          ),
+                          child: AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                                top: 40,
+                                bottom: 40,
+                                left: 15,
+                                right: 15
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Are you sure you want to delete this?",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff2d2d2d),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 20,),
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.of(context).pop();
+                                  },
+                                  child:Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).pop();
+                                          setState(() {
+                                            selectedItems[index].isSelected = false;
+                                            selectedItems.remove(selectedItems[index]);
+                                            captionController.clear();
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 44,
+                                          width: 120,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffE6E6E6),
+                                            borderRadius: BorderRadius.circular(12.0),
+                                          ),
+                                          child: const Center(
+                                            child: Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                fontFamily: "Poppins",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xff373737),
+                                                height: 24/16,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 9,),
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Container(
+                                          height: 44,
+                                          width: 120,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffFF9431),
+                                            borderRadius: BorderRadius.circular(12.0),
+                                          ),
+                                          child: const Center(
+                                            child: Text(
+                                              "No",
+                                              style: TextStyle(
+                                                fontFamily: "Poppins",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xff010100),
+                                                height: 24/16,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                  });
+                },
+                child: Container(
+                  margin: EdgeInsets.only(top: 4, right: 6),
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 16,
                   ),
                 ),
               ),
@@ -447,6 +636,16 @@ class _ResponseScreenState extends State<ResponseScreen> {
               ),
             ),
           ),
+          if(!item.isSelected)
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                margin: EdgeInsets.only(top: 8, right: 8),
+                width: 24,
+                height: 24,
+                child: SvgPicture.asset("assets/multiple.svg"),
+              ),
+            ),
           if (item.isSelected)
             Align(
               alignment: Alignment.topRight,

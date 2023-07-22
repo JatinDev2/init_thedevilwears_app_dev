@@ -58,17 +58,19 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         return _buildListItem(item);
       },
       indexBarOptions: IndexBarOptions(
-        selectTextStyle:TextStyle(
+        selectTextStyle:const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.bold,
       ),
-        indexHintTextStyle: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
+        indexHintTextStyle:const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w300,
+        color: Color(0xff0f1015),
+        height: 468/12,
+      ),
         needRebuild: true,
         indexHintAlignment: Alignment.centerRight,
-        indexHintOffset: Offset(-10, 0),
+        indexHintOffset: const Offset(-10, 0),
         selectItemDecoration: BoxDecoration(
           shape: BoxShape.rectangle,
           color: Colors.transparent,
@@ -82,7 +84,7 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         return Container(
           width: 60,
           height: 60,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.orange,
             shape: BoxShape.circle,
           ),
@@ -90,9 +92,10 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
           child: Center(
             child: Text(
               hint,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
-                fontSize: 30,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -113,15 +116,17 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
             widget.onClickedItem(item.title);
           },
           child: Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               vertical: 10.0,
               horizontal: 10.0,
             ),
             child: Text(
               item.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
-                color: Color(0xff0F1015),
+                fontWeight: FontWeight.w400,
+                color: Color(0xff0f1015),
+                height: 21/14,
               ),
             ),
           ),
@@ -139,12 +144,12 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
       ),
       child: Text(
         tag,
-        style: TextStyle(
-          fontSize: 18,
-          // fontWeight: selectedTag==tag? FontWeight.bold : FontWeight.w500,
-          fontWeight: FontWeight.w500,
-          color: Color(0xff0F1015),
-        ),
+        style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w300,
+        color: Color(0xff0f1015),
+        height: 24/16,
+      ),
       ),
     );
   }

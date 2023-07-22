@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
 
 import 'Details_Screen.dart';
@@ -52,24 +53,30 @@ class _ListingScreenState extends State<ListingScreen> {
                    SizedBox(height: 13,),
                    Container(
                      color: Colors.white,
-                     child: TabBar(
+                     child: const TabBar(
                         tabs: [
                           Tab(
                             child: Text(
                               "Sourcing",
                               style: TextStyle(
+                                fontFamily: "Poppins",
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
+                                height: 24/16,
                               ),
+                              textAlign: TextAlign.left,
                             ),
                           ),
                           Tab(
                             child: Text(
                               "Collab",
                               style: TextStyle(
+                                fontFamily: "Poppins",
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
+                                height: 24/16,
                               ),
+                              textAlign: TextAlign.left,
                             ),
                           ),
                         ],
@@ -111,9 +118,9 @@ class _ListingScreenState extends State<ListingScreen> {
                     child: selectedOptions.isEmpty?
                     SizedBox(
                       // height: 24,
-                      width: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
+                      width: 45,
+                      child: GestureDetector(
+                        onTap: () {
                           Navigator.pushNamed(
                             context,
                             '/listingFilterScreen',
@@ -127,17 +134,18 @@ class _ListingScreenState extends State<ListingScreen> {
                           });
 
                         },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.orange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24), // Adjust the radius as needed
+                        child:  Container(
+                          height: 30,
+                          padding: const EdgeInsets.all(3.0),
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                           borderRadius: BorderRadius.circular(20.0),
                           ),
-                        ),
-                        child: Icon(
-                          IconlyBold.filter,
-                          size: 20,
+                          child: SvgPicture.asset(
+                            'assets/Filter.svg',
+                            semanticsLabel: 'My SVG Image',
+                            height: 20,
+                          ),
                         ),
                       ),
                     ) : Container(),
@@ -193,7 +201,7 @@ class _ListingScreenState extends State<ListingScreen> {
                                 }
                               });
                             },
-                            child: Text(
+                            child: const Text(
                               "Modify Filters",
                               style: TextStyle(
                                 color: Colors.orange,
@@ -218,13 +226,12 @@ class _ListingScreenState extends State<ListingScreen> {
             child: Container(
               height: 50,
               width: 170,
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.only(),
+              margin: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: Colors.orange,
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: Center(
+              child: const Center(
                 child: Text("Create a listing", style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -241,7 +248,7 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 
   Widget _buildCollabTab(){
-    return Center(
+    return const Center(
       child: Text("Collab Tab"),
     );
   }
@@ -249,29 +256,32 @@ class _ListingScreenState extends State<ListingScreen> {
   Widget _buildInfoColumns(String heading_text, String info_text){
     return  Expanded(
       child: Container(
-        height: 50,
+        height: 40,
         child: Column(
           children: [
             Text(
-              "${heading_text}",
-              style: TextStyle(
-                fontSize: 12,
-                color: Color(0xff9A9A9A),
-                fontWeight: FontWeight.bold,
-              ),
+              heading_text,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff9a9a9a),
+                  height: 18/12,
+                ),
             ),
             Flexible(
               child: Container(
-                margin: EdgeInsets.all(4.0),
+                margin: const EdgeInsets.all(4.0),
                 child: Text(
-                  "${info_text}",
+                  info_text,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff424242),
-                  ),
+                  style:const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff424242),
+                ),
                 ),
               ),
             ),
@@ -283,7 +293,7 @@ class _ListingScreenState extends State<ListingScreen> {
 
   Widget _buildCustomCard(){
     return Card(
-      elevation: 2, // Adjust the elevation as per your requirement
+      elevation: 2,
       margin: EdgeInsets.all(16),
       child: InkWell(
         onTap: (){
@@ -292,7 +302,7 @@ class _ListingScreenState extends State<ListingScreen> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.all(13.0),
+              margin: EdgeInsets.all(2.0),
               height: 50,
               width: MediaQuery.of(context).size.width,
               child: Row(
@@ -315,33 +325,46 @@ class _ListingScreenState extends State<ListingScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 20,
                     backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
                   ),
-                  SizedBox(width: 6,),
-                  Expanded(
-                      child: Text("Tanya Ghavri", style: TextStyle(
-                        color: Color(0xff0F1015),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),)
+                  const SizedBox(width: 6,),
+                  const Expanded(
+                      child: Text(
+                        "Tanya Ghavri",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff0f1015),
+                          height: 20/18,
+                        ),
+                        textAlign: TextAlign.left,
+                      )
                   ),
                   Container(
                     child: Column(
-                      children: [
+                      children: const [
                         Text(
-                          "Required on", style: TextStyle(
-                          color: Color(0xff9D9D9D),
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          "Required on ",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff0f1015),
+                          ),
                         ),
+                        Text(
+                          "18 Oct",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff0f1015),
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        Text("18 OCT",style: TextStyle(
-                          color: Color(0xff0F1015),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),),
                       ],
                     ),
                   ),
@@ -349,37 +372,37 @@ class _ListingScreenState extends State<ListingScreen> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8.0),
-              margin: EdgeInsets.all(8.0),
-              color: Color(0xffF9F9F9),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              color: const Color(0xffF9F9F9),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildInfoColumns("For", "Alia Bhatt"),
                   Container(
-                    margin: EdgeInsets.all(2.0),
+                    margin: const EdgeInsets.all(2.0),
                     height: 50,
                     width: 2,
-                    color: Color(0xffB7B7B9),
+                    color: const Color(0xffB7B7B9),
                   ),
                   _buildInfoColumns("Location", "Mumbai"),
                   Container(
-                    margin: EdgeInsets.all(2.0),
+                    margin: const EdgeInsets.all(2.0),
                     height: 50,
                     width: 2,
-                    color: Color(0xffB7B7B9),
+                    color: const Color(0xffB7B7B9),
                   ),
                   _buildInfoColumns("Event", "Movie Promo"),
                 ],
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: 'Requirements',
                       style: TextStyle(
                         fontSize: 12,
@@ -400,22 +423,28 @@ class _ListingScreenState extends State<ListingScreen> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
-                      Text("37 mins ago", style: TextStyle(
+                      const Text(
+                        "37 mins ago ",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
                           fontSize: 12,
-                          color: Color(0xff8B8B8B)
-                      ),),
-                      Spacer(),
-                      IconButton(onPressed: (){}, icon: Icon(IconlyLight.send)),
-                      IconButton(onPressed: (){}, icon: Icon(IconlyLight.bookmark)),
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff8b8b8b),
+                          height: 18/12,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const Spacer(),
+                      IconButton(onPressed: (){}, icon: const Icon(IconlyLight.send)),
+                      IconButton(onPressed: (){}, icon: const Icon(IconlyLight.bookmark)),
                     ],
                   ),
                 ],
               ),
             ),
-
           ],
         ),
       ),
@@ -439,15 +468,15 @@ class FilterOptionChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(
-          top: 4.0,
-          left: 4.0,
-          right: 4.0,
-          bottom: 4.0
+        margin: const EdgeInsets.only(
+          top: 9.0,
+          left: 6.0,
+          right: 6.0,
+          bottom: 9.0
         ),
-        padding: selected? EdgeInsets.all(0): EdgeInsets.symmetric(horizontal: 10),
+        padding: selected? const EdgeInsets.all(0): const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: selected? Colors.transparent : Color(0xffF7F7F7),
+          color: selected? Colors.transparent : const Color(0xffF7F7F7),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -455,15 +484,18 @@ class FilterOptionChip extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 13,
+              style: const TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff303030),
+                height: 18/12,
               ),
             ),
             if (selected)
               GestureDetector(
                 onTap: onTap,
-                child: Icon(
+                child: const Icon(
                   Icons.clear,
                   size: 16,
                   color: Colors.black,
@@ -487,15 +519,16 @@ class OptionChipDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
-          top: 4.0,
-          left: 4.0,
-          right: 4.0,
-          bottom: 4.0
+      height: 30,
+      margin: const EdgeInsets.only(
+          top: 9.0,
+          left: 6.0,
+          right: 6.0,
+          bottom: 9.0
       ),
-      padding:EdgeInsets.symmetric(horizontal: 10),
+      padding:const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color:Color(0xffF9F9F9),
+        color:const Color(0xffF7F7F7),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -503,9 +536,12 @@ class OptionChipDisplay extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
+            style: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Color(0xff303030),
+              height: 18/12,
             ),
           ),
         ],

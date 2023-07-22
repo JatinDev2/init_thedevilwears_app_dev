@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -140,6 +141,17 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
   //   );
   // }
 
+  // decoration: const BoxDecoration(
+  // gradient: LinearGradient(
+  // begin: Alignment.center,
+  // end: Alignment.bottomCenter,
+  // colors: [
+  // Colors.transparent,
+  // Colors.black,
+  // ],
+  // ),
+  // ),
+
  Widget _gridItem(int index) {
    var item = widget.selectedItems[index];
    return GestureDetector(
@@ -156,9 +168,32 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
               fit: BoxFit.cover,
             ),
           ),
-          /// Top Text
-          Positioned.fill(
-            bottom: 0,
+
+          if(item is GridItemData)
+            Positioned.fill(
+              bottom: 0,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  margin: EdgeInsets.only(top: 8, right: 8),
+                  width: 24,
+                  height: 24,
+                  child: SvgPicture.asset("assets/multiple.svg"),
+                ),
+              ),
+            ),
+
+          Positioned.fill(child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black,
+                ],
+              ),
+            ),
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Container(
@@ -166,16 +201,7 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
                   horizontal: 13.w,
                   vertical: 13.h,
                 ),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.center,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black,
-                    ],
-                  ),
-                ),
+
                 child: Text(
                   widget.selectedItems[index].caption ?? "",
                   style: TextStyle(
@@ -187,22 +213,8 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
                 ),
               ),
             ),
-          ),
+          ))
 
-          if(item is GridItemData)
-            Positioned.fill(
-              bottom: 0,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 13.w,
-                    vertical: 13.h,
-                  ),
-                  child: Icon(Icons.collections, color: Colors.white,)
-                ),
-              ),
-            ),
         ],
       ),
     );

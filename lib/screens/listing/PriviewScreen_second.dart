@@ -1,6 +1,7 @@
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -144,7 +145,7 @@ class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text("Submit", style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -166,85 +167,71 @@ class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
     var item = widget.selectedItems[index];
     return Container(
       height: 400,
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         left: 2,
         right: 2,
         bottom: 5,
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        gradient: LinearGradient(
-          begin: Alignment.center,
-          end: Alignment.centerRight,
-          colors: [
-            Colors.transparent,
-            Colors.black,
-          ],
-        ),
-      ),
-      child: Container(
-        child: Stack(
-          children: [
-            /// Background Image
-            Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
-                child: FadeInImage(
-                  placeholder: MemoryImage(kTransparentImage),
-                  image: NetworkImage(item.imageUrl),
-                  fit: BoxFit.cover,
-                  height: 400,
+
+      child: Stack(
+        children: [
+          /// Background Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15.0),
+            child: FadeInImage(
+              placeholder: MemoryImage(kTransparentImage),
+              image: NetworkImage(item.imageUrl),
+              fit: BoxFit.cover,
+              height: 400,
+            ),
+          ),
+
+          Positioned.fill(
+              child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              gradient: const LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black,
+                ],
+              ),
+            ),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 13.w,
+                  vertical: 13.h,
+                ),
+                child: Text(
+                  widget.selectedItems[index].caption ?? "",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13.sp,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            /// Top Text
+          )),
+          if (item is GridItemData)
             Positioned.fill(
               bottom: 0,
               child: Align(
-                alignment: Alignment.bottomLeft,
+                alignment: Alignment.topRight,
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 13.w,
-                    vertical: 13.h,
-                  ),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.center,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black,
-                      ],
-                    ),
-                  ),
-                  child: Text(
-                    widget.selectedItems[index].caption ?? "",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13.sp,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  margin: EdgeInsets.only(top: 8, right: 8),
+                  width: 24,
+                  height: 24,
+                  child: SvgPicture.asset("assets/multiple.svg"),
                 ),
               ),
             ),
-            if (item is GridItemData)
-              Positioned.fill(
-                bottom: 0,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 13.w,
-                      vertical: 13.h,
-                    ),
-                    child: Icon(Icons.collections, color: Colors.white),
-                  ),
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
