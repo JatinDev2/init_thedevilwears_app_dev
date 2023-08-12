@@ -11,6 +11,7 @@ import 'package:lookbook/screens/profile/profile_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
 
+import '../../Login/first_screen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 

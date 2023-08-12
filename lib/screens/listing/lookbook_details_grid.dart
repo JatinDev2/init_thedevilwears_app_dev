@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/services.dart';

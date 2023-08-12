@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "499908502762",
+    "project_id": "thedevilwears-845f3",
+    "storage_bucket": "thedevilwears-845f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499908502762:android:9e938d83249a3e8684a393",
+        "android_client_info": {
+          "package_name": "in.lookbook.lookbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "499908502762-hpmd7h44pniniv107fut8jdrjg01srl5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.lookbook.lookbook",
+            "certificate_hash": "f63937be35e8cb177b43330fedcfd6785366c88e"
+          }
+        },
+        {
+          "client_id": "499908502762-qrqbnop4d5c9jmdnov782cuiu8gabl9l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrw1r0QZffOr4sBQ7nmdJfUy1ralJa_GE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "499908502762-ebvvr6gk5buvb0qp0dbsff09ttqsr8nt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

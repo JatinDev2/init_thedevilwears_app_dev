@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>499908502762-prvksejm3v7e34d3bma259a1vkagfl1h.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.499908502762-prvksejm3v7e34d3bma259a1vkagfl1h</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>499908502762-5ja46t3o5695hesmrrs7ic1bstvd39o9.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAwtZbcVcOAhcDQHkCTwEAq1RSI4Os2zr0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>499908502762</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>in.lookbook.lookbook</string>
+	<key>PROJECT_ID</key>
+	<string>thedevilwears-845f3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>thedevilwears-845f3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:499908502762:ios:788b4a69c93b0cf884a393</string>
+</dict>
+</plist>
