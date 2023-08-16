@@ -2,21 +2,23 @@ import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class PreviewScreen_Second extends StatefulWidget {
-  final List selectedItems;
+import '../listing/response_screen.dart';
 
-  PreviewScreen_Second({
+class entryScreenPreview extends StatefulWidget {
+  // const entryScreenPreview({super.key});
+  List selectedItems;
+
+  entryScreenPreview({
     required this.selectedItems,
-  });
+});
 
   @override
-  State<PreviewScreen_Second> createState() => _PreviewScreen_SecondState();
+  State<entryScreenPreview> createState() => _entryScreenPreviewState();
 }
 
-class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
+class _entryScreenPreviewState extends State<entryScreenPreview> {
   final ScrollController myScrollController = ScrollController();
   int currentIndex = 0;
   bool isScrollIconVisible = false;
@@ -45,22 +47,20 @@ class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
+          backgroundColor: Colors.white,
+          leading: IconButton(onPressed: (){
             Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.close),
-          color: Colors.black,
-        ),
-        title: Text(
-          "Preview",
-          style: TextStyle(
-            color: Color(0xff0F1015),
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.white,
+          }, icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black,)),
+          title: const Text(
+            "Entry",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff0f1015),
+              height: 20/16,
+            ),
+          )
       ),
       body: GestureDetector(
         onTapDown: (_) {
@@ -131,30 +131,6 @@ class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, '/listingConfirmResponseScreen');
-                  },
-                  child: Container(
-                    height: 56,
-                    width: 182,
-                    margin: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: const Center(
-                      child: Text("Submit", style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                      ),),
-                    ),
-                  ),
-                ),
-              ),
 
             ],
           ),
@@ -188,36 +164,36 @@ class _PreviewScreen_SecondState extends State<PreviewScreen_Second> {
 
           Positioned.fill(
               child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              gradient: const LinearGradient(
-                begin: Alignment.center,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black,
-                ],
-              ),
-            ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 13.w,
-                  vertical: 13.h,
-                ),
-                child: Text(
-                  widget.selectedItems[index].caption ?? "",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13.sp,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  gradient: const LinearGradient(
+                    begin: Alignment.center,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black,
+                    ],
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ),
-          )),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 13.w,
+                      vertical: 13.h,
+                    ),
+                    child: Text(
+                      widget.selectedItems[index].caption ?? "",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              )),
           if (item is GridItemData)
             Positioned.fill(
               bottom: 0,

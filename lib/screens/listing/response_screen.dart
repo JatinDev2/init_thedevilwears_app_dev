@@ -690,7 +690,7 @@ class GridItemData {
   static List<GridItemData> generateItems() {
     final faker = Faker.instance;
     List<GridItemData> items = [];
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 14; i++){
       items.add(GridItemData(
         imageUrl: '${faker.image.unsplash.image(keyword: 'fashion')},${Random().nextInt(100)}',
         name: faker.name.fullName(),

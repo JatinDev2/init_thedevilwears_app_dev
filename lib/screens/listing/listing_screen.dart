@@ -31,6 +31,26 @@ class _ListingScreenState extends State<ListingScreen> {
     'Weddings',
     'Public Appearances',
   ];
+
+  List<String> filterCopyOptions = [
+    'Clothing',
+    'Shoes',
+    'Accessories',
+    'Bags',
+    'Jewelry',
+    'Birthday',
+    'Anniversary',
+    'Graduation',
+    'Holiday',
+    'Prom',
+    'Movie Promotions',
+    'Shoots',
+    'Events',
+    'Concerts',
+    'Weddings',
+    'Public Appearances',
+  ];
+
   void toggleOption(String option) {
     setState(() {
       if (selectedOptions.contains(option)) {
@@ -115,8 +135,7 @@ class _ListingScreenState extends State<ListingScreen> {
               child: Row(
                 children: [
                   Container(
-                    child: selectedOptions.isEmpty?
-                    SizedBox(
+                    child: SizedBox(
                       // height: 24,
                       width: 45,
                       child: GestureDetector(
@@ -132,7 +151,6 @@ class _ListingScreenState extends State<ListingScreen> {
                               });
                             }
                           });
-
                         },
                         child:  Container(
                           height: 30,
@@ -148,72 +166,89 @@ class _ListingScreenState extends State<ListingScreen> {
                           ),
                         ),
                       ),
-                    ) : Container(),
+                    ),
                   ),
-                  selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
+                  // selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
                   Expanded(
                     child: Container(
                       height: 50,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: filterOptions.map((option) {
+                        children: filterOptions.map((option){
                           return FilterOptionChip(
                             title: option,
                             selected: selectedOptions.contains(option),
                             onTap: () {
-                              toggleOption(option);
+                              // toggleOption(option);
                               setState(() {
-                                showListView = false;
+                                if(filterOptions.isNotEmpty){
+                                  filterOptions.remove(option);
+                                  selectedOptions.add(option);
+                                }
+                                // showListView = false;
                               });
                             },
                           );
                         }).toList(),
                       ),
                     ),
-                  )
-                      : Expanded(
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        ...selectedOptions.map((option) {
-                          return FilterOptionChip(
-                            title: option,
-                            selected: true,
-                            onTap: () {
-                              toggleOption(option);
-                            },
-                          );
-                        }).toList(),
-                        if (selectedOptions.isNotEmpty)
-                          TextButton(
-                            onPressed: () {
-
-                              Navigator.pushNamed(
-                                context,
-                                '/listingFilterScreen',
-                                arguments: selectedOptions,
-                              ).then((data){
-                                if(data !=null){
-                                  setState(() {
-                                    selectedOptions=data as List<String>;
-                                  });
-                                }
-                              });
-                            },
-                            child: const Text(
-                              "Modify Filters",
-                              style: TextStyle(
-                                color: Colors.orange,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
                   ),
                 ],
               ),
             ),
+            if(selectedOptions.isNotEmpty)
+            Container(
+              height: 50,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: selectedOptions.map((option){
+                  return FilterOptionChip(
+                    title: option,
+                    selected: true,
+                    onTap: () {
+                      setState(() {
+                        if (selectedOptions.contains(option)) {
+                          selectedOptions.remove(option);
+                          filterOptions.insert(0, option);
+                          // filterOptions.add(option);
+                        }
+                        // else {
+                        //   selectedOptions.add(option);
+                        // }
+                      });
+                      // toggleOption(option);
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+
+            // Wrap(
+            //   spacing: 8,
+            //   runSpacing: 8,
+            //   children: [
+            //     ...selectedOptions.map((option){
+            //       return FilterOptionChip(
+            //         title: option,
+            //         selected: true,
+            //         onTap: () {
+            //           setState(() {
+            //             if (selectedOptions.contains(option)) {
+            //               selectedOptions.remove(option);
+            //               filterOptions.insert(0, option);
+            //               // filterOptions.add(option);
+            //             }
+            //             // else {
+            //             //   selectedOptions.add(option);
+            //             // }
+            //           });
+            //           // toggleOption(option);
+            //         },
+            //       );
+            //     }).toList(),
+            //   ],
+            // ),
+
             _buildCustomCard(),
           ],
         ),
@@ -310,7 +345,7 @@ class _ListingScreenState extends State<ListingScreen> {
                   Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: filterOptions.map((option) {
+                      children: filterCopyOptions.map((option) {
                         return OptionChipDisplay(
                           title: option,
                         );
@@ -450,6 +485,9 @@ class _ListingScreenState extends State<ListingScreen> {
       ),
     );
   }
+
+
+
 }
 
 class FilterOptionChip extends StatelessWidget {
@@ -468,15 +506,19 @@ class FilterOptionChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(
+        margin:  EdgeInsets.only(
           top: 9.0,
-          left: 6.0,
-          right: 6.0,
+          left: selected? 3.0 : 6.0,
+          right: selected? 3.0 : 6.0,
           bottom: 9.0
         ),
-        padding: selected? const EdgeInsets.all(0): const EdgeInsets.symmetric(horizontal: 10),
+        padding: selected?const EdgeInsets.symmetric(horizontal: 10,
+        // vertical: 1,
+        ): const EdgeInsets.symmetric(
+          horizontal: 10,
+        ),
         decoration: BoxDecoration(
-          color: selected? Colors.transparent : const Color(0xffF7F7F7),
+          color: selected?  Colors.orange: Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -484,11 +526,11 @@ class FilterOptionChip extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff303030),
+                fontWeight:selected? FontWeight.w700 : FontWeight.w400,
+                color: selected? Colors.white : Color(0xff303030),
                 height: 18/12,
               ),
             ),
@@ -498,7 +540,7 @@ class FilterOptionChip extends StatelessWidget {
                 child: const Icon(
                   Icons.clear,
                   size: 16,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
           ],

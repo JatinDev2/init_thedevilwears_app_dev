@@ -356,7 +356,8 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ],
-        ));
+        )
+    );
   }
 
   Widget _buildSeasonSearchResults(List<String> seasons) {

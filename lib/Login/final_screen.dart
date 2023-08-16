@@ -52,7 +52,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
             child: GestureDetector(
               onTap: (){
                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                  return OptionsScreen();
+                  return OptionsInScreen();
                 }));
               },
               child: Column(

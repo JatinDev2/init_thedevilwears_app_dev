@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'interest_screen.dart';
 
-class OptionsScreen extends StatefulWidget {
-  const OptionsScreen({Key? key}) : super(key: key);
+class OptionsInScreen extends StatefulWidget {
+  const OptionsInScreen({Key? key}) : super(key: key);
 
   @override
-  State<OptionsScreen> createState() => _OptionsScreenState();
+  State<OptionsInScreen> createState() => _OptionsInScreenState();
 }
 
-class _OptionsScreenState extends State<OptionsScreen> {
+class _OptionsInScreenState extends State<OptionsInScreen> {
   bool isBrand=false;
   bool isStylist=false;
   @override
@@ -116,10 +117,13 @@ class _OptionsScreenState extends State<OptionsScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                      return InterestSccreen();
-                    }));
+                  onTap: () async{
+                    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+                    await prefs.setBool('optionSelected', true).then((value) {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                        return InterestSccreen();
+                      }));
+                    });
                   },
                   child: Container(
                     height: 50,

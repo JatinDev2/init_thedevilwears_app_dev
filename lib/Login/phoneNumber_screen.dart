@@ -247,11 +247,42 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: InternationalPhoneNumberInput(
+                      //         onInputChanged: (PhoneNumber number){
+                      //           setState(() {
+                      //             _phoneNumber = number;
+                      //           });
+                      //         },
+                      //         selectorConfig: const SelectorConfig(
+                      //           selectorType: PhoneInputSelectorType.DIALOG,
+                      //         ),
+                      //         ignoreBlank: false,
+                      //         autoValidateMode: AutovalidateMode.onUserInteraction,
+                      //         selectorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                      //         textFieldController: _controller,
+                      //         initialValue: _phoneNumber,
+                      //         inputDecoration: const InputDecoration(
+                      //           labelText: 'Phone Number',
+                      //           border: OutlineInputBorder(),
+                      //         ),
+                      //         validator: (value){
+                      //           if(value!.isEmpty){
+                      //             return "Please Enter your Phone number";
+                      //           }
+                      //         },
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+
                       Row(
                         children: [
                           Expanded(
                             child: InternationalPhoneNumberInput(
-                              onInputChanged: (PhoneNumber number){
+                              onInputChanged: (PhoneNumber number) {
                                 setState(() {
                                   _phoneNumber = number;
                                 });
@@ -261,15 +292,18 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                               ),
                               ignoreBlank: false,
                               autoValidateMode: AutovalidateMode.onUserInteraction,
-                              selectorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                              textFieldController: _controller,
-                              initialValue: _phoneNumber,
+                              selectorTextStyle: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textFieldController: _controller, // Use a TextEditingController
+                             initialValue: _phoneNumber,
                               inputDecoration: const InputDecoration(
                                 labelText: 'Phone Number',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (value){
-                                if(value!.isEmpty){
+                              validator: (value) {
+                                if (value!.isEmpty) {
                                   return "Please Enter your Phone number";
                                 }
                               },
@@ -277,6 +311,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                           ),
                         ],
                       ),
+
                     ],
                   ),
                 ),

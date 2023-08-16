@@ -43,7 +43,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
           _isLoading=false;
         });
         Navigator.of(context).push(MaterialPageRoute(builder: (_){
-          return OptionsScreen();
+          return OptionsInScreen();
         }));
       });
     } on FirebaseAuthException catch (e) {
