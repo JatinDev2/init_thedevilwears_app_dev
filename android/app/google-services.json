@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "499908502762-inkof0gtcsksmsmta9uai4i7henh4sc1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.lookbook.lookbook",
+            "certificate_hash": "079ecf47b73cd458271e7596a049a9b3ce5b4c5b"
+          }
+        },
+        {
           "client_id": "499908502762-qrqbnop4d5c9jmdnov782cuiu8gabl9l.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -37,6 +45,13 @@
             {
               "client_id": "499908502762-ebvvr6gk5buvb0qp0dbsff09ttqsr8nt.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "499908502762-prvksejm3v7e34d3bma259a1vkagfl1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.lookbook.lookbook"
+              }
             }
           ]
         }
