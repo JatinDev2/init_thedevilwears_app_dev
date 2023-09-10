@@ -107,7 +107,7 @@ class _tabFourState extends State<tabFour> {
                         height: 44,
                         width: 153,
                         decoration: BoxDecoration(
-                          color: Colors.orange,
+                          color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Center(
@@ -237,8 +237,8 @@ class _tabFourState extends State<tabFour> {
                 Container(
                   height: 48,
                   width: 48,
-                  decoration: const BoxDecoration(
-                      color: Colors.orange,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle
                   ),
                   child: SvgPicture.asset("assets/Pluse.svg"),

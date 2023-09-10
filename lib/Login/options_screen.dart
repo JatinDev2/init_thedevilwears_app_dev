@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'interest_screen.dart';
 
 class OptionsInScreen extends StatefulWidget {
-  const OptionsInScreen({Key? key}) : super(key: key);
 
   @override
   State<OptionsInScreen> createState() => _OptionsInScreenState();
@@ -55,7 +54,7 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                         width: 160,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
-                          color:isBrand? Color(0xffFF9431) : Color(0xffF8F7F7),
+                          color:isBrand? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
                         ),
                         child: Center(
                           child: Text(
@@ -74,9 +73,8 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                     ),
                     SizedBox(width: 12,),
                     GestureDetector(
-
                       onTap: (){
-                        setState(() {
+                        setState((){
                           isBrand=false;
                           isStylist=true;
                         });
@@ -88,7 +86,7 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                         height: 70,
                         width: 160,
                         decoration: BoxDecoration(
-                          color: isStylist? Color(0xffFF9431) : Color(0xffF8F7F7),
+                          color: isStylist? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
                          borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Center(
@@ -119,7 +117,9 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                 GestureDetector(
                   onTap: () async{
                     final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-                    await prefs.setBool('optionSelected', true).then((value) {
+                    await prefs.setBool('optionSelected', true);
+                    await prefs.setString('userType', isBrand?"Brand" : "Stylist")
+                        .then((value) {
                       Navigator.of(context).push(MaterialPageRoute(builder: (_){
                         return InterestSccreen();
                       }));
@@ -129,7 +129,7 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                     height: 50,
                     width: 109,
                     decoration: BoxDecoration(
-                      color: const Color(0xffFF9431),
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: const Center(

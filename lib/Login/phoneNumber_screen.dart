@@ -19,6 +19,9 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId="";
   final form=GlobalKey<FormState>();
+  TextEditingController _firstNameController=TextEditingController();
+  TextEditingController _lastNameController=TextEditingController();
+
   String smsOTP="";
 
 
@@ -81,7 +84,13 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
           this.verificationId = verificationID;
           isLoading=false;
              Navigator.of(context).push(MaterialPageRoute(builder: (_){
-               return PinCodeVerificationScreen(phoneNumber: _controller.text, verificationId: verificationId,dialCode: _phoneNumber.dialCode,);
+               return PinCodeVerificationScreen(
+                 phoneNumber: _controller.text,
+                 verificationId: verificationId,
+                 dialCode: _phoneNumber.dialCode,
+                 firstName: _firstNameController.text,
+                 lastName: _lastNameController.text,
+               );
              }));
         });
       },
@@ -165,6 +174,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                       right: 26
                   ),
                   child: TextFormField(
+                    controller: _firstNameController,
                     decoration: const InputDecoration(
                       hintText: "Enter your First name",
                       hintStyle:TextStyle(
@@ -207,6 +217,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                       right: 26
                   ),
                   child: TextFormField(
+                    controller: _lastNameController,
                     decoration: const InputDecoration(
                       hintText: "Enter your Last name",
                       hintStyle:TextStyle(
@@ -331,7 +342,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                       height: 50,
                       width: 142,
                       decoration: BoxDecoration(
-                        color: const Color(0xffFF9431),
+                        color: Theme.of(context).colorScheme.primary,
                        borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Center(

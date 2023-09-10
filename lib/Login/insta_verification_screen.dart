@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'final_screen.dart';
 
 class InstaVerification extends StatelessWidget {
@@ -12,10 +11,14 @@ class InstaVerification extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.arrow_back, color: Colors.black,),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
         ),
       ),
       body: Stack(
@@ -32,10 +35,12 @@ class InstaVerification extends StatelessWidget {
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff12121d),
-                    height: 32/32,
+                    height: 32 / 32,
                   ),
                 ),
-                SizedBox(height: 14,),
+                SizedBox(
+                  height: 14,
+                ),
                 const Text(
                   "Click on the icon to verify your Instagram ",
                   style: TextStyle(
@@ -43,13 +48,16 @@ class InstaVerification extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey,
-                    height: 16/14,
+                    height: 16 / 14,
                   ),
                 ),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (_) {
                         return ConfirmedLoginScreen();
                       }));
                     },
@@ -71,7 +79,7 @@ class InstaVerification extends StatelessWidget {
                         fontFamily: "Poppins",
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        height: 24/16,
+                        height: 24 / 16,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -81,15 +89,16 @@ class InstaVerification extends StatelessWidget {
                           fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          height: 24/16,
-                          color: Colors.grey
-                      ),
+                          height: 24 / 16,
+                          color: Colors.grey),
                       textAlign: TextAlign.left,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 40,),
+              SizedBox(
+                height: 40,
+              ),
             ],
           ),
         ],

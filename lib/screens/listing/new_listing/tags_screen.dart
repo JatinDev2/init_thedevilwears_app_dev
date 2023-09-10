@@ -11,15 +11,28 @@ class _TagScreenState extends State<TagScreen> {
   List<String> gender = ["Men's", "Women's", "Teen","Boys", "Footwear"];
   List<String> occasion= ["Party Wear", "Wedding Wear", "Office Wear","Men's", "Women's", "Teen","Boys", "Footwear"];
   List<String> selectedOptions = [];
+  Map<String, List<String>> _selectedOptions = {};
+
+  List<String>_selectedGender=[];
+  List<String>_selectedOccasion=[];
 
   void toggleOption(String option) {
     setState(() {
-      if (selectedOptions.contains(option)) {
+      if (selectedOptions.contains(option)){
         selectedOptions.remove(option);
       } else {
         selectedOptions.add(option);
       }
     });
+  }
+
+  String getCategory(String option){
+    if (gender.contains(option)) {
+      return "gender";
+    } else if (occasion.contains(option)){
+      return "occasion";
+    }
+    return "";
   }
 
   Widget buildOption(String option) {
@@ -68,7 +81,24 @@ class _TagScreenState extends State<TagScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: ()async{
-        Navigator.of(context).pop(selectedOptions);
+        for(int i=0; i<selectedOptions.length; i++){
+          String cat= getCategory(selectedOptions[i]);
+          if(cat=="gender"){
+            _selectedGender.add(selectedOptions[i]);
+          }
+          else{
+            _selectedOccasion.add(selectedOptions[i]);
+          }
+        }
+        _selectedOptions.addAll({
+          "gender": _selectedGender,
+          "occasion": _selectedOccasion,
+        });
+        Map _data={
+          "selectedOptionsList": selectedOptions,
+          "selectedOptionsMap": _selectedOptions,
+        };
+        Navigator.of(context).pop(_data);
         return false;
       },
       child: Scaffold(
@@ -79,7 +109,24 @@ class _TagScreenState extends State<TagScreen> {
             color: Colors.black,
             size: 26,),
             onPressed: (){
-            Navigator.of(context).pop(selectedOptions);
+              for(int i=0; i<selectedOptions.length; i++){
+                String cat= getCategory(selectedOptions[i]);
+                if(cat=="gender"){
+                  _selectedGender.add(selectedOptions[i]);
+                }
+                else{
+                  _selectedOccasion.add(selectedOptions[i]);
+                }
+              }
+              _selectedOptions.addAll({
+                "gender": _selectedGender,
+                "occasion": _selectedOccasion,
+              });
+              Map _data={
+                "selectedOptionsList": selectedOptions,
+                "selectedOptionsMap": _selectedOptions,
+              };
+            Navigator.of(context).pop(_data);
             },
           ),
           title: Text(

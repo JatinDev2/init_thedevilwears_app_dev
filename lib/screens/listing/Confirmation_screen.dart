@@ -54,7 +54,7 @@ class ConfirmScreen extends StatelessWidget {
                   right: 25,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Center(

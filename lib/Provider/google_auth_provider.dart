@@ -32,10 +32,10 @@
 //     FirebaseAuth.instance.signOut();
 // }
 // }
-
 import "package:flutter/material.dart";
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
@@ -56,9 +56,15 @@ class GoogleSignInProvider extends ChangeNotifier {
       idToken: googleAuth.idToken,
     );
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    return true;
+    await FirebaseAuth.instance.signInWithCredential(credential).then((value) async{
+      final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+      await prefs.setString('userEmail', value.user!.email.toString());
+      print("(((((((******************************))))))))))");
+      print(value.user!.uid.toString());
+      await prefs.setString('userId', value.user!.uid.toString());
+    });
     notifyListeners();
+    return true;
   }
 
   Future<void> logout() async {
@@ -67,6 +73,5 @@ class GoogleSignInProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
-
 
 }

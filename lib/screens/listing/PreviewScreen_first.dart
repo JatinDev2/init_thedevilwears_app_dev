@@ -25,9 +25,8 @@ class PreviewScreen_First extends StatefulWidget {
 }
 
 class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         leading: Row(
@@ -111,7 +110,7 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
                 width: 182,
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Center(
@@ -214,7 +213,6 @@ class _PreviewScreen_FirstState extends State<PreviewScreen_First> {
               ),
             ),
           ))
-
         ],
       ),
     );

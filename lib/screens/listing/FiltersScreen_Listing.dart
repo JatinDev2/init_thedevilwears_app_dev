@@ -272,7 +272,7 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
             margin: EdgeInsets.only(right: 4),
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.orange,
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Center(

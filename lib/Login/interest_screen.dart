@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'insta_verification_screen.dart';
 
 class InterestSccreen extends StatefulWidget {
-  const InterestSccreen({Key? key}) : super(key: key);
-
   @override
   State<InterestSccreen> createState() => _InterestSccreenState();
 }
@@ -13,9 +12,66 @@ class _InterestSccreenState extends State<InterestSccreen> {
   List<String> gender = ["Men's", "Women's", "Teen","Boys", "Footwear"];
   List<String> occasion= ["Party Wear", "Wedding Wear", "Office Wear","Men's", "Women's", "Teen","Boys", "Footwear"];
   List<String> selectedOptions = [];
+  Map<String, List<String>> _selectedOptions = {};
+
+  List<String>_selectedGender=[];
+  List<String>_selectedOccasion=[];
+
+  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+
+  void addUser() async {
+    for(int i=0; i<selectedOptions.length; i++){
+     String cat= getCategory(selectedOptions[i]);
+     if(cat=="gender"){
+       _selectedGender.add(selectedOptions[i]);
+     }
+     else{
+       _selectedOccasion.add(selectedOptions[i]);
+     }
+    }
+
+    _selectedOptions.addAll({
+      "gender": _selectedGender,
+      "occasion": _selectedOccasion,
+    });
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final firstName = prefs.getString('firstName');
+      final lastName = prefs.getString('lastName');
+      final phoneNumber=prefs.getString('phoneNumber');
+      final userEmail=prefs.getString('userEmail');
+      final userType=prefs.getString('userType');
+      final userId=prefs.getString('userId');
+      await usersCollection.doc("$userId").set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'phoneNumber': phoneNumber!.replaceAll(" ", ""),
+        'userEmail': userEmail,
+        'preferences':_selectedOptions,
+        'userType': userType,
+      }).then((value) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (_){
+          return InstaVerification();
+        }));
+      });
+      print('User added to Firestore');
+    } catch (e) {
+      print('Error adding user to Firestore: $e');
+    }
+  }
+
+  String getCategory(String option){
+    if (gender.contains(option)) {
+      return "gender";
+    } else if (occasion.contains(option)){
+      return "occasion";
+    }
+    return "";
+  }
 
   void toggleOption(String option) {
-    setState(() {
+    setState((){
       if (selectedOptions.contains(option)) {
         selectedOptions.remove(option);
       } else {
@@ -24,9 +80,10 @@ class _InterestSccreenState extends State<InterestSccreen> {
     });
   }
 
+  
   Widget buildOption(String option) {
     final isSelected = selectedOptions.contains(option);
-    final backgroundColor = isSelected ? Color(0xffFF9431) : Color(0xffF7F7F7);
+    final backgroundColor = isSelected ? Theme.of(context).colorScheme.primary : Color(0xffF7F7F7);
 
     return GestureDetector(
       onTap: () => toggleOption(option),
@@ -157,16 +214,18 @@ class _InterestSccreenState extends State<InterestSccreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: (){
-      Navigator.of(context).push(MaterialPageRoute(builder: (_){
-        return InstaVerification();
-      }));
+                  onTap: ()async{
+                    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+                    await prefs.setStringList('preferences', selectedOptions
+                    ).then((value) {
+                      addUser();
+                    });
     },
                   child: Container(
                     height: 50,
                     width: 109,
                     decoration: BoxDecoration(
-                      color: const Color(0xffFF9431),
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: const Center(

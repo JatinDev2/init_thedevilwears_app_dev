@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Login/phoneNumber_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../Provider/google_auth_provider.dart';
 
 class LoginOptions extends StatefulWidget {
@@ -161,8 +159,8 @@ class _LoginOptionsState extends State<LoginOptions> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
+                  children:  [
+                    const Text(
                       "Have an account? ",
                       style: TextStyle(
                         fontSize: 14,
@@ -177,7 +175,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                         fontSize: 14,
                         // fontWeight: ,
                         height: 16/14,
-                        color: Colors.orange,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       textAlign: TextAlign.center,
                     )

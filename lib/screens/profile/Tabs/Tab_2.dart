@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../listing/Details_Screen.dart';
+import '../../listing/new_listing/List_Model.dart';
 import '../applicationsListing.dart';
 
 class tabTwo extends StatefulWidget {
@@ -30,54 +35,190 @@ class _tabTwoState extends State<tabTwo> {
     'Weddings',
     'Public Appearances',
   ];
+  late final Stream<List<ListModel>>_listingsStream;
+
+  Future<List<String>> fetchImagesForCustomID(String customID) async {
+    List<String> imageUrls = [];
+
+    try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+
+      Reference storageRef = storage.ref().child('listings/$customID');
+
+      ListResult result = await storageRef.listAll();
+
+      for (var item in result.items) {
+        String downloadURL = await item.getDownloadURL();
+        imageUrls.add(downloadURL);
+      }
+
+      return imageUrls;
+    } catch (e) {
+      print('Error fetching images: $e');
+      return [];
+    }
+  }
+
+  Stream<List<ListModel>> fetchListingsFromFirestoreStream() {
+    try {
+      CollectionReference collection = FirebaseFirestore.instance.collection('listings');
+      return collection.snapshots().asyncMap((querySnapshot) async {
+        List<ListModel> listings = [];
+        String? userPreferenceId = await getUserPreferenceId(); // Retrieve the user's ID from SharedPreferences
+
+        for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+
+          // Check if the userId matches the one from SharedPreferences
+          if (userPreferenceId != null && data['userId'] == userPreferenceId) {
+            // Fetch images asynchronously and wait for the result
+            List<String> images = await fetchImagesForCustomID(docSnapshot.id);
+
+            ListModel listModel = ListModel(
+              images: images,
+              listingType: data['listingType'] ?? '',
+              location: data['location'] ?? '',
+              eventCategory: data['eventCategory'] ?? '',
+              eventDate: data['eventDate'] ?? '',
+              instaHandle: data['toStyleInsta'] ?? '',
+              productDate: data['productDate'] ?? '',
+              requirement: data['requirements'] ?? '',
+              createdBy: data['createdBy'] ?? '',
+              toStyleName: data['toStyleName'] ?? '',
+              userId: data['userId'] ?? null,
+              timeStamp: data['timeStamp'] ?? null,
+              selectedTags: data['preferences'],
+            );
+            if (listModel.selectedTags != null) {
+              listModel.tags = listModel.selectedTags!.values.expand((tags) => tags).toList();
+            }
+            listings.add(listModel);
+          }
+        }
+        return listings;
+      });
+    } catch (e) {
+      // Handle any errors or exceptions here
+      print('Error fetching data: $e');
+      throw e; // You can choose to throw the error to handle it elsewhere
+    }
+  }
+
+  Future<String?> getUserPreferenceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    return userId;
+  }
+
+  String getTimeAgo(String timestampString) {
+    // Convert the Firestore timestamp string to a DateTime
+    DateTime timestamp = DateTime.parse(timestampString);
+
+    // Get the current time
+    DateTime now = DateTime.now();
+
+    // Calculate the time difference
+    Duration difference = now.difference(timestamp);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} seconds ago';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} days ago';
+    } else {
+      // Format the timestamp in a custom way if it's more than a week ago
+      String formattedDate = DateFormat('MMM d, yyyy').format(timestamp);
+      return 'on $formattedDate';
+    }
+  }
+
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _listingsStream = fetchListingsFromFirestoreStream();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        color: Color(0xffF0F0F0),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: (){
-                Navigator.pushNamed(context, "/newlistingOptionsScreen");
-              },
-              child: Container(
-                height: 65,
-                width: 396,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: EdgeInsets.all(8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Add a new listing",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff0f1015),
-                        height: 24/16,
-                      ),
-                      textAlign: TextAlign.left,
+    return Container(
+      color: Color(0xffF0F0F0),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: (){
+              Navigator.pushNamed(context, "/newlistingOptionsScreen");
+            },
+            child: Container(
+              height: 65,
+              width: 396,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              margin: EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Add a new listing",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff0f1015),
+                      height: 24/16,
                     ),
-                    SizedBox(width: 7,),
-                    Icon(Icons.add, size: 24, color: Colors.black,),
-                  ],
-                ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(width: 7,),
+                  Icon(Icons.add, size: 24, color: Colors.black,),
+                ],
               ),
             ),
-            SizedBox(height: 7,),
-            _buildCustomCard(),
-          ],
-        ),
+          ),
+          SizedBox(height: 7,),
+          Expanded(
+            child: StreamBuilder<List<ListModel>>(
+              stream: _listingsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error.toString()}'),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text('No data available.'),
+                  );
+                } else {
+                  final data = snapshot.data!;
+                  data.sort((a, b) => b.timeStamp!.compareTo(a.timeStamp!));
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index){
+                      final listing = data[index];
+                      return _buildCustomCard(listing);
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+
+        ],
       ),
     );
   }
-  Widget _buildCustomCard(){
+  Widget _buildCustomCard(ListModel listing){
     return Card(
       elevation: 2,
       margin: EdgeInsets.only(
@@ -102,7 +243,7 @@ class _tabTwoState extends State<tabTwo> {
                   Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: filterOptions.map((option) {
+                      children: listing.tags!.map((option) {
                         return OptionChipDisplay(
                           title: option,
                         );
@@ -124,9 +265,9 @@ class _tabTwoState extends State<tabTwo> {
                     backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
                   ),
                   const SizedBox(width: 6,),
-                  const Expanded(
+                   Expanded(
                       child: Text(
-                        "Tanya Ghavri",
+                        "${listing.createdBy}",
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 18,
@@ -139,7 +280,7 @@ class _tabTwoState extends State<tabTwo> {
                   ),
                   Container(
                     child: Column(
-                      children: const [
+                      children: [
                         Text(
                           "Required on ",
                           style: TextStyle(
@@ -150,7 +291,7 @@ class _tabTwoState extends State<tabTwo> {
                           ),
                         ),
                         Text(
-                          "18 Oct",
+                          "${listing.productDate}",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 18,
@@ -174,21 +315,21 @@ class _tabTwoState extends State<tabTwo> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildInfoColumns("For", "Alia Bhatt"),
+                  _buildInfoColumns("For", "${listing.toStyleName}"),
                   Container(
                     margin: const EdgeInsets.all(2.0),
                     height: 50,
                     width: 2,
                     color: const Color(0xffB7B7B9),
                   ),
-                  _buildInfoColumns("Location", "Mumbai"),
+                  _buildInfoColumns("Location", "${listing.location}"),
                   Container(
                     margin: const EdgeInsets.all(2.0),
                     height: 50,
                     width: 2,
                     color: const Color(0xffB7B7B9),
                   ),
-                  _buildInfoColumns("Event", "Movie Promo"),
+                  _buildInfoColumns("Event", "${listing.eventCategory}"),
                 ],
               ),
             ),
@@ -198,8 +339,8 @@ class _tabTwoState extends State<tabTwo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RichText(
-                    text: const TextSpan(
-                      text: 'Requirements',
+                    text: TextSpan(
+                      text: 'Requirements ',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -207,7 +348,8 @@ class _tabTwoState extends State<tabTwo> {
                       ),
                       children: [
                         TextSpan(
-                          text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
+                          // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
+                         text: '${listing.requirement}',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.normal,
@@ -225,8 +367,8 @@ class _tabTwoState extends State<tabTwo> {
                     // width: MediaQuery.of(context).size.width,
                     child: Row(
                       children: [
-                        const Text(
-                          "37 mins ago ",
+                         Text(
+                          "${getTimeAgo(listing.timeStamp!)}",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 12,
@@ -244,11 +386,11 @@ class _tabTwoState extends State<tabTwo> {
                         }, child:
                         Text(
                           "112 Applications",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.orange,
+                            color: Theme.of(context).colorScheme.primary,
                             height: 21/14,
                           ),
                           textAlign: TextAlign.left,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,7 +7,9 @@ import 'package:lookbook/screens/listing/new_listing/List_Model.dart';
 import 'package:lookbook/screens/listing/new_listing/preview_listing.dart';
 import 'package:lookbook/screens/listing/new_listing/tags_screen.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'ConfirmListing.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -26,8 +29,12 @@ class _NewListingFormState extends State<NewListingForm> {
   ListModel? newModel;
   List<Asset> selectedImages = [Asset("_identifier", "_name", 1, 1)];
   List<String> selectedOption=[];
+  Map<String,List<String>>_selectedOptions={};
   String dropdownValue = 'Movie Promotions';
   bool isVisible=false;
+  bool isLoading=false;
+
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController toStyleNamecontroller=TextEditingController();
   TextEditingController instaHandelConnroller=TextEditingController();
@@ -37,6 +44,47 @@ class _NewListingFormState extends State<NewListingForm> {
   TextEditingController detailConnroller=TextEditingController();
   final ImagePicker imagePicker=ImagePicker();
   List<XFile>imageFileList=[XFile("")];
+  final CollectionReference listCollection = FirebaseFirestore.instance.collection('listings');
+
+  Future<void> uploadImagesToStorage(String userId, List<XFile> imageFileList) async {
+    try {
+      final FirebaseStorage storage = FirebaseStorage.instance;
+
+      // Create a reference to the root folder for listings
+      Reference listingsRoot = storage.ref().child('listings');
+
+      // Create a reference to the user's folder using their userId
+      Reference userFolder = listingsRoot.child(userId);
+
+      // Upload each image to the user's folder
+      for (int i = 0; i < imageFileList.length; i++) {
+        XFile imageFile = imageFileList[i];
+        String imageName = 'image_$i.jpg'; // You can use a custom name here
+
+        Reference imageRef = userFolder.child(imageName);
+
+        // Convert XFile to File if needed
+        File file = File(imageFile.path);
+
+        // Check if the file exists before uploading
+        if (await file.exists()) {
+          await imageRef.putFile(file);
+
+          // Get the download URL for the uploaded image (if needed)
+          String imageUrl = await imageRef.getDownloadURL();
+
+          // You can store the imageUrl in your Firestore database if necessary
+        } else {
+          print('File does not exist: ${file.path}');
+        }
+      }
+
+      print('Images uploaded successfully');
+    } catch (e) {
+      print('Error uploading images: $e');
+    }
+  }
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -65,7 +113,6 @@ class _NewListingFormState extends State<NewListingForm> {
       });
     }
   }
-
 
   void _showDialogue(){
     showDialog(
@@ -307,7 +354,6 @@ class _NewListingFormState extends State<NewListingForm> {
     );
   }
 
-
   List<String> items=[
     'Ad films',
     'Events & Public appearances',
@@ -319,6 +365,7 @@ class _NewListingFormState extends State<NewListingForm> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () async{
         _showquitDialogue();
@@ -673,9 +720,10 @@ class _NewListingFormState extends State<NewListingForm> {
                           onTap: (){
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return TagScreen();
-                            })).then((value) {
+                            })).then((value){
                               setState((){
-                                selectedOption=value;
+                                selectedOption=value["selectedOptionsList"];
+                                _selectedOptions=value["selectedOptionsMap"];
                               });
                             });
                           },
@@ -819,6 +867,7 @@ class _NewListingFormState extends State<NewListingForm> {
                     Container(
                       height: imageFileList.length < 4? 88: 180,
                       child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           mainAxisSpacing: 10,
@@ -906,10 +955,16 @@ class _NewListingFormState extends State<NewListingForm> {
               Container(
                 margin: EdgeInsets.all(15.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: isLoading? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
                   children: [
+                    if(!isLoading)
                     GestureDetector(
-                      onTap: (){
+                      onTap: () async{
+                        final prefs = await SharedPreferences.getInstance();
+                        final userId = prefs.getString('userId');
+                        final firstName = prefs.getString('firstName');
+                        final lastName = prefs.getString('lastName');
+
                         if(_formKey.currentState!.validate()){
                           newModel=ListModel(
                             images: imageFileList,
@@ -920,9 +975,14 @@ class _NewListingFormState extends State<NewListingForm> {
                             instaHandle: instaHandelConnroller.text,
                             productDate: productDateConnroller.text,
                             requirement: detailConnroller.text,
-                            tags: selectedOption,
+                            selectedTags: _selectedOptions,
                             toStyleName: toStyleNamecontroller.text,
+                            createdBy: "${firstName} ${lastName}",
+                            userId: userId,
                           );
+                          if (newModel!.selectedTags != null) {
+                            newModel!.tags = newModel!.selectedTags!.values.expand((tags) => tags).toList();
+                          }
                           Navigator.of(context).push(MaterialPageRoute(builder: (_){
                             return PreviewScreen(
                               newModel: newModel!,
@@ -941,7 +1001,7 @@ class _NewListingFormState extends State<NewListingForm> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Center(
-                          child: Text(
+                          child:  Text(
                             "Preview",
                             style: const TextStyle(
                               fontFamily: "Poppins",
@@ -955,13 +1015,50 @@ class _NewListingFormState extends State<NewListingForm> {
                         ),
                       ),
                     ),
+                    if(!isLoading)
                     GestureDetector(
-                      onTap: (){
+                      onTap: () async{
+                       //  final provider= Provider.of<GoogleSignInProvider>(context, listen: false);
+                       // final userId= provider.user.id;
+                        setState(() {
+                          isLoading=true;
+                        });
+                        final prefs = await SharedPreferences.getInstance();
+                        final userId = prefs.getString('userId');
+                        final firstName = prefs.getString('firstName');
+                        final lastName = prefs.getString('lastName');
+
                         if(_formKey.currentState!.validate()){
                           _formKey.currentState!.save();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                            return ConfirmListing_Screen();
-                          }));
+                        try {
+                        await listCollection.add({
+                          'userId': userId,
+                        'listingType': widget.listingType,
+                        'toStyleName': toStyleNamecontroller.text,
+                        'toStyleInsta': instaHandelConnroller.text,
+                        'eventCategory': dropdownValue,
+                        'eventDate':eventDateConnroller.text,
+                        'productDate': productDateConnroller.text,
+                         'location': locationConnroller.text,
+                          'preferences': _selectedOptions,
+                          'requirements': detailConnroller.text,
+                          'timeStamp': DateTime.now().toString(),
+                          'createdBy': "${firstName} ${lastName}",
+                        }).then((value) {
+                          uploadImagesToStorage(value.id,imageFileList).then((value) {
+                            setState(() {
+                              isLoading=false;
+                            });
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                              return ConfirmListing_Screen();
+                            }));
+                          });
+
+                        });
+                        print('User added to Firestore');
+                        } catch (e) {
+                        print('Error adding user to Firestore: $e');
+                        }
                         }
                         else{
                           return;
@@ -975,7 +1072,9 @@ class _NewListingFormState extends State<NewListingForm> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Center(
-                          child: Text(
+                          child:isLoading? CircularProgressIndicator(
+                            color: Colors.white,
+                          ) : Text(
                             "Submit",
                             style: const TextStyle(
                               fontFamily: "Poppins",
@@ -989,10 +1088,15 @@ class _NewListingFormState extends State<NewListingForm> {
                         ),
                       ),
                     ),
+                    if(isLoading)
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ],
                 ),
               )
-
                 ],
               ),
             ),

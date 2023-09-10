@@ -1,6 +1,4 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-
 import 'login_options.dart';
 
 class FirstPage extends StatelessWidget {

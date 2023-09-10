@@ -8,8 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'PreviewScreen_first.dart';
-import 'lookbook_details_grid.dart';
 
 class ResponseScreen extends StatefulWidget {
   const ResponseScreen({Key? key}) : super(key: key);
@@ -87,7 +85,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                       height: 44,
                       width: 198,
                       decoration: BoxDecoration(
-                        color: Color(0xffFF9431),
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: const Center(
@@ -261,7 +259,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                       width: 182,
                       margin: EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: const Center(
@@ -439,7 +437,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
                                           height: 44,
                                           width: 120,
                                           decoration: BoxDecoration(
-                                            color: const Color(0xffFF9431),
+                                            color: Theme.of(context).colorScheme.primary,
                                             borderRadius: BorderRadius.circular(12.0),
                                           ),
                                           child: const Center(

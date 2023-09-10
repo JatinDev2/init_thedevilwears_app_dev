@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lookbook/Login/options_screen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Provider/google_auth_provider.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {
   const PinCodeVerificationScreen({
@@ -12,12 +15,16 @@ class PinCodeVerificationScreen extends StatefulWidget {
     this.phoneNumber,
     this.verificationId,
     this.dialCode,
+    required this.lastName,
+    required this.firstName,
 
   }) : super(key: key);
 
   final String? phoneNumber;
   final String? verificationId;
   final String? dialCode;
+  final String firstName;
+  final String lastName;
 
   @override
   State<PinCodeVerificationScreen> createState() =>
@@ -38,7 +45,12 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
       // Link the phone number credential with the existing Google user
       await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential).then((value) async{
         final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+        final userEmail= prefs.getString('userEmail');
         await prefs.setBool('phoneVerified', true);
+        await prefs.setString('firstName', widget.firstName);
+        await prefs.setString('lastName', widget.lastName);
+        await prefs.setString('phoneNumber', "${widget.dialCode}${widget.phoneNumber}");
+        await prefs.setString('email', userEmail!);
         setState(() {
           _isLoading=false;
         });
@@ -203,13 +215,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 28, top: 25),
-                  child:const Text(
+                  child:Text(
                     "Resend Code",
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xffFF9431),
+                      color: Theme.of(context).colorScheme.primary,
                       height: 16/14,
                     ),
                     // textAlign: TextAlign.left,
@@ -252,7 +264,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         fieldHeight: 50,
                         fieldWidth: 40,
                         activeFillColor: Colors.white,
-                        activeColor: Colors.orange,
+                        activeColor: Theme.of(context).colorScheme.primary,
                         selectedColor: Colors.black,
                         selectedFillColor: Colors.white,
                         disabledColor: Colors.black,
@@ -308,7 +320,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       height: 50,
                       width: 142,
                       decoration: BoxDecoration(
-                        color: textEditingController.text.length==6? Color(0xffFF9431) : Color(0xffF3F3F4),
+                        color: textEditingController.text.length==6? Theme.of(context).colorScheme.primary : Color(0xffF3F3F4),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child:  Center(

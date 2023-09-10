@@ -342,7 +342,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 15.0, horizontal: 24),
                   decoration: BoxDecoration(
-                    color: const Color(0xffFF9431),
+                    color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: const Text(

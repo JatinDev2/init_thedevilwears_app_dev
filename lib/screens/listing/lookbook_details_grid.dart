@@ -186,7 +186,7 @@ class _LookbookDetailsState extends State<LookbookGridScreen>
                         width: 182,
                         margin: EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
-                          color: Colors.orange,
+                          color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Center(

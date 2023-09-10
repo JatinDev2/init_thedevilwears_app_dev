@@ -6,12 +6,16 @@ class ListModel{
   String eventDate;
   String productDate;
   String location;
-  List<String> tags;
+  List<dynamic>? tags;
   String requirement;
-  List images;
+  List? images;
+  String? userId;
+  String? timeStamp;
+  Map<String, dynamic>? selectedTags;
+  String? createdBy;
 
   ListModel({
-   required this.images,
+    this.images,
    required this.listingType,
    required this.location,
    required this.eventCategory,
@@ -19,7 +23,11 @@ class ListModel{
    required this.instaHandle,
    required this.productDate,
    required this.requirement,
-   required this.tags,
+    this.tags,
    required this.toStyleName,
+    this.userId,
+    this.timeStamp,
+    this.selectedTags,
+    this.createdBy,
 });
 }

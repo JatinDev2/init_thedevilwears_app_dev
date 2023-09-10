@@ -25,28 +25,39 @@ class ConfirmListing_Screen extends StatelessWidget {
                   height: 100,
                   width: 70,
                 ),
-                Text("Woo hoo!", style: TextStyle(
-                  color: Color(0xff2E2E2E),
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                ),),
-                SizedBox(height: 5,),
-                Text("Your listing is live.The Devil is", style: TextStyle(
-                  color: Color(0xff3C3C3C),
-                  fontSize: 20,
-                ),),
-                Text("at work to find the best fit.", style: TextStyle(
-                  color: Color(0xff3C3C3C),
-                  fontSize: 20,
-                ),),
+                Text(
+                  "Woo hoo!",
+                  style: TextStyle(
+                    color: Color(0xff2E2E2E),
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Your listing is live.The Devil is",
+                  style: TextStyle(
+                    color: Color(0xff3C3C3C),
+                    fontSize: 20,
+                  ),
+                ),
+                Text(
+                  "at work to find the best fit.",
+                  style: TextStyle(
+                    color: Color(0xff3C3C3C),
+                    fontSize: 20,
+                  ),
+                ),
               ],
             ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                   return OptionsScreen();
                 }));
               },
@@ -66,21 +77,23 @@ class ConfirmListing_Screen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Center(
-                      child: Text("Create a new listing", style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                      ),),
+                      child: Text(
+                        "Create a new listing",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
                       Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    },
-    child: Container(
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
                       height: 56,
                       width: 365,
                       margin: EdgeInsets.only(
@@ -93,21 +106,20 @@ class ConfirmListing_Screen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Center(
-                        child: Text("View your listings", style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                        ),),
+                        child: Text(
+                          "View your listings",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             ),
           ),
-
         ],
       ),
     );

@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:faker_dart/faker_dart.dart';
-
 import '../yourApplications.dart';
 
 class tabThree extends StatefulWidget {
@@ -109,13 +107,13 @@ class _tabThreeState extends State<tabThree> {
                     ),
                     Spacer(),
                     Container(
-                      child:const Text(
+                      child:Text(
                         "44 images",
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: Colors.orange,
+                          color: Theme.of(context).colorScheme.primary,
                           height: 18/12,
                         ),
                         textAlign: TextAlign.left,

@@ -51,9 +51,9 @@ class ConfirmedLoginScreen extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                  return OptionsInScreen();
-                }));
+                // Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                //   return OptionsInScreen();
+                // }));
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -74,7 +74,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                         right: 25,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: const Center(

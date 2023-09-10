@@ -3,11 +3,9 @@ import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:faker_dart/faker_dart.dart';
-
 import '../listing/response_screen.dart';
 import 'entryPreviewScreen.dart';
 
@@ -140,7 +138,7 @@ class _yourApplicationState extends State<yourApplication> {
                       height: 44,
                       width: 120,
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Center(

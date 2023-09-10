@@ -84,8 +84,8 @@ class _AlphaBetScrollPageState extends State<AlphaBetScrollPage> with WidgetsBin
         return Container(
           width: 60,
           height: 60,
-          decoration: const BoxDecoration(
-            color: Colors.orange,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,

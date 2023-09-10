@@ -51,7 +51,11 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             title: 'LookBook',
             theme: ThemeData(
-              primaryColor: Colors.black,
+              // primaryColor: Colors.black,
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xffFF9431),
+              ),
+
               // useMaterial3: true,
               textTheme: GoogleFonts.poppinsTextTheme(),
             ),
@@ -195,7 +199,7 @@ class MyApp extends StatelessWidget {
               '/lookbookImageDetailsScreen': (BuildContext ctx) => LookbookImageDetailsScreen(),
               '/searchFilterScreen': (BuildContext ctx) => FiltersScreen(),
               '/listingScreen' : (BuildContext ctx) => ListingScreen(),
-              'listingDetailsScreen' : (BuildContext ctx) => Details_Screen(),
+              // 'listingDetailsScreen' : (BuildContext ctx) => Details_Screen(),
               '/listingResponseScreen' : (BuildContext ctx) => ResponseScreen(),
               '/listingConfirmResponseScreen' : (BuildContext ctx) => ConfirmScreen(),
               '/newlistingOptionsScreen' : (BuildContext ctx) => OptionsScreen(),

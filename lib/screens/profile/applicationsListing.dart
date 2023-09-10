@@ -189,11 +189,11 @@ children: [
                           const Spacer(),
                       Text(
                         "Call now ",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.orange,
+                          color: Theme.of(context).colorScheme.primary,
                           height: 20/14,
                         ),
                         textAlign: TextAlign.left,

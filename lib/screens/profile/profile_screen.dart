@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:transparent_image/transparent_image.dart';
-
 import '../listing/response_screen.dart';
 import 'Tabs/Tab_1.dart';
 import 'Tabs/Tab_2.dart';

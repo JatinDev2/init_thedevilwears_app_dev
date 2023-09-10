@@ -134,11 +134,11 @@ class _applicationDetailsState extends State<applicationDetails> {
                        Spacer(),
                        Text(
                          "Call now ",
-                         style: const TextStyle(
+                         style: TextStyle(
                            fontFamily: "Poppins",
                            fontSize: 14,
                            fontWeight: FontWeight.w500,
-                           color: Colors.orange,
+                           color: Theme.of(context).colorScheme.primary,
                            height: 20/14,
                          ),
                          textAlign: TextAlign.left,
@@ -265,7 +265,7 @@ class _applicationDetailsState extends State<applicationDetails> {
                  height: 56,
                  width: 183,
                  decoration: BoxDecoration(
-                   color: Color(0xffFF9431),
+                   color: Theme.of(context).colorScheme.primary,
                    borderRadius: BorderRadius.circular(10.0),
                  ),
                  child: Center(

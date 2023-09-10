@@ -49,7 +49,7 @@ class _tabOneState extends State<tabOne> {
               padding: const EdgeInsets.symmetric(
                   vertical: 15.0, horizontal: 24),
               decoration: BoxDecoration(
-                color: const Color(0xffFF9431),
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: const Text(
@@ -83,8 +83,8 @@ class _tabOneState extends State<tabOne> {
               Container(
                 height: 48,
                 width: 48,
-                decoration: const BoxDecoration(
-                  color: Colors.orange,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle
                 ),
                child: SvgPicture.asset("assets/Pluse.svg"),
