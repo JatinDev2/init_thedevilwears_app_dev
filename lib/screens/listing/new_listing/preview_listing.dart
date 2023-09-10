@@ -93,6 +93,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
       ),
       body: ListView(
         children: [
+          if(widget.newModel.tags!.isNotEmpty)
           Container(
             margin: EdgeInsets.all(13.0),
             height: 50,
@@ -122,7 +123,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
                   backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
                 ),
                 SizedBox(width: 8,),
-                Text("Tanya Ghavri", style: TextStyle(
+                Text("${widget.newModel.createdBy}", style: TextStyle(
                   color: Color(0xff0F1015),
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
