@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -25,15 +26,85 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> filteredStylists = [];
   List<String> filteredSeasons = [];
 
+  late Future<Map<String, List<String>>?> _data;
+
   @override
   void initState() {
     super.initState();
+    // createTempUsersCollection();
+    _data=fetchTempUsersLists();
+
     setState(() {
-      items_brands = generateBrandData();
-      items_stylists = generateStylistsData();
-      items_seasons = generateSeasons();
+      // items_brands = generateBrandData();
+      // items_stylists = generateStylistsData();
+      // items_seasons = generateSeasons();
     });
   }
+
+  Future<void> createTempUsersCollection() async {
+    final firestore = FirebaseFirestore.instance;
+
+    final List<String> temp_brands= generateBrandData();
+    final List<String> temp_stylist= generateStylistsData();
+    final List<String> temp_seasins= generateSeasons();
+
+    try {
+      // Create the "temp_users" collection reference
+      final tempUsersCollectionRef = firestore.collection('temp_users');
+
+      // Create the "Brands" document and insert a list of brand names
+      await tempUsersCollectionRef.doc('Brands').set({
+        'names': temp_brands,
+      });
+
+      // Create the "Stylist" document and insert a list of stylist names
+      await tempUsersCollectionRef.doc('Stylist').set({
+        'names': temp_stylist,
+      });
+
+      // Create the "Seasons" document and insert a list of season names
+      await tempUsersCollectionRef.doc('Seasons').set({
+        'names': temp_seasins,
+      });
+
+      print('Collection "temp_users" and documents created successfully.');
+    } catch (error) {
+      print('Error creating collection and documents: $error');
+    }
+  }
+
+  Future<Map<String, List<String>>?> fetchTempUsersLists() async {
+    final firestore = FirebaseFirestore.instance;
+    final tempUsersCollectionRef = firestore.collection('temp_users');
+
+    try {
+      // Get the "Brands" document
+      final brandsDocumentSnapshot = await tempUsersCollectionRef.doc('Brands').get();
+
+      // Get the "Stylist" document
+      final stylistDocumentSnapshot = await tempUsersCollectionRef.doc('Stylist').get();
+
+      // Get the "Seasons" document
+      final seasonsDocumentSnapshot = await tempUsersCollectionRef.doc('Seasons').get();
+
+      // Extract the lists from the documents
+      final brandsList = List<String>.from(brandsDocumentSnapshot.data()!['names']);
+      final stylistList = List<String>.from(stylistDocumentSnapshot.data()!['names']);
+      final seasonsList = List<String>.from(seasonsDocumentSnapshot.data()!['names']);
+
+      // Return a map with the lists
+      return {
+        'Brands': brandsList,
+        'Stylist': stylistList,
+        'Seasons': seasonsList,
+      };
+    } catch (error) {
+      print('Error fetching lists: $error');
+      return null; // Handle the error as needed in your app
+    }
+  }
+
+
 
   List<String> generateBrandData() {
     List<String> brands = List.generate(260, (_) => faker.company.name());
@@ -210,20 +281,35 @@ class _SearchScreenState extends State<SearchScreen> {
                         labelColor: const Color(0xff282828),
                         unselectedLabelColor: const Color(0xff9D9D9D),
                       ),
-                      Expanded(
-                        child: TabBarView(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(8.0),
-                              child: query_check.isNotEmpty &&
-                                      filteredBrands.isEmpty
-                                  ? Container(
+                      FutureBuilder<Map<String, List<String>>?>(
+                        future: _data,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData || snapshot.data == null) {
+                            return Text('No data available');
+                          }
+                          else{
+                            Map<String, List<String>> data = snapshot.data!;
+                             items_brands = data['Brands']!;
+                            items_stylists = data['Stylist']!;
+                            items_seasons = data['Seasons']!;
+                            return Expanded(
+                              child: TabBarView(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.all(8.0),
+                                    child: query_check.isNotEmpty &&
+                                        filteredBrands.isEmpty
+                                        ? Container(
                                       margin: const EdgeInsets.all(16.0),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: const [
                                           Text(
                                             "No search results found",
@@ -239,44 +325,44 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ],
                                       ),
                                     )
-                                  : AlphaBetScrollPage(
+                                        : AlphaBetScrollPage(
                                       height: query_check.isEmpty
                                           ? (widget.height ==
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .height
-                                              ? 0
-                                              : MediaQuery.of(context)
-                                                  .size
-                                                  .height)
+                                          MediaQuery.of(context)
+                                              .size
+                                              .height
+                                          ? 0
+                                          : MediaQuery.of(context)
+                                          .size
+                                          .height)
                                           : filteredBrands.isEmpty
-                                              ? 0
-                                              : (widget.height ==
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .height
-                                                  ? 0
-                                                  : MediaQuery.of(context)
-                                                      .size
-                                                      .height),
+                                          ? 0
+                                          : (widget.height ==
+                                          MediaQuery.of(context)
+                                              .size
+                                              .height
+                                          ? 0
+                                          : MediaQuery.of(context)
+                                          .size
+                                          .height),
                                       query_check: query_check,
                                       onClickedItem: (item) {},
                                       items: query_check.isNotEmpty
                                           ? filteredBrands
-                                          : items_brands,
+                                          : items_brands!,
                                     ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(8.0),
-                              child: query_check.isNotEmpty &&
-                                      filteredStylists.isEmpty
-                                  ? Container(
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(8.0),
+                                    child: query_check.isNotEmpty &&
+                                        filteredStylists.isEmpty
+                                        ? Container(
                                       margin: EdgeInsets.all(16.0),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: const [
                                           Text(
                                             "No search results found",
@@ -292,39 +378,43 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ],
                                       ),
                                     )
-                                  : AlphaBetScrollPage(
+                                        : AlphaBetScrollPage(
                                       height: query_check.isEmpty
                                           ? (widget.height ==
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .height
-                                              ? 0
-                                              : MediaQuery.of(context)
-                                                  .size
-                                                  .height)
+                                          MediaQuery.of(context)
+                                              .size
+                                              .height
+                                          ? 0
+                                          : MediaQuery.of(context)
+                                          .size
+                                          .height)
                                           : filteredStylists.isEmpty
-                                              ? 0
-                                              : (widget.height ==
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .height
-                                                  ? 0
-                                                  : MediaQuery.of(context)
-                                                      .size
-                                                      .height),
+                                          ? 0
+                                          : (widget.height ==
+                                          MediaQuery.of(context)
+                                              .size
+                                              .height
+                                          ? 0
+                                          : MediaQuery.of(context)
+                                          .size
+                                          .height),
                                       query_check: query_check,
                                       onClickedItem: (item) {},
                                       items: query_check.isNotEmpty
                                           ? filteredStylists
-                                          : items_stylists,
+                                          : items_stylists!,
                                     ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(8.0),
-                              child: _buildSeasonSearchResults(items_seasons),
-                            ),
-                          ],
-                        ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(8.0),
+                                    child: _buildSeasonSearchResults(items_seasons!),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                          }
+                        }
                       ),
                     ],
                   ),
