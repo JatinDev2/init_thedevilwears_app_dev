@@ -145,77 +145,80 @@ class _SearchScreenState extends State<SearchScreen> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 32,
-                    bottom: 8,
-                    left: 9,
-                    right: 9,
-                  ),
+                Material(
+                  elevation: 1,
                   child: Container(
-                    height: 44,
-                    width: 396,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      color: Color(0xffF7F7F7),
+                    margin: const EdgeInsets.only(
+                      top: 32,
+                      bottom: 8,
+                      left: 9,
+                      right: 9,
                     ),
                     child: Container(
-                      child: TextField(
-                        textAlignVertical: TextAlignVertical.center,
-                        onChanged: (value) {
-                          setState(() {
-                            query_check = value;
-                            filteredBrands = items_brands
-                                .where((brand) => brand
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                .toList();
+                      height: 44,
+                      width: 396,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: Color(0xffF7F7F7),
+                      ),
+                      child: Container(
+                        child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          onChanged: (value) {
+                            setState(() {
+                              query_check = value;
+                              filteredBrands = items_brands
+                                  .where((brand) => brand
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()))
+                                  .toList();
 
-                            filteredStylists = items_stylists
-                                .where((stylist) => stylist
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                .toList();
-                          });
-                        },
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 14),
-                          isDense: true,
-                          hintText:
-                              "Search a Brand, Product, Stylist or Season",
-                          hintStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xff9D9D9D),
-                          ),
-                          prefixIcon: Container(
-                            margin: const EdgeInsets.only(
-                                left: 14, bottom: 14, top: 10),
-                            child: const Icon(
-                              IconlyLight.search,
-                              size: 18,
-                              color: Color(0xFF4B4B4B),
+                              filteredStylists = items_stylists
+                                  .where((stylist) => stylist
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()))
+                                  .toList();
+                            });
+                          },
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 14),
+                            isDense: true,
+                            hintText:
+                                "Search a Brand, Product, Stylist or Season",
+                            hintStyle: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff9D9D9D),
                             ),
-                          ),
-                          border: InputBorder.none,
-                          suffixIcon: IconTheme(
-                            data: const IconThemeData(color: Colors.black),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, '/searchFilterScreen');
-                              },
-                              icon: const Icon(
-                                IconlyLight.filter,
-                                color: Color(0xff0F1015),
+                            prefixIcon: Container(
+                              margin: const EdgeInsets.only(
+                                  left: 14, bottom: 14, top: 10),
+                              child: const Icon(
+                                IconlyLight.search,
+                                size: 18,
+                                color: Color(0xFF4B4B4B),
+                              ),
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: IconTheme(
+                              data: const IconThemeData(color: Colors.black),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/searchFilterScreen');
+                                },
+                                icon: const Icon(
+                                  IconlyLight.filter,
+                                  color: Color(0xff0F1015),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ),
@@ -226,60 +229,63 @@ class _SearchScreenState extends State<SearchScreen> {
                   length: 3,
                   child: Column(
                     children: [
-                      TabBar(
-                        tabs: [
-                          Tab(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: const Center(
-                                  child: Text(
-                                "Brands",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  height: 24 / 16,
-                                ),
-                                textAlign: TextAlign.left,
-                              )),
+                      Material(
+                        elevation: 1,
+                        child: TabBar(
+                          tabs: [
+                            Tab(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: const Center(
+                                    child: Text(
+                                  "Brands",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 24 / 16,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                )),
+                              ),
                             ),
-                          ),
-                          Tab(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: const Center(
-                                  child: Text(
-                                "Stylists",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  height: 24 / 16,
-                                ),
-                                textAlign: TextAlign.left,
-                              )),
+                            Tab(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: const Center(
+                                    child: Text(
+                                  "Stylists",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 24 / 16,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                )),
+                              ),
                             ),
-                          ),
-                          Tab(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: const Center(
-                                  child: Text(
-                                "Seasons",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  height: 24 / 16,
-                                ),
-                                textAlign: TextAlign.left,
-                              )),
+                            Tab(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: const Center(
+                                    child: Text(
+                                  "Seasons",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 24 / 16,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                )),
+                              ),
                             ),
-                          ),
-                        ],
-                        indicatorColor: const Color(0xff282828),
-                        labelColor: const Color(0xff282828),
-                        unselectedLabelColor: const Color(0xff9D9D9D),
+                          ],
+                          indicatorColor: const Color(0xff282828),
+                          labelColor: const Color(0xff282828),
+                          unselectedLabelColor: const Color(0xff9D9D9D),
+                        ),
                       ),
                       FutureBuilder<Map<String, List<String>>?>(
                         future: _data,

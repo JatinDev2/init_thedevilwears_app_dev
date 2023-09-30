@@ -160,7 +160,7 @@ class _ListingScreenState extends State<ListingScreen> {
               ),
               Container(
                 color: Colors.white,
-                child: const TabBar(
+                child: TabBar(
                   tabs: [
                     Tab(
                       child: Text(
