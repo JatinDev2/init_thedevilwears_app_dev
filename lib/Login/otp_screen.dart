@@ -36,6 +36,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   TextEditingController textEditingController = TextEditingController();
   bool _isLoading=false;
   // ..text = "123456";
+  bool isFilled=false;
 
   Future<void> signInWithPhoneAuthCred(AuthCredential phoneAuthCredential) async {
     setState(() {
@@ -63,7 +64,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         _isLoading=false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Incorrect OTP. Please try again.'),
           duration: Duration(seconds: 2),
         ),
@@ -290,12 +291,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       // onTap: () {
                       //   print("Pressed");
                       // },
-                      // onChanged: (value) {
-                      //   debugPrint(value);
-                      //   setState(() {
-                      //     currentText = value;
-                      //   });
-                      // },
+                      onChanged: (value){
+                        if(value.isNotEmpty && value.length==6){
+                          setState(() {
+                            isFilled=true;
+                            currentText = value;
+                          });
+                        }
+                      },
                       beforeTextPaste: (text) {
                         debugPrint("Allowing to paste $text");
                         //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
@@ -320,7 +323,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       height: 50,
                       width: 142,
                       decoration: BoxDecoration(
-                        color: textEditingController.text.length==6? Theme.of(context).colorScheme.primary : Color(0xffF3F3F4),
+                        color: isFilled? const Color(0xffFF9431): const Color(0xffF3F3F4),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child:  Center(
@@ -330,7 +333,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
-                            color:textEditingController.text.length==6? Colors.white: Color(0xff8B8B8B),
+                            color:isFilled? Colors.white: Color(0xff8B8B8B),
                             height: 20/16,
                           ),
                           textAlign: TextAlign.left,
