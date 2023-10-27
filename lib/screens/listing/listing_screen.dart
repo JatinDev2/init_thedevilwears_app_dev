@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'Details_Screen.dart';
 import 'new_listing/List_Model.dart';
@@ -59,7 +61,6 @@ class _ListingScreenState extends State<ListingScreen> {
     'Weddings',
     'Public Appearances',
   ];
-
 
 
   Future<List<String>> fetchImagesForCustomID(String customID) async {
@@ -293,9 +294,11 @@ class _ListingScreenState extends State<ListingScreen> {
                     selected: true,
                     onTap: () {
                       setState(() {
-                        if (selectedOptions.contains(option)) {
+                        if (selectedOptions.contains(option)){
                           selectedOptions.remove(option);
-                          filterOptions.insert(0, option);
+                          if(!filterOptions.contains(option)){
+                            filterOptions.insert(0, option);
+                          }
                           // filterOptions.add(option);
                         }
                         // else {
@@ -440,7 +443,7 @@ class _ListingScreenState extends State<ListingScreen> {
     }
   }
 
-  Widget _buildCustomCard(ListModel listing) {
+  Widget _buildCustomCard(ListModel listing){
     return Card(
       elevation: 2,
       margin: EdgeInsets.all(16),
@@ -596,7 +599,20 @@ class _ListingScreenState extends State<ListingScreen> {
                       ),
                       const Spacer(),
                       IconButton(
-                          onPressed: () {}, icon: const Icon(IconlyLight.send)),
+                          onPressed: () {
+                            // // Create a shareable link to the Details_Screen for the specific listing
+                            // String listingId = listing.userId!; // Replace with the actual ID of the listing
+                            // String shareableLink = 'https://in.lookbook.lookbook/details/$listingId';
+                            // // Use the url_launcher package to open the share dialog
+                            // launch(shareableLink);
+
+                            // Create a deep link to the next page in your app
+                            String deepLink = 'myapp://next_page'; // Replace with your actual deep link structure
+
+                            // Share the deep link using the share package
+                            Share.share('Check out this listing: $deepLink', subject: 'Listing Details');
+
+                          }, icon: const Icon(IconlyLight.send)),
                       IconButton(
                           onPressed: () {},
                           icon: const Icon(IconlyLight.bookmark)),

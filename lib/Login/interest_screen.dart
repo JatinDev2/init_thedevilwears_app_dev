@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'insta_verification_screen.dart';
 
@@ -9,49 +10,40 @@ class InterestSccreen extends StatefulWidget {
 }
 
 class _InterestSccreenState extends State<InterestSccreen> {
-  List<String> gender = ["Men's", "Women's", "Teen","Boys", "Footwear"];
-  List<String> occasion= ["Party Wear", "Wedding Wear", "Office Wear","Men's", "Women's", "Teen","Boys", "Footwear"];
   List<String> selectedOptions = [];
-  Map<String, List<String>> _selectedOptions = {};
+  final List<String> _tabs = ["Availability", "Category", "Gender", "Genre"];
+   String selectedTab="";
 
-  List<String>_selectedGender=[];
-  List<String>_selectedOccasion=[];
+  Map<String, List<String>> optionsData = {};
+  Map<String, List<String>> selectedOptionsMap = {
+    "Gender":[],
+    "Category":[],
+    "Availability":[],
+    "Genre":[],
+  };
+  bool isLoading = true;
 
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-  void addUser() async {
-    for(int i=0; i<selectedOptions.length; i++){
-     String cat= getCategory(selectedOptions[i]);
-     if(cat=="gender"){
-       _selectedGender.add(selectedOptions[i]);
-     }
-     else{
-       _selectedOccasion.add(selectedOptions[i]);
-     }
-    }
-
-    _selectedOptions.addAll({
-      "gender": _selectedGender,
-      "occasion": _selectedOccasion,
-    });
+  Future<void> addUser() async {
 
     try {
       final prefs = await SharedPreferences.getInstance();
       final firstName = prefs.getString('firstName');
       final lastName = prefs.getString('lastName');
-      final phoneNumber=prefs.getString('phoneNumber');
-      final userEmail=prefs.getString('userEmail');
-      final userType=prefs.getString('userType');
-      final userId=prefs.getString('userId');
+      final phoneNumber = prefs.getString('phoneNumber');
+      final userEmail = prefs.getString('userEmail');
+      final userType = prefs.getString('userType');
+      final userId = prefs.getString('userId');
       await usersCollection.doc("$userId").set({
         'firstName': firstName,
         'lastName': lastName,
         'phoneNumber': phoneNumber!.replaceAll(" ", ""),
         'userEmail': userEmail,
-        'preferences':_selectedOptions,
+        'preferences': selectedOptionsMap,
         'userType': userType,
       }).then((value) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_){
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
           return InstaVerification();
         }));
       });
@@ -61,32 +53,107 @@ class _InterestSccreenState extends State<InterestSccreen> {
     }
   }
 
-  String getCategory(String option){
-    if (gender.contains(option)) {
-      return "gender";
-    } else if (occasion.contains(option)){
-      return "occasion";
-    }
-    return "";
-  }
+  Future<Map<String, List<String>>> fetchFiltersData() async {
+    final firestore = FirebaseFirestore.instance;
 
-  void toggleOption(String option) {
-    setState((){
-      if (selectedOptions.contains(option)) {
-        selectedOptions.remove(option);
+    try {
+      final filtersCollectionRef = firestore.collection('listing_Filters');
+      final querySnapshot = await filtersCollectionRef.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final filtersDocument = querySnapshot.docs.first;
+        final data = filtersDocument.data() as Map<String, dynamic>;
+        final result = data.map((key, value) {
+          if (value is List) {
+            return MapEntry(key, value.cast<String>());
+          }
+          return MapEntry(key, <String>[]);
+        });
+
+        return result;
       } else {
-        selectedOptions.add(option);
+        print('No documents found in the "listing_Filters" collection.');
+        return {};
       }
-    });
+    } catch (error) {
+      print('Error fetching filters data: $error');
+      return {};
+    }
   }
 
-  
-  Widget buildOption(String option) {
+  Widget _buildSelectedOptions(){
+    return Container(
+      height:selectedOptions.isNotEmpty? 60 : 0,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: selectedOptions.length,
+        itemBuilder: (context, index){
+          String option = selectedOptions[index];
+          return Container(
+            margin: const EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  option,
+                  style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                GestureDetector(
+                  onTap: (){
+                    // print("TAAAAAAAAAAPPPPPPPPPPPPPEEEEEEEEEEEDDDDDDDDDDDDDDD");
+                    setState((){
+                      selectedOptionsMap.forEach((key, value) {
+                        if(selectedOptionsMap[key]!.contains(option)){
+                          selectedOptionsMap[key]!.remove(option);
+                        }
+                      });
+                        selectedOptions.remove(option);
+                    });
+                  },
+                  child: SvgPicture.asset(
+                    'assets/cross.svg',
+                    semanticsLabel: 'My SVG Image',
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildOption(String option, String tab){
     final isSelected = selectedOptions.contains(option);
     final backgroundColor = isSelected ? Theme.of(context).colorScheme.primary : Color(0xffF7F7F7);
 
     return GestureDetector(
-      onTap: () => toggleOption(option),
+      onTap: (){
+        setState((){
+          if (selectedOptions.contains(option)){
+            if(selectedOptionsMap[tab]!.contains(option)){
+              selectedOptionsMap[tab]!.remove(option);
+            }
+            selectedOptions.remove(option);
+          }else{
+            selectedOptionsMap[tab]!.add(option);
+            selectedOptions.add(option);
+          }
+          print(selectedOptionsMap);
+        });
+      },
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
@@ -103,14 +170,14 @@ class _InterestSccreenState extends State<InterestSccreen> {
                 fontFamily: "Poppins",
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
-                color: isSelected? Colors.white : Color(0xff303030),
-                height: 18/12,
+                color: isSelected ? Colors.white : Color(0xff303030),
+                height: 18 / 12,
               ),
               textAlign: TextAlign.left,
             ),
             if (isSelected)
               GestureDetector(
-                onTap: () => toggleOption(option),
+                // onTap: () => toggleOption(option),
                 child: Icon(
                   Icons.close,
                   size: 16,
@@ -124,88 +191,77 @@ class _InterestSccreenState extends State<InterestSccreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchFiltersData().then((value) {
+      setState(() {
+        optionsData = value;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           Container(
             margin: EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 60,),
-                const Text(
-                  "Choose what describes\n your brand the best",
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff0f1015),
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 30,),
-                Container(
-                  margin: EdgeInsets.all(5.0),
-                  child: const Text(
-                    "Gender",
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 60),
+                  const Text(
+                    "Choose what describes\n your brand the best",
                     style: TextStyle(
                       fontFamily: "Poppins",
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xff2d2d2d),
-                      height: 24 / 16,
+                      color: Color(0xff0f1015),
                     ),
                     textAlign: TextAlign.left,
                   ),
-                ),
-                Wrap(
-                  spacing: 5.0,
-                  runSpacing: 5.0,
-                  children: gender.map((option) => buildOption(option)).toList(),
-                ),
-                SizedBox(height: 30,),
-
-                Container(
-                  margin: EdgeInsets.all(5.0),
-                  child: Text(
-                    "Occasion",
-                    style: const TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff2d2d2d),
-                      height: 24 / 16,
+                  SizedBox(height: 10),
+                  Container(
+                    height: selectedOptions.isEmpty? MediaQuery.of(context).size.height-250: MediaQuery.of(context).size.height-280,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _tabs.length,
+                      itemBuilder: (BuildContext context, index) {
+                        var items = optionsData[_tabs[index]] ?? [];
+                        selectedTab=_tabs[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(5.0),
+                              child: Text(
+                                _tabs[index],
+                                style: const TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff2d2d2d),
+                                  height: 24 / 16,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Wrap(
+                              spacing: 5.0,
+                              runSpacing: 5.0,
+                              children: items.map((option) => buildOption(option,_tabs[index])).toList(),
+                            ),
+                            SizedBox(height: 24),
+                          ],
+                        );
+                      },
                     ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Wrap(
-                  spacing: 5.0,
-                  runSpacing: 5.0,
-                  children: occasion.map((option) => buildOption(option)).toList(),
-                ),
-                Container(
-                  margin: EdgeInsets.all(5.0),
-                  child: const Text(
-                    "Gender",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff2d2d2d),
-                      height: 24 / 16,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Wrap(
-                  spacing: 5.0,
-                  runSpacing: 5.0,
-                  children: gender.map((option) => buildOption(option)).toList(),
-                ),
-                SizedBox(height: 30,),
-              ],
+                  )
+                ],
+              ),
             ),
           ),
           Align(
@@ -213,14 +269,14 @@ class _InterestSccreenState extends State<InterestSccreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                _buildSelectedOptions(),
                 GestureDetector(
-                  onTap: ()async{
-                    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-                    await prefs.setStringList('preferences', selectedOptions
-                    ).then((value) {
+                  onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setStringList('preferences', selectedOptions).then((value) {
                       addUser();
                     });
-    },
+                  },
                   child: Container(
                     height: 50,
                     width: 109,
@@ -236,26 +292,26 @@ class _InterestSccreenState extends State<InterestSccreen> {
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
-                          height: 20/16,
+                          height: 20 / 16,
                         ),
                         textAlign: TextAlign.left,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 58,),
-                Align(
+                SizedBox(height: 16),
+                const Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "4",
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          height: 24/16,
+                          height: 24 / 16,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -265,19 +321,18 @@ class _InterestSccreenState extends State<InterestSccreen> {
                           fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          height: 24/16,
-                          color: Colors.grey
+                          height: 24 / 16,
+                          color: Colors.grey,
                         ),
                         textAlign: TextAlign.left,
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 40,),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-
         ],
       ),
     );

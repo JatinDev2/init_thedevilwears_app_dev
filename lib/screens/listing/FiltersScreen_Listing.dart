@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class FiltersScreen_Listing extends StatefulWidget {
   List<String> selectedOptionsSourcing;
@@ -13,129 +15,48 @@ class FiltersScreen_Listing extends StatefulWidget {
 
 class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
   String _selectedTab = 'Gender';
+  bool isLoading=true;
 
   void initState() {
     super.initState();
     _selectedOptions.addAll(widget.selectedOptionsSourcing);
+    fetchFiltersData().then((value) {
+      setState((){
+        _filterData=value;
+        isLoading=false;
+      });
+    });
   }
 
-  List<String> _filterTabs = [
+ final List<String> _filterTabs = [
     'Gender',
+     'Availability',
+    'Genre',
     'Category',
-    'Occasion',
-    'Date',
-    'Event',
-    'Listing',
-    'Color',
-    'Size',
-    'Brand',
-    'Location',
-    'Price',
-    'Condition',
-    'Rating',
   ];
 
-  Map<String, List<String>> _filterData = {
-    'Gender': [
-      'Male',
-      'Female',
-      'Other',
-      'Prefer not to say',
-    ],
-    'Category': [
-      'Clothing',
-      'Shoes',
-      'Accessories',
-      'Bags',
-      'Jewelry',
-      'Any',
-    ],
-    'Occasion': [
-      'Casual',
-      'Formal',
-      'Party',
-      'Sports',
-      'Wedding',
-    ],
-    'Date': [
-      'Last 24 hours',
-      'Last 7 days',
-      'Last 30 days',
-      'Custom date range',
-    ],
-    'Event': [
-      'Birthday',
-      'Anniversary',
-      'Graduation',
-      'Holiday',
-      'Prom',
-      'Movie Promotions',
-      'Movies',
-      'Shoots',
-      'Events',
-      'Concerts',
-      'Weddings',
-      'Public Appearances',
-    ],
-    'Listing': [
-      'For Sale',
-      'For Rent',
-      'Auction',
-      'Free',
-      'Collab',
-    ],
-    'Color': [
-      'Red',
-      'Blue',
-      'Green',
-      'Yellow',
-      'Black',
-      'White',
-    ],
-    'Size': [
-      'XS',
-      'S',
-      'M',
-      'L',
-      'XL',
-      'XXL',
-    ],
-    'Brand': [
-      'Nike',
-      'Adidas',
-      'Puma',
-      'Reebok',
-      'Under Armour',
-      'Vans',
-    ],
-    'Location': [
-      'New York',
-      'Los Angeles',
-      'London',
-      'Paris',
-      'Tokyo',
-      'Sydney',
-    ],
-    'Price': [
-      '\$0 - \$10',
-      '\$10 - \$50',
-      '\$50 - \$100',
-      '\$100 - \$200',
-      'Above \$200',
-    ],
-    'Condition': [
-      'New',
-      'Used',
-      'Refurbished',
-    ],
-    'Rating': [
-      '1 Star',
-      '2 Stars',
-      '3 Stars',
-      '4 Stars',
-      '5 Stars',
-    ],
-  };
+  Map _filterData = {};
+
+  Future<Map> fetchFiltersData() async {
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      final filtersCollectionRef = firestore.collection('listing_Filters');
+
+      final querySnapshot = await filtersCollectionRef.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final filtersDocument = querySnapshot.docs.first;
+        return filtersDocument.data();
+      } else {
+        print('No documents found in the "listing_Filters" collection.');
+        return {};
+      }
+    } catch (error) {
+      print('Error fetching filters data: $error');
+      return {};
+    }
+  }
 
   void _clearAllFilters() {
     setState(() {
@@ -144,6 +65,8 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
   }
 
   List<String> _selectedOptions = [];
+
+
 
   Widget _buildFilterTabs() {
     return Container(
@@ -206,7 +129,7 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
   }
 
   Widget _buildFilterOptions() {
-    List<String> options = _filterData[_selectedTab] ?? [];
+    var options = _filterData[_selectedTab] ?? [];
     return Container(
       height: _selectedOptions.isEmpty ?MediaQuery.of(context).size.height - 150  : MediaQuery.of(context).size.height - 220,
       child: ListView.builder(
@@ -311,7 +234,7 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
   }
 
   int _getSelectedOptionsCount(String tab) {
-    List<String> options = _filterData[tab] ?? [];
+    var options = _filterData[tab] ?? [];
     int count = 0;
 
     for (String option in options) {
@@ -360,10 +283,12 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
           ),
         ],
       ),
-      body: Column(
+      body: isLoading? const Center(
+        child: CircularProgressIndicator(),
+      ) : Column(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: Colors.black12,

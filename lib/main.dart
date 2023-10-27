@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lookbook/Login/firebase_api.dart';
 import 'package:lookbook/Provider/google_auth_provider.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
 import 'package:lookbook/screens/listing/Confirmation_screen.dart';
@@ -11,6 +14,7 @@ import 'package:lookbook/screens/listing/PreviewScreen_first.dart';
 import 'package:lookbook/screens/listing/PriviewScreen_second.dart';
 import 'package:lookbook/screens/listing/listing_screen.dart';
 import 'package:lookbook/screens/listing/lookbook_details_grid.dart';
+import 'package:lookbook/screens/listing/new_listing/List_Model.dart';
 import 'package:lookbook/screens/listing/new_listing/new_listing_form.dart';
 import 'package:lookbook/screens/listing/new_listing/options_screen.dart';
 import 'package:lookbook/screens/listing/response_screen.dart';
@@ -21,19 +25,69 @@ import 'package:lookbook/screens/search/FiltersScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 import 'Login/first_screen.dart';
+import 'Login/interest_screen.dart';
 import 'Login/options_screen.dart';
 import 'Login/phoneNumber_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseApi().initNotification();
+  initUniLinks(); // Initialize uni_links package
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+Future<void> initUniLinks() async {
+  // Ensure that you call `await getInitialLink()` during app initialization
+  try {
+    final initialLink = await getInitialLink();
+    handleDeepLink(initialLink);
+  } catch (e) {
+    // Handle any errors
+  }
+
+  // Listen for incoming links
+  getLinksStream().listen((String? link) {
+    handleDeepLink(link);
+  });
+}
+
+void handleDeepLink(String? link) {
+  if (link != null) {
+    // Parse the link and extract parameters
+    final Uri uri = Uri.parse(link);
+    final String? listingId = uri.queryParameters['listingId'];
+
+    // Navigate to the appropriate screen using the listing ID
+    if (listingId != null) {
+
+      // Navigate to the Details_Screen with the listing ID
+      // Example: Navigator.push(...)
+      // Navigator.of(context).push(MaterialPageRoute(builder: (_){
+      //   return Details_Screen(
+      //     listing: ListModel(listingType: '', location: '', eventCategory: '', eventDate: '', instaHandle: '', productDate: '', requirement: '', toStyleName: ''
+      //
+      //     ),
+      //   )
+      // }));
+    }
+  }
+}
+
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // late StreamSubscription _linkSubscription;
+
+  @override
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -82,11 +136,15 @@ class MyApp extends StatelessWidget {
                       final prefs = prefsSnapshot.data as SharedPreferences;
                       final phoneVerified = prefs.getBool('phoneVerified') ?? false;
                       final optionSelected = prefs.getBool('optionSelected') ?? false;
-                      if (phoneVerified && optionSelected){
+                      final isHomePage= prefs.getBool('isHomePage') ?? false;
+                      if(isHomePage){
+                        return HomeScreen();
+                      }
+                    else if (phoneVerified && optionSelected){
                         return HomeScreen();
                       }
                         else if(phoneVerified && !optionSelected){
-                          return OptionsInScreen();
+                          return OptionsScreen();
                       }
                       else {
                         return PhoneNumber_Screen();
@@ -139,7 +197,7 @@ class MyApp extends StatelessWidget {
                   },
                 );
               } else {
-                return FirstPage();
+                return InterestSccreen();
               }
             },
           ),
@@ -212,3 +270,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// GoRouter _appRoute=GoRouter(routes: <RouteBase>[
+//   GoRoute(
+//       path: "/",
+//   builder: (BuildContext context, GoRouterState state){
+//         return FirstPage();
+//   }
+//   ),
+//   GoRoute(
+//       path: "/listingDetail",
+//       builder: (BuildContext context, GoRouterState state){
+//         return FirstPage();
+//       }
+//   ),
+// ])
