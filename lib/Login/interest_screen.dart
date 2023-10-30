@@ -15,7 +15,7 @@ class _InterestSccreenState extends State<InterestSccreen> {
    String selectedTab="";
 
   Map<String, List<String>> optionsData = {};
-  Map<String, List<String>> selectedOptionsMap = {
+  Map<String, List<String>> selectedOptionsMap ={
     "Gender":[],
     "Category":[],
     "Availability":[],

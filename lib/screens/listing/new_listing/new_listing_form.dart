@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,6 +34,7 @@ class _NewListingFormState extends State<NewListingForm> {
   String dropdownValue = 'Movie Promotions';
   bool isVisible=false;
   bool isLoading=false;
+  double progress = 0.0;
 
 
   final _formKey = GlobalKey<FormState>();
@@ -70,23 +72,37 @@ class _NewListingFormState extends State<NewListingForm> {
         if (await file.exists()) {
           await imageRef.putFile(file);
 
-          // Get the download URL for the uploaded image (if needed)
-          String imageUrl = await imageRef.getDownloadURL();
+          // Calculate the progress and update the UI
+          // double progress = (i + 1) / imageFileList.length;
+          // print('Progress: ${(progress * 100).toStringAsFixed(2)}%');
+          progress = (i + 1) / imageFileList.length;
+          print('Progress: ${(progress * 100).toStringAsFixed(2)}%');
 
           // You can store the imageUrl in your Firestore database if necessary
         } else {
           print('File does not exist: ${file.path}');
         }
       }
-
       print('Images uploaded successfully');
     } catch (e) {
       print('Error uploading images: $e');
     }
   }
 
+  double calculateProgress(List<XFile> imageFileList) {
+    int totalImages = imageFileList.length;
+    int uploadedImages = 0;
+    for (var imageFile in imageFileList) {
+      File file = File(imageFile.path);
+      if (file.existsSync()) {
+        uploadedImages++;
+      }
+    }
+    return uploadedImages / totalImages;
+  }
 
-  Future<void> _selectDate(BuildContext context) async {
+
+  Future<void> _selectDate(BuildContext context) async{
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -94,7 +110,7 @@ class _NewListingFormState extends State<NewListingForm> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != eventDateConnroller.text) {
-      setState(() {
+      setState((){
         eventDateConnroller.text = DateFormat('dd/MM/yyyy').format(picked);
       });
     }
@@ -719,11 +735,46 @@ class _NewListingFormState extends State<NewListingForm> {
                         GestureDetector(
                           onTap: (){
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                              return TagScreen();
+                              return TagScreen(
+                                listSelectedOptions: selectedOption,
+                                mapSelectedOptions: _selectedOptions,
+                              );
                             })).then((value){
                               setState((){
-                                selectedOption=value["selectedOptionsList"];
-                                _selectedOptions=value["selectedOptionsMap"];
+                                List<String>tempList=value["selectedOptionsList"];
+                                if(selectedOption.length <=tempList.length){
+                                  if(selectedOption.isNotEmpty){
+                                    for(int i=0; i<tempList.length; i++){
+                                      if(!selectedOption.contains(tempList[i])){
+                                        selectedOption.add(tempList[i]);
+                                      }
+                                    }
+                                  }
+                                  else{
+                                    selectedOption=value["selectedOptionsList"];
+                                  }
+                                }
+                                else{
+                                  selectedOption=value["selectedOptionsList"];
+                                }
+                                if(_selectedOptions.isNotEmpty){
+                                  Map<String,List<String>> temp=value["selectedOptionsMap"];
+                                    temp.forEach((key, value){
+                                      if(_selectedOptions.containsKey(key)){
+                                        for(int i=0; i<value.length;i++){
+                                          if(!_selectedOptions[key]!.contains(value[i])){
+                                            _selectedOptions[key]!.add(value[i]);
+                                          }
+                                        }
+                                      }
+                                      else{
+                                        _selectedOptions[key]=value;
+                                      }
+                                    });
+                                }
+                                else{
+                                  _selectedOptions=value["selectedOptionsMap"];
+                                }
                               });
                             });
                           },
@@ -732,31 +783,31 @@ class _NewListingFormState extends State<NewListingForm> {
                             height: 102,
                             width: 362,
                             decoration: BoxDecoration(
-                              color: Color(0xffF8F7F7),
+                              color: const Color(0xffF8F7F7),
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                    margin: EdgeInsets.only(
+                                    margin: const EdgeInsets.only(
                                 top: 23.0,
                               bottom: 11.0,
                             ),
-                                    child: Icon((Icons.add),size: 12,)),
-                                Text(
+                                    child: const Icon((Icons.add),size: 12,)),
+                                const Text(
                                   "The more specific your tags are, better the options you",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: "Poppins",
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff444444),
                                   ),
                                 ),
-                            SizedBox(height: 4,),
-                            Text(
+                            const SizedBox(height: 4,),
+                            const Text(
                             "shall receive for your lisiting",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -775,9 +826,9 @@ class _NewListingFormState extends State<NewListingForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Describe your requirement in detail*",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -789,7 +840,7 @@ class _NewListingFormState extends State<NewListingForm> {
                         Container(
                           margin: EdgeInsets.all(13.0),
                           padding: EdgeInsets.all(5.0),
-                          height: 237,
+                          // height: 237,
                           width: 364,
                           decoration: BoxDecoration(
                             color: Color(0xffF8F7F7),
@@ -798,9 +849,9 @@ class _NewListingFormState extends State<NewListingForm> {
                           child: TextFormField(
                             controller: detailConnroller,
                             maxLines: 6,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: "Start typing here...",
-                              hintStyle: const TextStyle(
+                              hintStyle: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 color: Color(0xffb2b2b2),
@@ -827,9 +878,9 @@ class _NewListingFormState extends State<NewListingForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Selected Tags",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -848,13 +899,13 @@ class _NewListingFormState extends State<NewListingForm> {
                     ),
 
                   Container(
-                    margin: EdgeInsets.all(13.0),
+                    margin: const EdgeInsets.all(13.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Moodboard",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -863,12 +914,13 @@ class _NewListingFormState extends State<NewListingForm> {
                           ),
                           textAlign: TextAlign.left,
                         ),
-                        SizedBox(height: 12,),
+                        const SizedBox(height: 12,),
                     Container(
                       height: imageFileList.length < 4? 88: 180,
                       child: GridView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        shrinkWrap: true,
+                        // physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10,
@@ -990,6 +1042,47 @@ class _NewListingFormState extends State<NewListingForm> {
                           }));
                         }
                         else{
+                          FirebaseMessaging.instance.getInitialMessage().then(
+                                (message) {
+                              print("FirebaseMessaging.instance.getInitialMessage");
+                              if (message != null) {
+                                print("New Notification");
+                                // if (message.data['_id'] != null) {
+                                //   Navigator.of(context).push(
+                                //     MaterialPageRoute(
+                                //       builder: (context) => DemoScreen(
+                                //         id: message.data['_id'],
+                                //       ),
+                                //     ),
+                                //   );
+                                // }
+                              }
+                            },
+                          );
+
+                          FirebaseMessaging.onMessage.listen(
+                                (message) {
+                              print("FirebaseMessaging.onMessage.listen");
+                              if (message.notification != null) {
+                                print(message.notification!.title);
+                                print(message.notification!.body);
+                                print("message.data11 ${message.data}");
+                                // LocalNotificationService.display(message);
+
+                              }
+                            },
+                          );
+
+                          FirebaseMessaging.onMessageOpenedApp.listen(
+                                (message) {
+                              print("FirebaseMessaging.onMessageOpenedApp.listen");
+                              if (message.notification != null) {
+                                print(message.notification!.title);
+                                print(message.notification!.body);
+                                print("message.data22 ${message.data['_id']}");
+                              }
+                            },
+                          );
                           return;
                         }
                       },
@@ -1046,7 +1139,7 @@ class _NewListingFormState extends State<NewListingForm> {
                           'createdBy': "${firstName} ${lastName}",
                         }).then((value) {
                           uploadImagesToStorage(value.id,imageFileList).then((value) {
-                            setState(() {
+                            setState((){
                               isLoading=false;
                             });
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
@@ -1072,11 +1165,12 @@ class _NewListingFormState extends State<NewListingForm> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Center(
-                          child:isLoading? CircularProgressIndicator(
+                          child:isLoading?
+                          const CircularProgressIndicator(
                             color: Colors.white,
-                          ) : Text(
+                          ) : const Text(
                             "Submit",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 16,
                               fontWeight: FontWeight.w700,

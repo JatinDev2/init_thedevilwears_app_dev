@@ -21,6 +21,7 @@ import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_image_details.dart';
+import 'package:lookbook/screens/profile/profile_screen.dart';
 import 'package:lookbook/screens/search/FiltersScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -116,7 +117,10 @@ class _MyAppState extends State<MyApp> {
             // home: HomeScreen(),
             // home: FirstPage(),
           home:
+          // const FirstPage()
+          // PhoneNumber_Screen()
           // HomeScreen(),
+
           StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
@@ -146,8 +150,11 @@ class _MyAppState extends State<MyApp> {
                         else if(phoneVerified && !optionSelected){
                           return OptionsScreen();
                       }
-                      else {
+                      else if(!phoneVerified && !optionSelected) {
                         return PhoneNumber_Screen();
+                      }
+                      else{
+                        return FirstPage();
                       }
                     } else{
                       // Handle the case when SharedPreferences loading failed
@@ -156,48 +163,47 @@ class _MyAppState extends State<MyApp> {
                           child: Text("Failed to load SharedPreferences"),
                         ),
                       );// StreamBuilder(
-          //   stream: FirebaseAuth.instance.authStateChanges(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.hasError) {
-          //       return Scaffold(
-          //         body: Center(
-          //           child: Text("Something went wrong"),
-          //         ),
-          //       );
-          //     } else if (snapshot.hasData) {
-          //       return FutureBuilder(
-          //         future: SharedPreferences.getInstance(),
-          //         builder: (context, prefsSnapshot) {
-          //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
-          //             return FirstPage();
-          //           } else if (prefsSnapshot.hasData) {
-          //             final prefs = prefsSnapshot.data as SharedPreferences;
-          //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
-          //             if (phoneVerified){
-          //               return HomeScreen();
-          //             } else {
-          //               return PhoneNumber_Screen();
-          //             }
-          //           } else {
-          //             // Handle the case when SharedPreferences loading failed
-          //             return Scaffold(
-          //               body: Center(
-          //                 child: Text("Failed to load SharedPreferences"),
-          //               ),
-          //             );
-          //           }
-          //         },
-          //       );
-          //     } else {
-          //       return FirstPage();
-          //     }
-          //   },
-
+          // //   stream: FirebaseAuth.instance.authStateChanges(),
+          // //   builder: (context, snapshot) {
+          // //     if (snapshot.hasError) {
+          // //       return Scaffold(
+          // //         body: Center(
+          // //           child: Text("Something went wrong"),
+          // //         ),
+          // //       );
+          // //     } else if (snapshot.hasData) {
+          // //       return FutureBuilder(
+          // //         future: SharedPreferences.getInstance(),
+          // //         builder: (context, prefsSnapshot) {
+          // //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
+          // //             return FirstPage();
+          // //           } else if (prefsSnapshot.hasData) {
+          // //             final prefs = prefsSnapshot.data as SharedPreferences;
+          // //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
+          // //             if (phoneVerified){
+          // //               return HomeScreen();
+          // //             } else {
+          // //               return PhoneNumber_Screen();
+          // //             }
+          // //           } else {
+          // //             // Handle the case when SharedPreferences loading failed
+          // //             return Scaffold(
+          // //               body: Center(
+          // //                 child: Text("Failed to load SharedPreferences"),
+          // //               ),
+          // //             );
+          // //           }
+          // //         },
+          // //       );
+          // //     } else {
+          // //       return FirstPage();
+          // //     }
+          // //   },
                     }
                   },
                 );
               } else {
-                return InterestSccreen();
+                return FirstPage();
               }
             },
           ),

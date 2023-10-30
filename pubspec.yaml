@@ -67,6 +67,11 @@ dependencies:
   sms_autofill: ^2.3.0
   cloud_firestore: ^4.9.1
   firebase_storage: ^11.2.6
+  firebase_messaging: ^14.6.8
+  share: ^2.0.4
+  go_router: ^11.1.2
+  uni_links: ^0.5.1
+  url_launcher: ^6.1.14
 
 
 

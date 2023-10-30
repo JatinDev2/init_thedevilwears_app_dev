@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   void bottomSheet(BuildContext context) {
     showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
         ),
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Call",
                   style: TextStyle(
                     fontFamily: "Poppins",
@@ -55,9 +55,9 @@ class _ProfileScreenState extends State<ProfileScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Message",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -131,9 +131,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                           height: 30,
                         ),
                         Container(
-                          margin: EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.all(8.0),
+                          width: MediaQuery.of(context).size.width,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Material(
@@ -169,17 +170,17 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                width: 48,
-                              ),
+                              // SizedBox(
+                              //   width: 48,
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Column(
+                                  const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: const [
+                                    children: [
                                       Text(
                                         "10",
                                         style: TextStyle(
@@ -204,13 +205,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 32,
                                   ),
-                                  Column(
+                                  const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: const [
+                                    children: [
                                       Text(
                                         "37",
                                         style: TextStyle(
@@ -235,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 32,
                                   ),
                                   GestureDetector(
@@ -275,7 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 5, left: 11),
-                          child: Text(
+                          child: const Text(
                             "Sabyasachi",
                             style: TextStyle(
                               fontFamily: "Poppins",
@@ -286,10 +287,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                         ),
                         Container(
-                            margin: EdgeInsets.only(top: 5, left: 11),
-                            child: Text(
+                            margin: const EdgeInsets.only(top: 5, left: 11),
+                            child: const Text(
                               "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: "Poppins",
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,

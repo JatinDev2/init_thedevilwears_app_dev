@@ -127,7 +127,6 @@ class _ListingScreenState extends State<ListingScreen> {
     }
   }
 
-
   void toggleOption(String option) {
     setState(() {
       if (selectedOptions.contains(option)) {
@@ -211,138 +210,136 @@ class _ListingScreenState extends State<ListingScreen> {
     );
   }
 
-  Widget _buildSourceTab() {
+  Widget _buildSourceTab(){
     return Stack(children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.all(5.0),
-            width: MediaQuery.of(context).size.width,
-            child: Row(
+      StreamBuilder<List<ListModel>>(
+        stream: _listingsStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error.toString()}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text('No data available.'),
+            );
+          } else {
+            final data = snapshot.data!;
+            data.sort((a, b) => b.timeStamp!.compareTo(a.timeStamp!));
+            return Column(
               children: [
                 Container(
-                  child: SizedBox(
-                    // height: 24,
-                    width: 45,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/listingFilterScreen',
-                          arguments: selectedOptions,
-                        ).then((data) {
-                          if (data != null) {
-                            setState(() {
-                              selectedOptions = data as List<String>;
-                            });
-                          }
-                        });
-                      },
-                      child: Container(
-                        height: 30,
-                        padding: const EdgeInsets.all(3.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/Filter.svg',
-                          semanticsLabel: 'My SVG Image',
-                          height: 20,
+                  margin: EdgeInsets.all(5.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: SizedBox(
+                          // height: 24,
+                          width: 45,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/listingFilterScreen',
+                                arguments: selectedOptions,
+                              ).then((data) {
+                                if (data != null) {
+                                  setState(() {
+                                    selectedOptions = data as List<String>;
+                                  });
+                                }
+                              });
+                            },
+                            child: Container(
+                              height: 30,
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/Filter.svg',
+                                semanticsLabel: 'My SVG Image',
+                                height: 20,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      // selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: filterOptions.map((option) {
+                              return FilterOptionChip(
+                                title: option,
+                                selected: selectedOptions.contains(option),
+                                onTap: () {
+                                  // toggleOption(option);
+                                  setState(() {
+                                    if (filterOptions.isNotEmpty) {
+                                      filterOptions.remove(option);
+                                      selectedOptions.add(option);
+                                    }
+                                    // showListView = false;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                // selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
-                Expanded(
-                  child: Container(
+                if (selectedOptions.isNotEmpty)
+                  Container(
                     height: 50,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: filterOptions.map((option) {
+                      children: selectedOptions.map((option) {
                         return FilterOptionChip(
                           title: option,
-                          selected: selectedOptions.contains(option),
+                          selected: true,
                           onTap: () {
-                            // toggleOption(option);
                             setState(() {
-                              if (filterOptions.isNotEmpty) {
-                                filterOptions.remove(option);
-                                selectedOptions.add(option);
+                              if (selectedOptions.contains(option)){
+                                selectedOptions.remove(option);
+                                if(!filterOptions.contains(option)){
+                                  filterOptions.insert(0, option);
+                                }
+                                // filterOptions.add(option);
                               }
-                              // showListView = false;
+                              // else {
+                              //   selectedOptions.add(option);
+                              // }
                             });
+                            // toggleOption(option);
                           },
                         );
                       }).toList(),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (selectedOptions.isNotEmpty)
-            Container(
-              height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: selectedOptions.map((option) {
-                  return FilterOptionChip(
-                    title: option,
-                    selected: true,
-                    onTap: () {
-                      setState(() {
-                        if (selectedOptions.contains(option)){
-                          selectedOptions.remove(option);
-                          if(!filterOptions.contains(option)){
-                            filterOptions.insert(0, option);
-                          }
-                          // filterOptions.add(option);
-                        }
-                        // else {
-                        //   selectedOptions.add(option);
-                        // }
-                      });
-                      // toggleOption(option);
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-
-          Expanded(
-            child: StreamBuilder<List<ListModel>>(
-              stream: _listingsStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error.toString()}'),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Text('No data available.'),
-                  );
-                } else {
-                  final data = snapshot.data!;
-                  data.sort((a, b) => b.timeStamp!.compareTo(a.timeStamp!));
-                  return ListView.builder(
+                Expanded(
+                  child: ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, index){
                       final listing = data[index];
                       return _buildCustomCard(listing);
                     },
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
 
       Align(
