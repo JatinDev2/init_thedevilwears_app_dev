@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             children: [
                               Material(
                                 elevation: 4,
-                                shape: CircleBorder(),
+                                shape: const CircleBorder(),
                                 clipBehavior: Clip.none,
                                 child: Stack(
                                   alignment: Alignment.bottomRight,

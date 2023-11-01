@@ -9,6 +9,7 @@ import 'package:lookbook/screens/search/search_screen.dart';
 import 'package:lookbook/screens/profile/profile_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../listing/response_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,11 +39,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   void initState() {
+    setSharedPrefrence();
     gridItems = GridItemData.generateItems();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() => _select(_tabController.index));
     super.initState();
   }
+
+  void setSharedPrefrence()async{
+    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+    await prefs.setBool('isHomePage', true);
+  }
+
 
   void _onItemTapped(int index) {
     setState(() {

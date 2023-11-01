@@ -6,6 +6,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:faker_dart/faker_dart.dart';
 
+import 'PriviewScreen_second.dart';
+import 'Priview_listing_gallery.dart';
 import 'new_listing/List_Model.dart';
 
 
@@ -255,8 +257,8 @@ class _Details_ScreenState extends State<Details_Screen> {
       GridView.builder(
         shrinkWrap: true,
         itemCount: widget.listing.images!.length,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
@@ -270,25 +272,25 @@ class _Details_ScreenState extends State<Details_Screen> {
        Container(
        child: Column(
          children: [
-          Row(
-           children: const [
-             CircleAvatar(
-               radius: 20,
-               backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
-             ),
-             SizedBox(width: 8,),
-              Expanded(child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Add your comments...",
-                  hintStyle: TextStyle(
-                    color: Color(0xffACACAC),
-                    fontSize: 14,
-                  ),
-                  border: InputBorder.none,
-                ),
-              ),),
-           ],
-          ),
+          // Row(
+          //  children: const [
+          //    CircleAvatar(
+          //      radius: 20,
+          //      backgroundImage: NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
+          //    ),
+          //    SizedBox(width: 8,),
+          //     Expanded(child: TextField(
+          //       decoration: InputDecoration(
+          //         hintText: "Add your comments...",
+          //         hintStyle: TextStyle(
+          //           color: Color(0xffACACAC),
+          //           fontSize: 14,
+          //         ),
+          //         border: InputBorder.none,
+          //       ),
+          //     ),),
+          //  ],
+          // ),
            const SizedBox(height: 8,),
            GestureDetector(
              onTap: (){
@@ -324,7 +326,10 @@ class _Details_ScreenState extends State<Details_Screen> {
   _gridItem(int index){
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/lookbookImageDetailsScreen');
+        Navigator.of(context).push(MaterialPageRoute(builder: (_){
+          return PreviewListingGallery(selectedItems: widget.listing.images!,);
+        }));
+        // Navigator.pushNamed(context, '/lookbookImageDetailsScreen');
       },
       child: Stack(
         children: [
