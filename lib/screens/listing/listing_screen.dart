@@ -18,6 +18,7 @@ class ListingScreen extends StatefulWidget {
 
 class _ListingScreenState extends State<ListingScreen> {
   List<String> selectedOptions = [];
+  List<ListModel> filteredListings = [];
   bool showListView = true;
   // late Future<List<ListModel>> _fetchListingsFuture;
   late final Stream<List<ListModel>>
@@ -28,7 +29,7 @@ class _ListingScreenState extends State<ListingScreen> {
     'Shoes',
     'Accessories',
     'Bags',
-    'Jewelry',
+    'Jewellery',
     'Birthday',
     'Anniversary',
     'Graduation',
@@ -48,7 +49,7 @@ class _ListingScreenState extends State<ListingScreen> {
     'Shoes',
     'Accessories',
     'Bags',
-    'Jewelry',
+    'Jewellery',
     'Birthday',
     'Anniversary',
     'Graduation',
@@ -116,7 +117,12 @@ class _ListingScreenState extends State<ListingScreen> {
           if (listModel.selectedTags != null) {
             listModel.tags = listModel.selectedTags!.values.expand((tags) => tags).toList();
           }
-          listings.add(listModel);
+          if(selectedOptions.isNotEmpty){
+
+          }
+          else{
+            listings.add(listModel);
+          }
         }
         return listings;
       });
@@ -129,12 +135,25 @@ class _ListingScreenState extends State<ListingScreen> {
 
   void toggleOption(String option) {
     setState(() {
-      if (selectedOptions.contains(option)) {
+      if (selectedOptions.contains(option)){
+        print("HELOOOOOO");
         selectedOptions.remove(option);
+        print(filteredListings);
       } else {
         selectedOptions.add(option);
       }
     });
+    // filterListings();
+  }
+
+  void filterListings() {
+    for (var listing in _listings) {
+      if (listing.tags!.any((tag) => selectedOptions.contains(tag))) {
+        setState(() {
+          filteredListings.add(listing);
+        });
+      }
+    }
   }
 
   @override
@@ -147,7 +166,10 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    if(selectedOptions.isNotEmpty){
+      filterListings();
+    }
     return Scaffold(
       body: DefaultTabController(
         length: 2,
@@ -230,6 +252,7 @@ class _ListingScreenState extends State<ListingScreen> {
           } else {
             final data = snapshot.data!;
             data.sort((a, b) => b.timeStamp!.compareTo(a.timeStamp!));
+            _listings=data;
             return Column(
               children: [
                 Container(
@@ -312,6 +335,13 @@ class _ListingScreenState extends State<ListingScreen> {
                             setState(() {
                               if (selectedOptions.contains(option)){
                                 selectedOptions.remove(option);
+                                if(filteredListings.isNotEmpty){
+                                  for(int i=0; i<filteredListings.length; i++){
+                                    if(filteredListings[i].tags!.contains(option)){
+                                      filteredListings.remove(filteredListings[i]);
+                                    }
+                                  }
+                                }
                                 if(!filterOptions.contains(option)){
                                   filterOptions.insert(0, option);
                                 }
@@ -329,9 +359,9 @@ class _ListingScreenState extends State<ListingScreen> {
                   ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: data.length,
+                    itemCount: filteredListings.isNotEmpty? filteredListings.length:  _listings.length,
                     itemBuilder: (context, index){
-                      final listing = data[index];
+                      final listing = filteredListings.isNotEmpty? filteredListings[index]: _listings[index];
                       return _buildCustomCard(listing);
                     },
                   ),
