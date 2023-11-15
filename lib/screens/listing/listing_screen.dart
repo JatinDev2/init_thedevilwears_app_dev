@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'Details_Screen.dart';
 import 'new_listing/List_Model.dart';
 
@@ -147,6 +144,7 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 
   void filterListings() {
+    filteredListings.clear();
     for (var listing in _listings) {
       if (listing.tags!.any((tag) => selectedOptions.contains(tag))) {
         setState(() {
@@ -167,9 +165,7 @@ class _ListingScreenState extends State<ListingScreen> {
 
   @override
   Widget build(BuildContext context){
-    if(selectedOptions.isNotEmpty){
-      filterListings();
-    }
+
     return Scaffold(
       body: DefaultTabController(
         length: 2,
@@ -274,6 +270,7 @@ class _ListingScreenState extends State<ListingScreen> {
                                 if (data != null) {
                                   setState(() {
                                     selectedOptions = data as List<String>;
+                                    filterListings();
                                   });
                                 }
                               });
@@ -311,6 +308,7 @@ class _ListingScreenState extends State<ListingScreen> {
                                       filterOptions.remove(option);
                                       selectedOptions.add(option);
                                     }
+                                    filterListings();
                                     // showListView = false;
                                   });
                                 },
@@ -342,6 +340,7 @@ class _ListingScreenState extends State<ListingScreen> {
                                     }
                                   }
                                 }
+                                filterListings();
                                 if(!filterOptions.contains(option)){
                                   filterOptions.insert(0, option);
                                 }
@@ -359,9 +358,9 @@ class _ListingScreenState extends State<ListingScreen> {
                   ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: filteredListings.isNotEmpty? filteredListings.length:  _listings.length,
+                    itemCount: selectedOptions.isNotEmpty? filteredListings.length:  _listings.length,
                     itemBuilder: (context, index){
-                      final listing = filteredListings.isNotEmpty? filteredListings[index]: _listings[index];
+                      final listing = selectedOptions.isNotEmpty? filteredListings[index]: _listings[index];
                       return _buildCustomCard(listing);
                     },
                   ),

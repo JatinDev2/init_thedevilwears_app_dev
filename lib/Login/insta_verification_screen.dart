@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../instaLogin/instagram_view.dart';
 import 'final_screen.dart';
 
-class InstaVerification extends StatelessWidget {
-  const InstaVerification({Key? key}) : super(key: key);
+class InstaVerification extends StatefulWidget {
+  final Map<String, List<String>> map;
+  const InstaVerification({
+    super.key,
+    required this.map,
+});
+
+  @override
+  State<InstaVerification> createState() => _InstaVerificationState();
+}
+
+
+class _InstaVerificationState extends State<InstaVerification> {
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +28,7 @@ class InstaVerification extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           ),
@@ -38,7 +51,7 @@ class InstaVerification extends StatelessWidget {
                     height: 32 / 32,
                   ),
                 ),
-                SizedBox(
+               const SizedBox(
                   height: 14,
                 ),
                 const Text(
@@ -51,28 +64,28 @@ class InstaVerification extends StatelessWidget {
                     height: 16 / 14,
                   ),
                 ),
-                SizedBox(
+               const SizedBox(
                   height: 50,
                 ),
                 GestureDetector(
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (_) {
-                        return ConfirmedLoginScreen();
+                        return  InstagramView(map: widget.map,);
                       }));
                     },
                     child: Image.asset("assets/insta.png")),
               ],
             ),
           ),
-          Column(
+          const Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       "5",
                       style: TextStyle(

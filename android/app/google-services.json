@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "499908502762-tbkmam50h9sng9khcl5kagata3idfk5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.lookbook.lookbook",
+            "certificate_hash": "09394c0c4356fe3cdf7d2786378f838437a629ee"
+          }
+        },
+        {
           "client_id": "499908502762-qrqbnop4d5c9jmdnov782cuiu8gabl9l.apps.googleusercontent.com",
           "client_type": 3
         }

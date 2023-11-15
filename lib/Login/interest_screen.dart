@@ -25,33 +25,7 @@ class _InterestSccreenState extends State<InterestSccreen> {
 
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-  Future<void> addUser() async {
 
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final firstName = prefs.getString('firstName');
-      final lastName = prefs.getString('lastName');
-      final phoneNumber = prefs.getString('phoneNumber');
-      final userEmail = prefs.getString('userEmail');
-      final userType = prefs.getString('userType');
-      final userId = prefs.getString('userId');
-      await usersCollection.doc("$userId").set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'phoneNumber': phoneNumber!.replaceAll(" ", ""),
-        'userEmail': userEmail,
-        'preferences': selectedOptionsMap,
-        'userType': userType,
-      }).then((value) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return InstaVerification();
-        }));
-      });
-      print('User added to Firestore');
-    } catch (e) {
-      print('Error adding user to Firestore: $e');
-    }
-  }
 
   Future<Map<String, List<String>>> fetchFiltersData() async {
     final firestore = FirebaseFirestore.instance;
@@ -274,7 +248,10 @@ class _InterestSccreenState extends State<InterestSccreen> {
                   onTap: () async {
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setStringList('preferences', selectedOptions).then((value) {
-                      addUser();
+                      // addUser();
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                        return InstaVerification(map: selectedOptionsMap,);
+                      }));
                     });
                   },
                   child: Container(
