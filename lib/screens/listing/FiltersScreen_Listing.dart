@@ -325,6 +325,7 @@ class _FiltersScreen_ListingState extends State<FiltersScreen_Listing> {
               Navigator.of(context).pop(
                 _selectedOptions
               );
+
             },
             child: Container(
               height: 50,

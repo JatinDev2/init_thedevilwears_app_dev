@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
+import '../../common_widgets.dart';
 import 'ConfirmListing.dart';
 
 class PreviewScreen extends StatefulWidget {
@@ -390,39 +391,3 @@ class _PreviewScreenState extends State<PreviewScreen> {
 }
 
 
-class OptionChipDisplay extends StatelessWidget {
-  final String title;
-
-  OptionChipDisplay({
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-          top: 4.0,
-          left: 4.0,
-          right: 4.0,
-          bottom: 4.0
-      ),
-      padding:EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color:Color(0xffF9F9F9),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

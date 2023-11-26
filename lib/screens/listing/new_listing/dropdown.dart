@@ -23,7 +23,7 @@ class _DropDownState extends State<DropDown> {
     return  DropdownButtonHideUnderline(
         child: DropdownButton2<String>(
           isExpanded: true,
-          hint: Text("${widget.selectedValue}"),
+          hint: Text(widget.selectedValue),
           items: widget.items
               .map((String item) =>
               DropdownMenuItem<String>(
@@ -79,6 +79,5 @@ class _DropDownState extends State<DropDown> {
           ),
         ),
       );
-
   }
 }

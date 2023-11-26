@@ -1,0 +1,448 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+
+class FilterJobListings extends StatefulWidget {
+
+  final List<String>selectedOptions;
+  const FilterJobListings({
+    super.key,
+    required this.selectedOptions,
+});
+
+  @override
+  _FilterJobListingsState createState() => _FilterJobListingsState();
+}
+
+class _FilterJobListingsState extends State<FilterJobListings> {
+  String _selectedTab = 'Job Profile';
+  bool isLoading = true;
+  List catOptions=[];
+  int count = 0;
+  bool isQuery = false;
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _selectedOptions.addAll(widget.selectedOptions);
+    fetchData().then((value){
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  final List<String> _filterTabs = [
+    'Job Profile',
+    'Job Type',
+    'Duration',
+    'Work Mode',
+    'Location',
+    'Stipend',
+    'Start Date',
+  ];
+
+  void _clearAllFilters() {
+    setState(() {
+      _selectedOptions.clear();
+      catOptions.clear();
+      _selectedOptionMap = {
+        "Job Profile":[],
+        "Job Type":[],
+        "Duration":[],
+        "Work Mode":[],
+        "Location":[],
+        "Stipend":[],
+        "Start Date":[],
+      };
+    });
+  }
+
+  Map<String, dynamic> _selectedOptionMap = {
+    "Job Profile":[],
+    "Job Type":[],
+    "Duration":[],
+    "Work Mode":[],
+    "Location":[],
+    "Stipend":[],
+    "Start Date":[],
+  };
+
+  Map<String, dynamic> filterData = {};
+
+  Future<void> fetchData() async {
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('listing_jobs_Filters').get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        filterData = documentSnapshot.data() as Map<String, dynamic>;
+      } else {
+        print('No documents found in the "Filters" collection');
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+
+  final List _selectedOptions = [];
+  Map filteredItems = {};
+
+  Widget _buildFilterTabs(){
+    return Container(
+      height: _selectedOptions.isEmpty
+          ? MediaQuery.of(context).size.height - 150.h
+          : MediaQuery.of(context).size.height - 220.h,
+      child: ListView.builder(
+        itemCount: _filterTabs.length,
+        itemBuilder: (context, index){
+          String tab = _filterTabs[index];
+          // int selectedOptionsCount = _getSelectedOptionsCount(tab);
+          int selectedOptionsCount = _getSelectedOptionsCount(tab);
+          return Container(
+            decoration: BoxDecoration(
+              color:
+              _selectedTab == tab ? Colors.white : const Color(0xffEFEFEF),
+              border:  Border(
+                bottom: BorderSide(
+                  color: Color(0xFFDDDDDD),
+                  width: 1.0.w,
+                ),
+              ),
+            ),
+            child: ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    tab,
+                    style:  TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff4a4a4a),
+                      height: (20 / 16).h,
+                    ),
+                  ),
+                  // SizedBox(width: 5),
+                  if (selectedOptionsCount > 0)
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(
+                        selectedOptionsCount.toString(),
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xff4a4a4a),
+                          height: (28 / 14).h,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  _selectedTab = tab;
+                });
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterOptions(){
+    var options = filterData[_selectedTab] ?? [];
+      return Container(
+        height: _selectedOptions.isEmpty
+            ? MediaQuery.of(context).size.height - 150.h
+            : MediaQuery.of(context).size.height - 220.h,
+        child: ListView.builder(
+          itemCount: options.length,
+          itemBuilder: (context, index) {
+            String option = options[index];
+            bool isSelected = _selectedOptions.contains(option);
+            return ListTile(
+              onTap: () {
+                setState(() {
+                  if (isSelected){
+                    // _selectedOptions.remove(option);
+                    // _selectedOptions.contains(option);
+                    if(_selectedOptions.contains(option)){
+                      _selectedOptions.remove(option);
+                    }
+                  }
+                  else {
+                    _selectedOptions.add(option);
+                  }
+                });
+              },
+              title: Row(
+                children: [
+                   SizedBox(
+                    width: 8.w,
+                  ),
+                  Icon(
+                    isSelected ? Icons.check : null,
+                    color: Colors.black,
+                    size: 17.h,
+                  ),
+                  SizedBox(
+                    width: 16.w,
+                  ),
+                  Text(
+                    option,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight:
+                      isSelected ? FontWeight.w600 : FontWeight.w300,
+                      color: const Color(0xff3c3c3c),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      );
+  }
+
+  Widget _buildSelectedOptions(){
+    _selectedOptionMap.forEach((key,value){
+      if(value is Map){
+        value.forEach((key,items){
+          if( (items is List) && (items.isNotEmpty)){
+            for(int i=0; i<items.length;i++){
+              if(catOptions.contains(items[i])){
+                continue;
+              }
+              else{
+                catOptions.add(items[i]);
+              }
+            }
+          }
+        });
+      }
+    });
+    print("PRINTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+    print(catOptions);
+    if (_selectedOptions.isEmpty) {
+      return const SizedBox(
+        height: 0,
+      );
+    }
+
+    for(int i=0; i<catOptions.length ; i++){
+      if(_selectedOptions.contains(catOptions[i])){
+        continue;
+      }
+      else{
+        _selectedOptions.add(catOptions[i]);
+      }
+    }
+    print("Printing selecteddddd Optionsssssssssssssssssssssssss");
+    print(_selectedOptions);
+    return Container(
+      height: 60.h,
+      padding:  EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _selectedOptions.length,
+        itemBuilder: (context, index){
+          String option = _selectedOptions[index];
+          return Container(
+            margin:  EdgeInsets.only(right: 4.w),
+            padding:  EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  option,
+                  style:  TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.clip,
+                ),
+                 SizedBox(width: 6.w),
+                GestureDetector(
+                  onTap: (){
+                    print("TAAAAAAAAAAPPPPPPPPPPPPPEEEEEEEEEEEDDDDDDDDDDDDDDD");
+                    setState((){
+                      _selectedOptionMap.forEach((key,value){
+                        if(value is Map){
+                          value.forEach((key,items){
+                            if((items is List) && (items.contains(option))){
+                              items.remove(option);
+                            }
+                          });
+                        }
+                      });
+                      _selectedOptions.remove(option);
+                      if(catOptions.contains(option)){
+                        catOptions.remove(option);
+                      }
+                      print("Editttttttttttttttttt Printing selecteddddd Optionsssssssssssssssssssssssss");
+                      print(_selectedOptions);
+                    });
+                  },
+                  child: SvgPicture.asset(
+                    'assets/cross.svg',
+                    semanticsLabel: 'My SVG Image',
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  int _getSelectedOptionsCount(String tab){
+    var options = filterData[tab] ?? [];
+      count = 0;
+      for (var option in options) {
+        if (_selectedOptions.contains(option)) {
+          count++;
+        }
+      }
+    return count;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // fetchData();
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.black,
+            )),
+        title:  Text(
+          "Filters",
+          style: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xff0f1015),
+            height: (22 / 16).h,
+          ),
+          textAlign: TextAlign.left,
+        ),
+        backgroundColor: Colors.white,
+        // iconTheme: IconThemeData(color: Colors.black),
+        actions: [
+          Container(
+            margin:  EdgeInsets.only(
+              right: 16.0.w,
+            ),
+            child: TextButton(
+              onPressed: _clearAllFilters,
+              child:  Text(
+                "Clear All",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff4a4a4a),
+                  height: (20 / 16).h,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+        children: [
+          Container(
+            decoration:  BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xffDDDDDD),
+                  width: 1.0.w,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    child: _buildFilterTabs(),
+                  ),
+                ),
+                Flexible(
+                  flex: 4,
+                  child: Container(
+                    color: Colors.white,
+                    child: _buildFilterOptions(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // SizedBox(height: 4,),
+          _buildSelectedOptions(),
+          // SizedBox(height: 4,),
+          if (_selectedOptions.isNotEmpty)
+            Container(
+              decoration:  BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Color(0xffDDDDDD),
+                    width: 1.0.w,
+                  ),
+                ),
+              ),
+            ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              height: 50.h,
+              margin: _selectedOptions.isNotEmpty
+                  ?  EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w)
+                  :  EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+              child:  Center(
+                  child: Text(
+                    "APPLY FILTERS",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff4a4a4a),
+                      height: (20 / 16).h,
+                    ),
+                    textAlign: TextAlign.left,
+                  )),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

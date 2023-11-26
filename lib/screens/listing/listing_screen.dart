@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
+import '../common_widgets.dart';
+import '../jobs/jobListingScreen.dart';
 import 'Details_Screen.dart';
 import 'new_listing/List_Model.dart';
 
@@ -168,17 +170,17 @@ class _ListingScreenState extends State<ListingScreen> {
 
     return Scaffold(
       body: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Container(
           color: Colors.white,
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 13,
               ),
               Container(
                 color: Colors.white,
-                child: TabBar(
+                child: const TabBar(
                   tabs: [
                     Tab(
                       child: Text(
@@ -204,6 +206,18 @@ class _ListingScreenState extends State<ListingScreen> {
                         textAlign: TextAlign.left,
                       ),
                     ),
+                    Tab(
+                      child: Text(
+                        "Jobs",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          height: 24 / 16,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
                   ],
                   indicatorColor: Color(0xff282828),
                   labelColor: Color(0xff282828),
@@ -217,6 +231,7 @@ class _ListingScreenState extends State<ListingScreen> {
                     children: [
                       _buildSourceTab(),
                       _buildCollabTab(),
+                      JobListScreen(),
                     ],
                   ),
                 ),
@@ -361,7 +376,7 @@ class _ListingScreenState extends State<ListingScreen> {
                     itemCount: selectedOptions.isNotEmpty? filteredListings.length:  _listings.length,
                     itemBuilder: (context, index){
                       final listing = selectedOptions.isNotEmpty? filteredListings[index]: _listings[index];
-                      return _buildCustomCard(listing);
+                      return BuildCustomCard(listing: listing);
                     },
                   ),
                 ),
@@ -406,252 +421,9 @@ class _ListingScreenState extends State<ListingScreen> {
     );
   }
 
-  Widget _buildInfoColumns(String heading_text, String info_text) {
-    return Expanded(
-      child: Container(
-        height: 40,
-        child: Column(
-          children: [
-            Text(
-              heading_text,
-              style: const TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff9a9a9a),
-                height: 18 / 12,
-              ),
-            ),
-            Flexible(
-              child: Container(
-                margin: const EdgeInsets.all(4.0),
-                child: Text(
-                  info_text,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff424242),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  String getTimeAgo(String timestampString) {
-    // Convert the Firestore timestamp string to a DateTime
-    DateTime timestamp = DateTime.parse(timestampString);
 
-    // Get the current time
-    DateTime now = DateTime.now();
 
-    // Calculate the time difference
-    Duration difference = now.difference(timestamp);
-
-    if (difference.inSeconds < 60) {
-      return '${difference.inSeconds} seconds ago';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes} minutes ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours} hours ago';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
-    } else {
-      // Format the timestamp in a custom way if it's more than a week ago
-      String formattedDate = DateFormat('MMM d, yyyy').format(timestamp);
-      return 'on $formattedDate';
-    }
-  }
-
-  Widget _buildCustomCard(ListModel listing){
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.all(16),
-      child: InkWell(
-        onTap: () {
-       Navigator.of(context).push(MaterialPageRoute(builder: (_){
-         return Details_Screen(listing: listing);
-       }));
-          // Navigator.pushNamed(context, 'listingDetailsScreen');
-        },
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.all(2.0),
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: listing.tags!.map((option) {
-                        return OptionChipDisplay(
-                          title: option,
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                      "https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                   Expanded(
-                      child: Text(
-                    "${listing.createdBy}",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xff0f1015),
-                      height: 20 / 18,
-                    ),
-                    textAlign: TextAlign.left,
-                  )),
-                  Container(
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Required on ",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff0f1015),
-                          ),
-                        ),
-                        Text(
-                          "${listing.productDate}",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff0f1015),
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.all(8.0),
-              color: const Color(0xffF9F9F9),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildInfoColumns("For", "${listing.toStyleName}"),
-                  Container(
-                    margin: const EdgeInsets.all(2.0),
-                    height: 50,
-                    width: 2,
-                    color: const Color(0xffB7B7B9),
-                  ),
-                  _buildInfoColumns("Location", "${listing.location}"),
-                  Container(
-                    margin: const EdgeInsets.all(2.0),
-                    height: 50,
-                    width: 2,
-                    color: const Color(0xffB7B7B9),
-                  ),
-                  _buildInfoColumns("Event", "${listing.eventCategory}"),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      text: 'Requirements ',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff2F2F2F),
-                      ),
-                      children: [
-                        TextSpan(
-                          // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
-                          // text: "}"
-                          text: "${listing.requirement}",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xff424242),
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        "${getTimeAgo(listing.timeStamp!)}",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xff8b8b8b),
-                          height: 18 / 12,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () {
-                            // // Create a shareable link to the Details_Screen for the specific listing
-                            // String listingId = listing.userId!; // Replace with the actual ID of the listing
-                            // String shareableLink = 'https://in.lookbook.lookbook/details/$listingId';
-                            // // Use the url_launcher package to open the share dialog
-                            // launch(shareableLink);
-
-                            // Create a deep link to the next page in your app
-                            String deepLink = 'myapp://next_page'; // Replace with your actual deep link structure
-
-                            // Share the deep link using the share package
-                            Share.share('Check out this listing: $deepLink', subject: 'Listing Details');
-
-                          }, icon: const Icon(IconlyLight.send)),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(IconlyLight.bookmark)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class FilterOptionChip extends StatelessWidget {

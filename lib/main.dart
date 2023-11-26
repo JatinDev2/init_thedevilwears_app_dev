@@ -7,6 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lookbook/Login/firebase_api.dart';
 import 'package:lookbook/Provider/google_auth_provider.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
+import 'package:lookbook/screens/jobs/createNewJobListing.dart';
+import 'package:lookbook/screens/jobs/filterScreen.dart';
+import 'package:lookbook/screens/jobs/jobListingScreen.dart';
 import 'package:lookbook/screens/listing/Confirmation_screen.dart';
 import 'package:lookbook/screens/listing/Details_Screen.dart';
 import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
@@ -120,7 +123,9 @@ class _MyAppState extends State<MyApp> {
           // const FirstPage()
           // PhoneNumber_Screen()
           // HomeScreen(),
-
+          // CreateNewJobListing(),
+          // FilterJobListings(),
+          // JobListScreen(),
           StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
@@ -218,7 +223,14 @@ class _MyAppState extends State<MyApp> {
                 );
               }
               // Handle other named routes here if needed
+              if (settings.name == '/listingFilterJobScreen') {
+                // Retrieve the arguments passed when navigating to '/listingFilterScreen'
+                final arguments = settings.arguments as List<String>;
 
+                return MaterialPageRoute(
+                  builder: (context) => FilterJobListings(selectedOptions: arguments,),
+                );
+              }
               if (settings.name == '/listingPreviewScreenFirst') {
                 // Retrieve the arguments passed when navigating to '/listingFilterScreen'
                 final arguments = settings.arguments as List;

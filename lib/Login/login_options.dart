@@ -27,7 +27,11 @@ class _LoginOptionsState extends State<LoginOptions> {
       final userCollection = firestore.collection('users');
       final userDocument = await userCollection.doc(userId).get();
       if (userDocument.exists) {
-        print("HE#LLOO");
+        var userData = userDocument.data();
+
+           prefs.setString('firstName', userData!["firstName"].toString());
+           prefs.setString('lastName', userData["lastName"].toString());
+
         return true;
       }
       else {
