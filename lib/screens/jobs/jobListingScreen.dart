@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../common_widgets.dart';
 import '../listing/listing_screen.dart';
 import 'createNewJobListing.dart';
@@ -20,24 +20,16 @@ class _JobListScreenState extends State<JobListScreen> {
   List<jobModel> _listings = [];
   List<jobModel> filteredListings = [];
 
-  List<String>selectedOptions=[];
+  List selectedOptions=[];
   List<String> filterOptions = [
-    'Clothing',
-    'Shoes',
+    'Fixed',
+    'Project Based',
     'Accessories',
-    'Bags',
-    'Jewellery',
-    'Birthday',
-    'Anniversary',
-    'Graduation',
-    'Holiday',
-    'Prom',
-    'Movie Promotions',
-    'Shoots',
-    'Events',
-    'Concerts',
-    'Weddings',
-    'Public Appearances',
+    'Video Editor',
+    'Internship',
+    'Later',
+    'Unpaid',
+    'Hybrid',
   ];
 
   Stream<List<jobModel>> fetchListingsFromFirestoreStream() {
@@ -100,6 +92,7 @@ class _JobListScreenState extends State<JobListScreen> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xffF7F7F7),
@@ -109,7 +102,7 @@ class _JobListScreenState extends State<JobListScreen> {
             stream: _listingsStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
@@ -117,7 +110,7 @@ class _JobListScreenState extends State<JobListScreen> {
                   child: Text('Error: ${snapshot.error.toString()}'),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
+                return const Center(
                   child: Text('No data available.'),
                 );
               } else {
@@ -127,14 +120,14 @@ class _JobListScreenState extends State<JobListScreen> {
                 return Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.all(5.0),
+                      margin: EdgeInsets.symmetric(horizontal: 5.0.w, vertical: 5.0.h),
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         children: [
                           Container(
                             child: SizedBox(
                               // height: 24,
-                              width: 45,
+                              width: 45.w,
                               child: GestureDetector(
                                 onTap: () async{
                                   Navigator.pushNamed(
@@ -144,7 +137,7 @@ class _JobListScreenState extends State<JobListScreen> {
                                   ).then((data) {
                                     if (data != null) {
                                       setState(() {
-                                        selectedOptions = data as List<String>;
+                                        selectedOptions = data as List;
                                         filterListings();
                                       });
                                     }
@@ -152,16 +145,16 @@ class _JobListScreenState extends State<JobListScreen> {
 
                                 },
                                 child: Container(
-                                  height: 30,
-                                  padding: const EdgeInsets.all(3.0),
+                                  height: 30.h,
+                                  padding:  EdgeInsets.symmetric(horizontal: 3.0.w, vertical: 3.0.h),
                                   decoration: BoxDecoration(
                                     color: Theme.of(context).colorScheme.primary,
-                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderRadius: BorderRadius.circular(20.0.r),
                                   ),
                                   child: SvgPicture.asset(
                                     'assets/Filter.svg',
                                     semanticsLabel: 'My SVG Image',
-                                    height: 20,
+                                    height: 20.h,
                                   ),
                                 ),
                               ),
@@ -169,8 +162,8 @@ class _JobListScreenState extends State<JobListScreen> {
                           ),
                           // selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
                           Expanded(
-                            child: Container(
-                              height: 50,
+                            child: SizedBox(
+                              height: 50.h,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: filterOptions.map((option) {
@@ -197,8 +190,8 @@ class _JobListScreenState extends State<JobListScreen> {
                       ),
                     ),
                     if (selectedOptions.isNotEmpty)
-                      Container(
-                        height: 50,
+                      SizedBox(
+                        height: 50.h,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: selectedOptions.map((option) {
@@ -234,9 +227,9 @@ class _JobListScreenState extends State<JobListScreen> {
                       ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: selectedOptions.isNotEmpty? _listings.length:  _listings.length,
+                        itemCount: selectedOptions.isNotEmpty? filteredListings.length:  _listings.length,
                         itemBuilder: (context, index){
-                          final listing = selectedOptions.isNotEmpty? _listings[index]: _listings[index];
+                          final listing = selectedOptions.isNotEmpty? filteredListings[index]: _listings[index];
                           return BuildCustomJobCard(listing: listing);
                         },
                       ),
@@ -256,18 +249,18 @@ class _JobListScreenState extends State<JobListScreen> {
                 }));
               },
               child: Container(
-                height: 50,
-                width: 170,
-                margin: const EdgeInsets.all(10.0),
+                height: 50.h,
+                width: 170.w,
+                margin: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 10.0.h),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(10.0.r),
                 ),
-                child: const Center(
+                child:  Center(
                   child: Text(
                     "Create a listing",
                     style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),

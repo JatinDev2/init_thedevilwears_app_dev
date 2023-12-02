@@ -225,7 +225,7 @@ class _MyAppState extends State<MyApp> {
               // Handle other named routes here if needed
               if (settings.name == '/listingFilterJobScreen') {
                 // Retrieve the arguments passed when navigating to '/listingFilterScreen'
-                final arguments = settings.arguments as List<String>;
+                final arguments = settings.arguments as List;
 
                 return MaterialPageRoute(
                   builder: (context) => FilterJobListings(selectedOptions: arguments,),
