@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/screens/jobs/previewListingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../listing/new_listing/ConfirmListing.dart';
 import '../listing/new_listing/dropdown.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
@@ -29,6 +29,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   String stipendValue="/month";
   bool isLoading=false;
   final _formKey = GlobalKey<FormState>();
+  String countryValue = "";
+  String stateValue = "";
+  String cityValue = "";
+  String address = "";
+
 
   List<String> items=[
     'Fashion Stylist',
@@ -330,19 +335,33 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                 ),
                 textAlign: TextAlign.left,
               ),
-              TextFormField(
-                controller: officeLocController,
-                decoration: const InputDecoration(
-                  hintText: "Eg Mumbai",
-                  border: InputBorder.none
+
+              Container(
+                margin: EdgeInsets.all(20),
+                child: CSCPicker(
+                  defaultCountry: CscCountry.India,
+                  disableCountry: true,
+                  layout: Layout.horizontal,
+                  //flagState: CountryFlag.DISABLE,
+                  onCountryChanged: (country) {},
+                  onStateChanged: (state) {
+                    if(state!=null){
+                      stateValue=state;
+                    }
+                  },
+                  onCityChanged: (city) {
+                    if(city!=null){
+                      cityValue=city;
+                    }
+                  },
+                  /* countryDropdownLabel: "*Country",
+          stateDropdownLabel: "*State",
+          cityDropdownLabel: "*City",*/
+                  //dropdownDialogRadius: 30,
+                  //searchBarRadius: 30,
                 ),
-                validator: (value){
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter office location.';
-                  }
-                  return null;
-                },
               ),
+
 
               const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
               SizedBox(height: 18.h,),
@@ -470,6 +489,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     hintText: "eg: 5",
                     border: InputBorder.none
                 ),
+                keyboardType: TextInputType.number,
               ),
               SizedBox(height: 15.h,),
               const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
@@ -498,6 +518,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                           });
                         },
                         checkColor: Colors.white,
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ),
                       Text(
                         option,
@@ -547,7 +568,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                               jobDuration: jobDur,
                               jobDurExact: jobDurController.text,
                               workMode: jobLoc,
-                              officeLoc: officeLocController.text,
+                              officeLoc: "$cityValue, $stateValue, India",
                               tentativeStartDate: startDate.toString(),
                               stipend: stipend,
                               stipendAmount:stipendController.text,
@@ -619,7 +640,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                             "jobDuration": jobDur,
                             "jobDurationExact": jobDurController.text,
                             "workMode": jobLoc,
-                            "officeLoc": officeLocController.text,
+                            "officeLoc": "$cityValue, $stateValue, India",
                             "tentativeStartDate": startDate.toString(),
                             "stipend": stipend,
                             "stipendAmount":stipendController.text,
