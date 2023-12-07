@@ -125,93 +125,93 @@ class _MyAppState extends State<MyApp> {
           // HomeScreen(),
           // CreateNewJobListing(),
           // FilterJobListings(),
-          JobListScreen(),
-          // StreamBuilder(
-          //   stream: FirebaseAuth.instance.authStateChanges(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.hasError) {
-          //       return Scaffold(
-          //         body: Center(
-          //           child: Text("Something went wrong"),
-          //         ),
-          //       );
-          //     } else if (snapshot.hasData) {
-          //       return FutureBuilder(
-          //         future: SharedPreferences.getInstance(),
-          //         builder: (context, prefsSnapshot) {
-          //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
-          //             return FirstPage();
-          //           } else if (prefsSnapshot.hasData) {
-          //             final prefs = prefsSnapshot.data as SharedPreferences;
-          //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
-          //             final optionSelected = prefs.getBool('optionSelected') ?? false;
-          //             final isHomePage= prefs.getBool('isHomePage') ?? false;
-          //             if(isHomePage){
-          //               return HomeScreen();
-          //             }
-          //           else if (phoneVerified && optionSelected){
-          //               return HomeScreen();
-          //             }
-          //               else if(phoneVerified && !optionSelected){
-          //                 return OptionsScreen();
-          //             }
-          //             else if(!phoneVerified && !optionSelected) {
-          //               return PhoneNumber_Screen();
-          //             }
-          //             else{
-          //               return FirstPage();
-          //             }
-          //           } else{
-          //             // Handle the case when SharedPreferences loading failed
-          //             return Scaffold(
-          //               body: Center(
-          //                 child: Text("Failed to load SharedPreferences"),
-          //               ),
-          //             );// StreamBuilder(
-          // // //   stream: FirebaseAuth.instance.authStateChanges(),
-          // // //   builder: (context, snapshot) {
-          // // //     if (snapshot.hasError) {
-          // // //       return Scaffold(
-          // // //         body: Center(
-          // // //           child: Text("Something went wrong"),
-          // // //         ),
-          // // //       );
-          // // //     } else if (snapshot.hasData) {
-          // // //       return FutureBuilder(
-          // // //         future: SharedPreferences.getInstance(),
-          // // //         builder: (context, prefsSnapshot) {
-          // // //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
-          // // //             return FirstPage();
-          // // //           } else if (prefsSnapshot.hasData) {
-          // // //             final prefs = prefsSnapshot.data as SharedPreferences;
-          // // //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
-          // // //             if (phoneVerified){
-          // // //               return HomeScreen();
-          // // //             } else {
-          // // //               return PhoneNumber_Screen();
-          // // //             }
-          // // //           } else {
-          // // //             // Handle the case when SharedPreferences loading failed
-          // // //             return Scaffold(
-          // // //               body: Center(
-          // // //                 child: Text("Failed to load SharedPreferences"),
-          // // //               ),
-          // // //             );
-          // // //           }
-          // // //         },
-          // // //       );
-          // // //     } else {
-          // // //       return FirstPage();
-          // // //     }
-          // // //   },
-          //           }
-          //         },
-          //       );
-          //     } else {
-          //       return FirstPage();
-          //     }
-          //   },
-          // ),
+          // JobListScreen(),
+          StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Scaffold(
+                  body: Center(
+                    child: Text("Something went wrong"),
+                  ),
+                );
+              } else if (snapshot.hasData) {
+                return FutureBuilder(
+                  future: SharedPreferences.getInstance(),
+                  builder: (context, prefsSnapshot) {
+                    if (prefsSnapshot.connectionState == ConnectionState.waiting) {
+                      return FirstPage();
+                    } else if (prefsSnapshot.hasData) {
+                      final prefs = prefsSnapshot.data as SharedPreferences;
+                      final phoneVerified = prefs.getBool('phoneVerified') ?? false;
+                      final optionSelected = prefs.getBool('optionSelected') ?? false;
+                      final isHomePage= prefs.getBool('isHomePage') ?? false;
+                      if(isHomePage){
+                        return HomeScreen();
+                      }
+                    else if (phoneVerified && optionSelected){
+                        return HomeScreen();
+                      }
+                        else if(phoneVerified && !optionSelected){
+                          return OptionsScreen();
+                      }
+                      else if(!phoneVerified && !optionSelected) {
+                        return PhoneNumber_Screen();
+                      }
+                      else{
+                        return FirstPage();
+                      }
+                    } else{
+                      // Handle the case when SharedPreferences loading failed
+                      return Scaffold(
+                        body: Center(
+                          child: Text("Failed to load SharedPreferences"),
+                        ),
+                      );// StreamBuilder(
+          // //   stream: FirebaseAuth.instance.authStateChanges(),
+          // //   builder: (context, snapshot) {
+          // //     if (snapshot.hasError) {
+          // //       return Scaffold(
+          // //         body: Center(
+          // //           child: Text("Something went wrong"),
+          // //         ),
+          // //       );
+          // //     } else if (snapshot.hasData) {
+          // //       return FutureBuilder(
+          // //         future: SharedPreferences.getInstance(),
+          // //         builder: (context, prefsSnapshot) {
+          // //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
+          // //             return FirstPage();
+          // //           } else if (prefsSnapshot.hasData) {
+          // //             final prefs = prefsSnapshot.data as SharedPreferences;
+          // //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
+          // //             if (phoneVerified){
+          // //               return HomeScreen();
+          // //             } else {
+          // //               return PhoneNumber_Screen();
+          // //             }
+          // //           } else {
+          // //             // Handle the case when SharedPreferences loading failed
+          // //             return Scaffold(
+          // //               body: Center(
+          // //                 child: Text("Failed to load SharedPreferences"),
+          // //               ),
+          // //             );
+          // //           }
+          // //         },
+          // //       );
+          // //     } else {
+          // //       return FirstPage();
+          // //     }
+          // //   },
+                    }
+                  },
+                );
+              } else {
+                return FirstPage();
+              }
+            },
+          ),
 
               onGenerateRoute: (settings) {
               if (settings.name == '/listingFilterScreen') {
