@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_state_city/utils/city_utils.dart';
+import 'package:country_state_city/utils/country_utils.dart';
+import 'package:country_state_city/utils/state_utils.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/screens/jobs/previewListingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../common_widgets.dart';
 import '../listing/new_listing/dropdown.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
@@ -33,7 +38,14 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   String stateValue = "";
   String cityValue = "";
   String address = "";
+  List countryStates=[];
+  List<String> countryStatesStringList=[];
 
+  List countryCitis=[];
+  List<String> countryCitisStringList=[];
+
+  bool isLoadingData=true;
+  TextEditingController textEditingController=TextEditingController();
 
   List<String> items=[
     'Fashion Stylist',
@@ -65,14 +77,16 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
     'Extension of tenure':false,
   };
 
-  TextEditingController responsibilityText=TextEditingController(
-    text: "1.\n2.\n3.\n"
-  );
+  TextEditingController responsibilityText=TextEditingController();
   TextEditingController jobDurController=TextEditingController();
   TextEditingController stipendController=TextEditingController();
   TextEditingController officeLocController=TextEditingController();
   TextEditingController openingsController=TextEditingController();
   final CollectionReference listCollection = FirebaseFirestore.instance.collection('jobListing');
+  String _selectedItem = 'Select Item';
+  String? selectedStateValueDrop;
+  String? selectedCityValueDrop;
+
 
 
   void updateJobType(String type) {
@@ -106,6 +120,33 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData().then((value) {
+setState(() {
+  isLoadingData=false;
+});
+    });
+
+  }
+
+  Future<void> getData()async{
+
+    final country = await getCountryFromCode('IN');
+    if (country != null) {
+       countryStates = await getStatesOfCountry(country.isoCode);
+       countryCitis = await getCountryCities(country.isoCode);
+       for(int i=0; i<countryStates.length;i++){
+         countryStatesStringList.add(countryStates[i].name);
+       }
+       for(int i=0; i<countryCitis.length;i++){
+         countryCitisStringList.add(countryCitis[i].name);
+       }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -126,11 +167,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
           textAlign: TextAlign.left,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 22.w,
-          right: 22.w,
-          bottom: 40.h
+      body: isLoadingData? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+        padding: const EdgeInsets.only(
+          left: 22,
+          right: 22,
+          bottom: 40
         ),
         child: Form(
           key: _formKey,
@@ -139,18 +180,18 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 25.h,),
-               Text(
+               const Text(
                 "Job Type",
                 style: TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 8.h,),
+              const SizedBox(height: 8,),
               CustomRadioGroup(
                 selectedValue: jobType,
                 option1: "Internship",
@@ -162,16 +203,16 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                 },
               ),
               SizedBox(height: 15.h,),
-             const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-             SizedBox(height: 14.h,),
-               Text(
+             const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+             const SizedBox(height: 14,),
+               const Text(
                 "Job profile",
                 style: TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -179,20 +220,20 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   width: MediaQuery.of(context).size.width,
                   child:  DropDown(selectedValue: dropdownValue, items:items ,)
               ),
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-              SizedBox(height: 22.h,),
-               Text(
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+              const SizedBox(height: 22,),
+               const Text(
                 "Day to day responsibilities should include:",
                 style: TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 10.h,),
+              const SizedBox(height: 10,),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 height: 132.h,
@@ -204,6 +245,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   controller: responsibilityText,
                   decoration:const InputDecoration(
                  border: InputBorder.none,
+                    hintText: "1.\n2.\n3.\n"
                   ),
                   maxLines: 4,
                   validator: (value) {
@@ -214,19 +256,19 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   },
                 ),
               ),
-              SizedBox(height: 22.h,),
-               Text(
+              const SizedBox(height: 22,),
+               const Text(
                 "Job duration",
                 style: TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color:const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color:Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 16.h,),
+              const SizedBox(height: 16,),
               CustomRadioGroup(
                 selectedValue: jobDur,
                 option1: "Fixed",
@@ -238,17 +280,17 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                 },
               ),
              if(jobDur=="Fixed")
-               SizedBox(height: 18.h,),
+               const SizedBox(height: 18,),
               if(jobDur=="Fixed")
               Row(
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    height: 55.h,
-                    width: 242.w,
+                    height: 50.h,
+                    width: 232.w,
                     decoration: BoxDecoration(
                         color: const Color(0xffF8F7F7),
-                        borderRadius: BorderRadius.circular(14.0.r)
+                        borderRadius: BorderRadius.circular(8.0.r)
                     ),
                     child: TextFormField(
                       controller: jobDurController,
@@ -270,10 +312,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   ),
                   SizedBox(width: 9.w,),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                    height: 50.h,
+                    padding: EdgeInsets.symmetric(horizontal: 14.0.w),
                     decoration: BoxDecoration(
                       color: const Color(0xffF8F7F7),
-                      borderRadius: BorderRadius.circular(15.0.r)
+                      borderRadius: BorderRadius.circular(8.0.r)
                     ),
                     child: DropdownButton<String>(
                       value: jobDurValue,
@@ -288,7 +331,13 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value, style: const TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff666666),
+                            height: 21/14,
+                          ),),
                         );
                       }).toList(),
                     ),
@@ -297,20 +346,20 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                 ],
               ),
               SizedBox(height: 22.h,),
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-              SizedBox(height: 13.h,),
-              Text(
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+              const SizedBox(height: 13,),
+              const Text(
                 "Type",
                 style:  TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 7.h,),
+              const SizedBox(height: 12,),
               CustomRadioGroup(
                 selectedValue: jobLoc,
                 option1: "In office",
@@ -321,61 +370,231 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   updateJobLoc(value);
                 },
               ),
-              SizedBox(height: 15.h,),
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-              SizedBox(height: 13.h,),
-              Text(
+              const SizedBox(height: 15,),
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+              const SizedBox(height: 13,),
+              const Text(
                 "Office location",
                 style:  TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
+              const SizedBox(height: 4,),
 
-              Container(
-                margin: EdgeInsets.all(20),
-                child: CSCPicker(
-                  defaultCountry: CscCountry.India,
-                  disableCountry: true,
-                  layout: Layout.horizontal,
-                  //flagState: CountryFlag.DISABLE,
-                  onCountryChanged: (country) {},
-                  onStateChanged: (state) {
-                    if(state!=null){
-                      stateValue=state;
-                    }
-                  },
-                  onCityChanged: (city) {
-                    if(city!=null){
-                      cityValue=city;
-                    }
-                  },
-                  /* countryDropdownLabel: "*Country",
-          stateDropdownLabel: "*State",
-          cityDropdownLabel: "*City",*/
-                  //dropdownDialogRadius: 30,
-                  //searchBarRadius: 30,
-                ),
+          //     Container(
+          //       margin: EdgeInsets.all(20),
+          //       child: CSCPicker(
+          //         defaultCountry: CscCountry.India,
+          //         disableCountry: true,
+          //         disabledDropdownDecoration: BoxDecoration(
+          //         ),
+          //         layout: Layout.horizontal,
+          //         //flagState: CountryFlag.DISABLE,
+          //         onCountryChanged: (country) {},
+          //         onStateChanged: (state) {
+          //           if(state!=null){
+          //             stateValue=state;
+          //           }
+          //         },
+          //         onCityChanged: (city) {
+          //           if(city!=null){
+          //             cityValue=city;
+          //           }
+          //         },
+          //         /* countryDropdownLabel: "*Country",
+          // stateDropdownLabel: "*State",
+          // cityDropdownLabel: "*City",*/
+          //         //dropdownDialogRadius: 30,
+          //         //searchBarRadius: 30,
+          //       ),
+          //     ),
+
+              Row(
+                children: [
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton2<String>(
+                      isExpanded: true,
+                      hint: Text(
+                        'Select State',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
+                        ),
+                      ),
+                      items: countryStatesStringList
+                          .map((item) => DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ))
+                          .toList(),
+                      value: selectedStateValueDrop,
+                      onChanged: (value){
+                        setState((){
+                          selectedStateValueDrop = value;
+                          stateValue=value!;
+                        });
+                      },
+                      buttonStyleData: const ButtonStyleData(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        height: 40,
+                        width: 150,
+                      ),
+                      dropdownStyleData: const DropdownStyleData(
+                        maxHeight: 200,
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        height: 40,
+                      ),
+                      dropdownSearchData: DropdownSearchData(
+                        searchController: textEditingController,
+                        searchInnerWidgetHeight: 50,
+                        searchInnerWidget: Container(
+                          height: 50,
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 4,
+                            right: 8,
+                            left: 8,
+                          ),
+                          child: TextFormField(
+                            expands: true,
+                            maxLines: null,
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              hintText: 'Search for an item...',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        searchMatchFn: (item, searchValue) {
+                          return item.value.toString().contains(searchValue);
+                        },
+                      ),
+                      //This to clear the search value when you close the menu
+                      onMenuStateChange: (isOpen) {
+                        if (!isOpen) {
+                          textEditingController.clear();
+                        }
+                      },
+                    ),
+                  ),
+                  Spacer(),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton2<String>(
+                      isExpanded: true,
+                      hint: Text(
+                        'Select City',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
+                        ),
+                      ),
+                      items: countryCitisStringList
+                          .map((item) => DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ))
+                          .toList(),
+                      value: selectedCityValueDrop,
+                      onChanged: (value){
+                        setState((){
+                          selectedCityValueDrop = value;
+                          cityValue=value!;
+                        });
+                      },
+                      buttonStyleData: const ButtonStyleData(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        height: 40,
+                        width: 150,
+                      ),
+                      dropdownStyleData: const DropdownStyleData(
+                        maxHeight: 200,
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        height: 40,
+                      ),
+                      dropdownSearchData: DropdownSearchData(
+                        searchController: textEditingController,
+                        searchInnerWidgetHeight: 50,
+                        searchInnerWidget: Container(
+                          height: 50,
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 4,
+                            right: 8,
+                            left: 8,
+                          ),
+                          child: TextFormField(
+                            expands: true,
+                            maxLines: null,
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              hintText: 'Search for an item...',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        searchMatchFn: (item, searchValue) {
+                          return item.value.toString().contains(searchValue);
+                        },
+                      ),
+                      //This to clear the search value when you close the menu
+                      onMenuStateChange: (isOpen) {
+                        if (!isOpen) {
+                          textEditingController.clear();
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 6,),
 
-
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-              SizedBox(height: 18.h,),
-               Text(
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+              const SizedBox(height: 18,),
+               const Text(
                 "Tentative start Date",
                 style: TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
+             const SizedBox(height: 8,),
               CustomRadioGroup(
                 selectedValue: startDate,
                 option1: "Immediately(within next 30 days)",
@@ -387,20 +606,23 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   updateStartDate(value);
                 },
               ),
-              SizedBox(height: 15.h,),
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
-              SizedBox(height: 13.h,),
-              Text(
+              const SizedBox(height: 15,),
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+              const SizedBox(height: 13,),
+
+              const Text(
                 "Stipend",
                 style:  TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
+              const SizedBox(height: 12,),
+
               CustomRadioGroup(
                 selectedValue: stipend,
                 option1: "Unpaid",
@@ -412,23 +634,30 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   updateStipend(value);
                 },
               ),
-              SizedBox(height: 20.h,),
+              SizedBox(height: 20.h),
               if(stipend!="Unpaid")
               Row(
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    height: 55.h,
-                    width: 242.w,
+                    height: 50.h,
+                    width: 232.w,
                     decoration: BoxDecoration(
                         color: const Color(0xffF8F7F7),
-                        borderRadius: BorderRadius.circular(14.0.r)
+                        borderRadius: BorderRadius.circular(8.0.r)
                     ),
                     child: TextFormField(
                       controller: stipendController,
                       decoration:const InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Mention an Amount here"
+                          hintText: "Mention an Amount here",
+                        hintStyle: TextStyle(
+    fontFamily: "Poppins",
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Color(0xff919191),
+    height: 21/14,
+    ),
                       ),
                       keyboardType: TextInputType.number,
                       validator: (value){
@@ -444,10 +673,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   ),
                   SizedBox(width: 9.w,),
                   Container(
+                    height: 50.h,
                     padding: EdgeInsets.symmetric(horizontal: 10.0.w),
                     decoration: BoxDecoration(
                         color: const Color(0xffF8F7F7),
-                        borderRadius: BorderRadius.circular(15.0.r)
+                        borderRadius: BorderRadius.circular(8.0.r)
                     ),
                     child: DropdownButton<String>(
                       value: stipendValue,
@@ -462,23 +692,28 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value,style: const TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff020202),
+                            height: 22/14,
+                          ),),
                         );
                       }).toList(),
                     ),
                   ),
-
                 ],
               ),
               SizedBox(height: 22.h,),
-              Text(
+              const Text(
                 "Number of openings (optional)",
                 style:  TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -492,16 +727,16 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 15.h,),
-              const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
+              const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
               SizedBox(height: 19.h,),
-              Text(
+              const Text(
                 "Perks",
                 style:  TextStyle(
                   fontFamily: "Poppins",
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xff2d2d2d),
-                  height: (24/16).h,
+                  color: Color(0xff2d2d2d),
+                  height: (24/16),
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -522,12 +757,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                       ),
                       Text(
                         option,
-                        style:  TextStyle(
+                        style:  const TextStyle(
                           fontFamily: "Poppins",
-                          fontSize: 16.sp,
+                          fontSize: 15,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xff2d2d2d),
-                          height: (21/14).h,
+                          color: Color(0xff2d2d2d),
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -556,7 +790,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                                 _perks.add(key);
                               }
                             });
-                            List<String>tags=[dropdownValue,jobType,jobDurController.text];
+                            List<String>tags=[dropdownValue,jobType,"${jobDurController.text} $jobDurValue"];
 
                             print("Tags:::::::::::::::::::::::::::::::::::::::::::::::::::::::");
                             print(tags);
@@ -764,9 +998,9 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
       child: Row(
         children: [
           Container(
-            width: 15.0.w,
-            height: 15.0.h,
-            padding: const EdgeInsets.all(2.0),
+            width: 15.0,
+            height: 15.0,
+            padding: const EdgeInsets.all(1.0),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -776,8 +1010,8 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
             ),
             child: widget.selectedValue == value
                 ? Container(
-              width: 9.0.w,
-              height: 9.0.h,
+              width: 11.0,
+              height: 11.0,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.black,
@@ -796,7 +1030,7 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
               height: 21/14,
             ),
             textAlign: TextAlign.left,
-          )
+          ),
         ],
       ),
     );
@@ -807,43 +1041,45 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
       onTap: () {
         _selectDate(context);
       },
-      child: Row(
-        children: [
-          Container(
-            width: 15.0.w,
-            height: 15.0.h,
-            padding: const EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color:  Colors.black,
-                width: 2.0,
-              ),
-            ),
-            child: widget.selectedValue == value
-                ? Container(
-              width: 9.0.w,
-              height: 9.0.h,
-              decoration: const BoxDecoration(
+      child: Container(
+        child: Row(
+          children: [
+            Container(
+              width: 15.0,
+              height: 15.0,
+              padding: const EdgeInsets.all(2.0),
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.black,
+                border: Border.all(
+                  color:  Colors.black,
+                  width: 2.0,
+                ),
               ),
-            )
-                : Container(),
-          ),
-          const SizedBox(width: 8.0),
-          Text(
-            label,
-            style: const TextStyle(
-              fontFamily: "Poppins",
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xff030303),
-              height: 21/14,
+              child: widget.selectedValue == value
+                  ? Container(
+                width: 9.0.w,
+                height: 9.0.h,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black,
+                ),
+              )
+                  : Container(),
             ),
-            textAlign: TextAlign.left,
-          )
-        ],
+            const SizedBox(width: 8.0),
+            Text(
+              label,
+              style: const TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff030303),
+                height: 21/14,
+              ),
+              textAlign: TextAlign.left,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -851,7 +1087,7 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
 
   @override
   Widget build(BuildContext context) {
-    if(widget.label.isEmpty ){
+    if(widget.label.isEmpty){
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -896,11 +1132,11 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
        mainAxisAlignment: MainAxisAlignment.start,
        children: [
          buildRadioButton(widget.option1, widget.option1),
-         SizedBox(width: 34.0.w),
+         const Spacer(),
          buildRadioButton(widget.option2, widget.option2),
        ],
      ),
-         SizedBox(height: 4.h,),
+         SizedBox(height: 5.h,),
          buildDateRadioButton(dateController.text, dateController.text)
        ],
      );

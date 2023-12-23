@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common_widgets.dart';
+import 'confirmJobListing.dart';
 import 'job_model.dart';
 
 class PreviewJobListing extends StatefulWidget {
@@ -17,6 +20,9 @@ class PreviewJobListing extends StatefulWidget {
 
 class _PreviewJobListingState extends State<PreviewJobListing> {
   bool isLoading=false;
+  final CollectionReference listCollection = FirebaseFirestore.instance.collection('jobListing');
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,128 +79,103 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                         backgroundImage:const NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
                       ),
                       SizedBox(width: 13.w,),
-                      Text(widget.newJobModel.createdBy, style: TextStyle(
-                        color: const Color(0xff0F1015),
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
+                      Text(widget.newJobModel.createdBy, style: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xff0f1015),
+                        height: 20/20,
                       ),),
                     ],
                   ),
                   SizedBox(height: 33.h,),
-                  Text("Job Type", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                  Text(widget.newJobModel.jobType, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                  ),),
-                  SizedBox(height: 18.h,),
-                  Text("Job Profile", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                  Text(widget.newJobModel.jobProfile, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                  ),),
-                  SizedBox(height: 18.h,),
-                  Text("Day to day responsibilities", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                  Text(widget.newJobModel.responsibilities, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                  ),),
-                  // SizedBox(height: 10.h,),
-                  Text("Job Duration", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      buildColumns("assets/Suitcase.svg","Job type", widget.newJobModel.jobType),
+                      buildColumns("assets/jobProfile.svg","Job Profile", widget.newJobModel.jobProfile),
+                      buildColumns("assets/Dollar.svg","Stipend", widget.newJobModel.stipend=="Unpaid"? widget.newJobModel.stipend : "${widget.newJobModel.stipendAmount}${widget.newJobModel.stipendVal}"),
+                    ],
+                  ),
+                  const SizedBox(height: 33,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildColumns("assets/Calendar Minimalistic.svg","Duration", widget.newJobModel.jobDuration=="Project based" ?widget.newJobModel.jobDuration : "${widget.newJobModel.jobDurExact} ${widget.newJobModel.jobDurVal}"),
+                buildColumns("assets/Home 2.svg","Module", widget.newJobModel.jobType),
+                buildColumns("assets/Map Point.svg","Location", widget.newJobModel.officeLoc),
+              ],
+            ),
 
-                  Row(children: [
-                    Text(widget.newJobModel.jobDuration,style: TextStyle(
-                      color: const Color(0xff141414),
-                      fontSize: 16.sp,
-                    ),),
-                    if(widget.newJobModel.jobDurExact.isNotEmpty)
-                      Text("(${widget.newJobModel.jobDurExact} ${widget.newJobModel.jobDurVal}",style: TextStyle(
-                        color: const Color(0xff141414),
-                        fontSize: 16.sp,
-                      ),),
-                  ],),
-                  SizedBox(height: 18.h,),
-                  Text("Work Mode", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(height: 40.h,),
+                  const Text("Day to day responsibilities",style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff2e2e2e),
+                    height: 23/16,
                   ),),
                   SizedBox(height: 5.h,),
-                  Text(widget.newJobModel.workMode, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
+                  Text(widget.newJobModel.responsibilities, style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff666666),
+                    height: 41/26,
                   ),),
+
+                  SizedBox(height: 19.h,),
+
+            const Text("Job Perks",style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff2e2e2e),
+              height: 23/16,
+            ),),
+            SizedBox(height: 5.h,),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.newJobModel.perks.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Text("• ${widget.newJobModel.perks[index]}",style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff666666),
+                    height: 41/26,
+                  ),);
+                }),
+
                   SizedBox(height: 18.h,),
-                  Text("Office Location", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                  Text(widget.newJobModel.officeLoc, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                  ),),
-                  SizedBox(height: 18.h,),
-                  Text("Tentative Start Date", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
+                  const Text("Tentative Start Date",style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff2e2e2e),
+                    height: 19/16,
                   ),),
                   SizedBox(height: 5.h,),
                   Text(widget.newJobModel.tentativeStartDate, style: TextStyle(
                     color: const Color(0xff141414),
                     fontSize: 16.sp,
                   ),),
-                  SizedBox(height: 18.h,),
-                  Text("Stipend", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                  if(widget.newJobModel.stipend=="Unpaid")
-                  Text(widget.newJobModel.stipend, style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                  ),),
-                  if(widget.newJobModel.stipend!="Unpaid")
-                    Text("${widget.newJobModel.stipend} (${widget.newJobModel.stipendAmount}${widget.newJobModel.stipendVal})", style: TextStyle(
-                      color: const Color(0xff141414),
-                      fontSize: 16.sp,
-                    ),),
-                  SizedBox(height: 18.h,),
-                  Text("Perks", style: TextStyle(
-                    color: const Color(0xff141414),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(height: 5.h,),
-                 ListView.builder(
-                   shrinkWrap: true,
-                     itemCount: widget.newJobModel.perks.length,
-                     itemBuilder: (BuildContext context, int index){
-                   return Text("${index+1}. ${widget.newJobModel.perks[index]}");
-                 }),
+
+            SizedBox(height: 18.h,),
+            const Text("Number of openings",style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff2e2e2e),
+              height: 19/16,
+            ),),
+            SizedBox(height: 5.h,),
+            Text(widget.newJobModel.numberOfOpenings, style: TextStyle(
+              color: const Color(0xff141414),
+              fontSize: 16.sp,
+            ),),
+
                   SizedBox(height: 37.h,),
                   Row(
                     mainAxisAlignment: isLoading? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
@@ -234,26 +215,30 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                               final userId = prefs.getString('userId');
                               final firstName = prefs.getString('firstName');
                               final lastName = prefs.getString('lastName');
-                              jobModel newJobModel=jobModel(
-                                jobType: widget.newJobModel.jobType,
-                                jobProfile: widget.newJobModel.jobProfile,
-                                responsibilities: widget.newJobModel.responsibilities,
-                                jobDuration: widget.newJobModel.jobDuration,
-                                jobDurExact: widget.newJobModel.jobDurExact,
-                                workMode: widget.newJobModel.workMode,
-                                officeLoc: widget.newJobModel.officeLoc,
-                                tentativeStartDate: widget.newJobModel.tentativeStartDate,
-                                stipend: widget.newJobModel.stipend,
-                                stipendAmount:widget.newJobModel.stipendAmount,
-                                numberOfOpenings: widget.newJobModel.numberOfOpenings,
-                                perks: widget.newJobModel.perks,
-                                createdAt: DateTime.now().toString(),
-                                createdBy: "${firstName} + ${lastName}",
-                                userId: userId!,
-                                jobDurVal:widget.newJobModel.jobDurVal,
-                                stipendVal:widget.newJobModel.stipendVal,
-                                tags:widget.newJobModel.tags,
-                              );
+                              listCollection.add({
+                                "jobType": widget.newJobModel.jobType,
+                                "jobProfile": widget.newJobModel.jobProfile,
+                                "responsibilities": widget.newJobModel.responsibilities,
+                                "jobDuration": widget.newJobModel.jobDuration,
+                                "jobDurationExact": widget.newJobModel.jobDurExact,
+                                "workMode": widget.newJobModel.workMode,
+                                "officeLoc": widget.newJobModel.officeLoc,
+                                "tentativeStartDate": widget.newJobModel.tentativeStartDate,
+                                "stipend": widget.newJobModel.stipend,
+                                "stipendAmount":widget.newJobModel.stipendAmount,
+                                "numberOfOpenings": widget.newJobModel.numberOfOpenings,
+                                "perks": widget.newJobModel.perks,
+                                "createdAt": DateTime.now().toString(),
+                                "createdBy": "$firstName $lastName",
+                                "userId": userId,
+                                "jobDurVal":widget.newJobModel.jobDurVal,
+                                "stipendVal":widget.newJobModel.stipendVal,
+                                "tags": widget.newJobModel.tags,
+                              }).then((value) {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return const ConfirmJobListingScreen();
+                                }));
+                              });
                           },
                           child: Container(
                             height: 56.h,
@@ -292,5 +277,52 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
               ),
       ),);
   }
+  Widget buildColumns(String imgSrc, String heading, String value){
+    // Define the maximum number of characters
+    const int maxChars = 20;
+
+    // Function to truncate text with an ellipsis if it's too long
+    String truncateWithEllipsis(String text, int maxLength) {
+      return (text.length <= maxLength) ? text : '${text.substring(0, maxLength)}...';
+    }
+
+    return Container(
+      width: 100.w,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(imgSrc),
+          SizedBox(height: 5.h,),
+          Text(
+            truncateWithEllipsis(heading, maxChars),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff2e2e2e),
+              height: 19/12,
+            ),
+          ),
+          Text(
+            // truncateWithEllipsis(value, maxChars),
+           value,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Color(0xff7f7f7f),
+              height: 19/12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 

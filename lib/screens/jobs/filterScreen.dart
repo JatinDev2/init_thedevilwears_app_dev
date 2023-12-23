@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 import 'job_model.dart';
 
@@ -27,6 +28,10 @@ class _FilterJobListingsState extends State<FilterJobListings> {
   String jobDurValue = "Months";
   List filterSearchOptions=[];
   List locations=[];
+  TextEditingController durationController = TextEditingController();
+  DateTime testDate=DateTime.now();
+  TextEditingController dateController = TextEditingController();
+
 
   @override
   void initState() {
@@ -66,6 +71,11 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       };
     });
   }
+
+  Future<void> _selectDate(BuildContext context) async{
+
+  }
+
 
   Map<String, dynamic> _selectedOptionMap = {
     "Job Profile": [],
@@ -186,6 +196,9 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       ),
     );
   }
+  String truncateWithEllipsis(String text, int maxLength) {
+    return (text.length <= maxLength) ? text : '${text.substring(0, maxLength)}...';
+  }
 
   Widget _buildFilterOptions() {
     var options = filterData[_selectedTab] ?? [];
@@ -198,7 +211,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       }
     }
 
-    if (_selectedTab == "Job Profile") {
+    if (_selectedTab == "Job Profile"){
       return SizedBox(
         height: _selectedOptions.isEmpty
             ? MediaQuery.of(context).size.height - 150.h
@@ -308,17 +321,15 @@ class _FilterJobListingsState extends State<FilterJobListings> {
     }
 
     if (_selectedTab == "Duration"){
-
       return SizedBox(
         height: _selectedOptions.isEmpty
-            ? MediaQuery.of(context).size.height - 150.h
-            : MediaQuery.of(context).size.height - 220.h,
+            ? MediaQuery.of(context).size.height - 152.h
+            : MediaQuery.of(context).size.height - 224.h,
         child: ListView.builder(
           itemCount: options.length,
           itemBuilder: (context, index) {
             String option = options[index];
             bool isSelected = _selectedOptions.contains(option);
-
             return Column(
               children: [
                 ListTile(
@@ -327,7 +338,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                       if (isSelected) {
                         // _selectedOptions.remove(option);
                         // _selectedOptions.contains(option);
-                        if (_selectedOptions.contains(option)) {
+                        if (_selectedOptions.contains(option)){
                           _selectedOptions.remove(option);
                         }
                       } else {
@@ -365,12 +376,13 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        height: 54.h,
+                        height: 41.h,
                         width: 96.w,
                         decoration: BoxDecoration(
                             color: const Color(0xffF8F7F7),
-                            borderRadius: BorderRadius.circular(15.0.r)),
+                            borderRadius: BorderRadius.circular(8.0.r)),
                         child: TextField(
+                          controller: durationController,
                           decoration: InputDecoration(
                               hintText: "Eg: 3",
                               hintStyle: TextStyle(
@@ -382,18 +394,39 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                               ),
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 27.w, vertical: 19.h)),
+                                  horizontal: 27.w, vertical: 16.h)
+                                  ),
                           keyboardType: TextInputType.number,
+                          onChanged: (value){
+                            bool isChanged=false;
+                            if(value.isNotEmpty){
+                              setState(() {
+                                if(_selectedOptions.contains(option)){
+                                  for(int i=0; i<_selectedOptions.length; i++){
+                                    if(_selectedOptions[i].contains(jobDurValue)){
+                                      _selectedOptions[i]="${durationController.text} $jobDurValue";
+                                      isChanged=true;
+                                    }
+                                  }
+                                  if(!isChanged){
+                                    _selectedOptions.add("${durationController.text} $jobDurValue");
+                                  }
+                                }
+                              });
+                            }
+                          },
                         ),
                       ),
                       SizedBox(
                         width: 9.w,
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                        height: 41.h,
+                        width: 112.w,
+                        padding: EdgeInsets.symmetric(horizontal: 14.0.w),
                         decoration: BoxDecoration(
                             color: const Color(0xffF8F7F7),
-                            borderRadius: BorderRadius.circular(15.0.r)),
+                            borderRadius: BorderRadius.circular(8.0.r)),
                         child: DropdownButton<String>(
                           value: jobDurValue,
                           onChanged: (String? newValue) {
@@ -434,8 +467,8 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       options = locations;
       return SizedBox(
         height: _selectedOptions.isEmpty
-            ? MediaQuery.of(context).size.height - 150.h
-            : MediaQuery.of(context).size.height - 220.h,
+            ? MediaQuery.of(context).size.height - 152.h
+            : MediaQuery.of(context).size.height - 224.h,
         child: Column(
           children: [
             Container(
@@ -522,13 +555,15 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           width: 16.w,
                         ),
                         Text(
-                          option,
+                            truncateWithEllipsis(option, 20),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight:
                             isSelected ? FontWeight.w600 : FontWeight.w300,
                             color: const Color(0xff3c3c3c),
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ],
                     ),
@@ -541,11 +576,127 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       );
     }
 
+
+    if(_selectedTab=="Start Date"){
+      return SizedBox(
+        height: _selectedOptions.isEmpty
+            ? MediaQuery.of(context).size.height - 152.h
+            : MediaQuery.of(context).size.height - 224.h,
+        child: ListView.builder(
+          itemCount: options.length,
+          itemBuilder: (context, index) {
+            String option = options[index];
+            bool isSelected = _selectedOptions.contains(option);
+            if(option=="DD/MM/YYYY"){
+              return ListTile(
+                onTap: ()async{
+                  DateTime? picked;
+
+                     picked = await showDatePicker(
+                      context: context,
+                      initialDate: testDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                  setState(() {
+                    // if (isSelected) {
+
+                      if (picked != null && picked != dateController.text) {
+                        testDate=picked;
+                        dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+                      }
+                      filterData[_selectedTab][index]=dateController.text;
+                      // option=dateController.text;
+                    // }
+                      // _selectedOptions.remove(option);
+                      // _selectedOptions.contains(option);
+                    //   if (_selectedOptions.contains(option)) {
+                    //     _selectedOptions.remove(option);
+                    //   }
+                    // } else {
+                    //   _selectedOptions.add(option);
+                    // }
+                  });
+                },
+                title: Row(
+                  children: [
+                    SizedBox(
+                      width: 8.w,
+                    ),
+                    Icon(
+                      isSelected ? Icons.check : null,
+                      color: Colors.black,
+                      size: 17.h,
+                    ),
+                    SizedBox(
+                      width: 16.w,
+                    ),
+                    Text(
+                      option,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w300,
+                        color: const Color(0xff3c3c3c),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            else{
+              return ListTile(
+                onTap: () {
+                  setState(() {
+
+                    if (isSelected) {
+
+                      // _selectedOptions.remove(option);
+                      // _selectedOptions.contains(option);
+                      if (_selectedOptions.contains(option)) {
+                        _selectedOptions.remove(option);
+                      }
+                    } else {
+                      _selectedOptions.add(option);
+                    }
+                  });
+                },
+                title: Row(
+                  children: [
+                    SizedBox(
+                      width: 8.w,
+                    ),
+                    Icon(
+                      isSelected ? Icons.check : null,
+                      color: Colors.black,
+                      size: 17.h,
+                    ),
+                    SizedBox(
+                      width: 16.w,
+                    ),
+                    Text(
+                      option,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w300,
+                        color: const Color(0xff3c3c3c),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+
+          },
+        ),
+      );
+    }
+
 else{
       return SizedBox(
         height: _selectedOptions.isEmpty
-            ? MediaQuery.of(context).size.height - 150.h
-            : MediaQuery.of(context).size.height - 220.h,
+            ? MediaQuery.of(context).size.height - 152.h
+            : MediaQuery.of(context).size.height - 224.h,
         child: ListView.builder(
           itemCount: options.length,
           itemBuilder: (context, index) {
@@ -637,57 +788,62 @@ else{
         itemCount: _selectedOptions.length,
         itemBuilder: (context, index) {
           String option = _selectedOptions[index];
-          return Container(
-            margin: EdgeInsets.only(right: 4.w),
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  option,
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+          if(option=="Fixed"){
+            return Container();
+          } else{
+            return Container(
+              margin: EdgeInsets.only(right: 4.w),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    option,
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.clip,
                   ),
-                  overflow: TextOverflow.clip,
-                ),
-                SizedBox(width: 6.w),
-                GestureDetector(
-                  onTap: () {
-                    print("TAAAAAAAAAAPPPPPPPPPPPPPEEEEEEEEEEEDDDDDDDDDDDDDDD");
-                    setState(() {
-                      _selectedOptionMap.forEach((key, value) {
-                        if (value is Map) {
-                          value.forEach((key, items) {
-                            if ((items is List) && (items.contains(option))) {
-                              items.remove(option);
-                            }
-                          });
+                  SizedBox(width: 6.w),
+                  GestureDetector(
+                    onTap: () {
+                      print("TAAAAAAAAAAPPPPPPPPPPPPPEEEEEEEEEEEDDDDDDDDDDDDDDD");
+                      setState(() {
+                        _selectedOptionMap.forEach((key, value) {
+                          if (value is Map) {
+                            value.forEach((key, items) {
+                              if ((items is List) && (items.contains(option))) {
+                                items.remove(option);
+                              }
+                            });
+                          }
+                        });
+                        _selectedOptions.remove(option);
+                        if (catOptions.contains(option)) {
+                          catOptions.remove(option);
                         }
+                        print(
+                            "Editttttttttttttttttt Printing selecteddddd Optionsssssssssssssssssssssssss");
+                        print(_selectedOptions);
                       });
-                      _selectedOptions.remove(option);
-                      if (catOptions.contains(option)) {
-                        catOptions.remove(option);
-                      }
-                      print(
-                          "Editttttttttttttttttt Printing selecteddddd Optionsssssssssssssssssssssssss");
-                      print(_selectedOptions);
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    'assets/cross.svg',
-                    semanticsLabel: 'My SVG Image',
+                    },
+                    child: SvgPicture.asset(
+                      'assets/cross.svg',
+                      semanticsLabel: 'My SVG Image',
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
+                ],
+              ),
+            );
+          }
+
         },
       ),
     );
@@ -794,7 +950,7 @@ else{
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: Color(0xffDDDDDD),
+                          color: const Color(0xffDDDDDD),
                           width: 1.0.w,
                         ),
                       ),

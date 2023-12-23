@@ -93,7 +93,7 @@ class _JobListScreenState extends State<JobListScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Container(
       color: const Color(0xffF7F7F7),
       child: Stack(
@@ -138,6 +138,9 @@ class _JobListScreenState extends State<JobListScreen> {
                                     if (data != null) {
                                       setState(() {
                                         selectedOptions = data as List;
+                                        if(selectedOptions.contains("Fixed")){
+                                          selectedOptions.remove("Fixed");
+                                        }
                                         filterListings();
                                       });
                                     }

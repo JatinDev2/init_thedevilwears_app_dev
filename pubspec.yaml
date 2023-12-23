@@ -74,6 +74,7 @@ dependencies:
   url_launcher: ^6.1.14
   flutter_webview_plugin: ^0.4.0
   csc_picker: ^0.2.7
+  country_state_city: ^0.1.6
 
 
 
