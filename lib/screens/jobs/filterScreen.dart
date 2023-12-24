@@ -72,10 +72,6 @@ class _FilterJobListingsState extends State<FilterJobListings> {
     });
   }
 
-  Future<void> _selectDate(BuildContext context) async{
-
-  }
-
 
   Map<String, dynamic> _selectedOptionMap = {
     "Job Profile": [],
@@ -214,8 +210,8 @@ class _FilterJobListingsState extends State<FilterJobListings> {
     if (_selectedTab == "Job Profile"){
       return SizedBox(
         height: _selectedOptions.isEmpty
-            ? MediaQuery.of(context).size.height - 150.h
-            : MediaQuery.of(context).size.height - 220.h,
+            ? MediaQuery.of(context).size.height - 120
+            : MediaQuery.of(context).size.height - 190,
         child: Column(
           children: [
             Container(
@@ -225,7 +221,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                 top: 10.0.h,
                 bottom: 5.0.h,
               ),
-              height: 50.h,
+              height: 50,
               child: TextField(
                 decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -264,10 +260,10 @@ class _FilterJobListingsState extends State<FilterJobListings> {
               height: 11.h,
             ),
             filterSearchOptions.isEmpty && isQuery
-                ? const Text("No reslts") :   SizedBox(
+                ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 232.h
-                  : MediaQuery.of(context).size.height - 315.h,
+                  ? MediaQuery.of(context).size.height - 200
+                  : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: options.length,
                 itemBuilder: (context, index) {
@@ -467,8 +463,8 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       options = locations;
       return SizedBox(
         height: _selectedOptions.isEmpty
-            ? MediaQuery.of(context).size.height - 152.h
-            : MediaQuery.of(context).size.height - 224.h,
+            ? MediaQuery.of(context).size.height - 120
+            : MediaQuery.of(context).size.height - 190,
         child: Column(
           children: [
             Container(
@@ -520,8 +516,8 @@ class _FilterJobListingsState extends State<FilterJobListings> {
             filterSearchOptions.isEmpty && isQuery
                 ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 232.h
-                  : MediaQuery.of(context).size.height - 315.h,
+                  ? MediaQuery.of(context).size.height - 200
+                  : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: locations.length,
                 itemBuilder: (context, index) {
