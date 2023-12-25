@@ -262,7 +262,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
             filterSearchOptions.isEmpty && isQuery
                 ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 200
+                  ? MediaQuery.of(context).size.height - 220
                   : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: options.length,
@@ -516,7 +516,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
             filterSearchOptions.isEmpty && isQuery
                 ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 200
+                  ? MediaQuery.of(context).size.height - 220
                   : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: locations.length,

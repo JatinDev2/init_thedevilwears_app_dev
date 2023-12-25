@@ -218,7 +218,31 @@ setState(() {
               ),
               SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child:  DropDown(selectedValue: dropdownValue, items:items ,)
+                  child:
+                  // DropDown(selectedValue: dropdownValue, items:items ,)
+                  DropdownButton<String>(
+                    value: dropdownValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    icon:const Icon(IconlyLight.arrowDown2),
+                    underline: Container(),
+                    items: items
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,style: const TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff020202),
+                          height: 22/14,
+                        ),),
+                      );
+                    }).toList(),
+                  ),
               ),
               const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
               const SizedBox(height: 22,),
@@ -779,6 +803,7 @@ setState(() {
                     if(!isLoading)
                       GestureDetector(
                         onTap: ()async{
+
                           if(_formKey.currentState!.validate()){
                             final prefs = await SharedPreferences.getInstance();
                             final userId = prefs.getString('userId');
