@@ -3,6 +3,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/screens/jobs/job_model.dart';
+import 'package:lookbook/screens/jobs/listingDetailsScreen.dart';
 import 'package:share/share.dart';
 import 'listing/Details_Screen.dart';
 import 'listing/new_listing/List_Model.dart';
@@ -290,10 +291,10 @@ class BuildCustomJobCard extends StatelessWidget {
       margin:  EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       child: InkWell(
         onTap: () {
-          // Navigator.of(context).push(MaterialPageRoute(builder: (_){
-          //   return Details_Screen(listing: listing);
-          // }));
-          // Navigator.pushNamed(context, 'listingDetailsScreen');
+          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+            return JobListingDetailsScreen( newJobModel: listing,);
+          }));
+
         },
         child: Column(
           children: [

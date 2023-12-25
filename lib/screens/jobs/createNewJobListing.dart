@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city/utils/city_utils.dart';
 import 'package:country_state_city/utils/country_utils.dart';
 import 'package:country_state_city/utils/state_utils.dart';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -10,8 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/screens/jobs/previewListingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../common_widgets.dart';
-import '../listing/new_listing/dropdown.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
 
@@ -222,6 +219,7 @@ setState(() {
                   // DropDown(selectedValue: dropdownValue, items:items ,)
                   DropdownButton<String>(
                     value: dropdownValue,
+                    borderRadius: BorderRadius.circular(15),
                     onChanged: (String? newValue) {
                       setState(() {
                         dropdownValue = newValue!;
