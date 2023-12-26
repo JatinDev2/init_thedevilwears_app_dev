@@ -125,7 +125,6 @@ setState(() {
   isLoadingData=false;
 });
     });
-
   }
 
   Future<void> getData()async{
@@ -214,34 +213,36 @@ setState(() {
                 textAlign: TextAlign.left,
               ),
               SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child:
-                  // DropDown(selectedValue: dropdownValue, items:items ,)
-                  DropdownButton<String>(
-                    value: dropdownValue,
-                    borderRadius: BorderRadius.circular(15),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                    },
-                    icon:const Icon(IconlyLight.arrowDown2),
-                    underline: Container(),
-                    items: items
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value,style: const TextStyle(
+                width: MediaQuery.of(context).size.width,
+                child: DropdownButton<String>(
+                  value: dropdownValue,
+                  isExpanded: true, // Set this property to true
+                  borderRadius: BorderRadius.circular(15),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                  },
+                  icon: const Icon(IconlyLight.arrowDown2),
+                  underline: Container(),
+                  items: items.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff020202),
-                          height: 22/14,
-                        ),),
-                      );
-                    }).toList(),
-                  ),
+                          height: 22 / 14,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
+
               const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
               const SizedBox(height: 22,),
                const Text(
@@ -507,7 +508,7 @@ setState(() {
                           ),
                         ),
                         searchMatchFn: (item, searchValue) {
-                          return item.value.toString().contains(searchValue);
+                          return item.value.toString().toLowerCase().contains(searchValue);
                         },
                       ),
                       //This to clear the search value when you close the menu
@@ -587,8 +588,8 @@ setState(() {
                             ),
                           ),
                         ),
-                        searchMatchFn: (item, searchValue) {
-                          return item.value.toString().contains(searchValue);
+                        searchMatchFn: (item, searchValue){
+                          return item.value.toString().toLowerCase().contains(searchValue);
                         },
                       ),
                       //This to clear the search value when you close the menu

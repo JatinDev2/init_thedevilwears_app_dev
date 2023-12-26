@@ -5,8 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
-import 'job_model.dart';
-
 class FilterJobListings extends StatefulWidget {
   final List selectedOptions;
   const FilterJobListings({
@@ -26,12 +24,14 @@ class _FilterJobListingsState extends State<FilterJobListings> {
   bool isQuery = false;
   TextEditingController searchController = TextEditingController();
   String jobDurValue = "Months";
+  String stipendValue="/month";
   List filterSearchOptions=[];
   List locations=[];
   TextEditingController durationController = TextEditingController();
+  TextEditingController stipendController = TextEditingController();
+
   DateTime testDate=DateTime.now();
   TextEditingController dateController = TextEditingController();
-
 
   @override
   void initState() {
@@ -142,7 +142,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
           return Container(
             decoration: BoxDecoration(
               color:
-                  _selectedTab == tab ? Colors.white : const Color(0xffEFEFEF),
+              _selectedTab == tab ? Colors.white : const Color(0xffEFEFEF),
               border: Border(
                 bottom: BorderSide(
                   color: Color(0xFFDDDDDD),
@@ -244,7 +244,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                       isQuery = true;
                       filterSearchOptions = options
                           .where((option) =>
-                          option.toLowerCase().contains(searchIn.toLowerCase()) as bool)
+                      option.toLowerCase().contains(searchIn.toLowerCase()) as bool)
                           .toList();
 
                     } else {
@@ -262,7 +262,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
             filterSearchOptions.isEmpty && isQuery
                 ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 220
+                  ? MediaQuery.of(context).size.height - 215
                   : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: options.length,
@@ -301,7 +301,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.w300,
+                            isSelected ? FontWeight.w600 : FontWeight.w300,
                             color: const Color(0xff3c3c3c),
                           ),
                         ),
@@ -325,20 +325,28 @@ class _FilterJobListingsState extends State<FilterJobListings> {
           itemCount: options.length,
           itemBuilder: (context, index) {
             String option = options[index];
-            bool isSelected = _selectedOptions.contains(option);
+            bool isSelected = _selectedOptionMap[_selectedTab].contains(option);
             return Column(
               children: [
                 ListTile(
                   onTap: () {
                     setState(() {
-                      if (isSelected) {
+                      if (isSelected){
                         // _selectedOptions.remove(option);
                         // _selectedOptions.contains(option);
                         if (_selectedOptions.contains(option)){
                           _selectedOptions.remove(option);
                         }
+                        if (_selectedOptionMap[_selectedTab].contains(option)){
+                          _selectedOptionMap[_selectedTab].remove(option);
+                        }
+                        if(_selectedOptions.contains("${durationController.text} $jobDurValue")){
+                          _selectedOptions.remove("${durationController.text} $jobDurValue");
+                        }
+                        durationController.clear();
                       } else {
                         _selectedOptions.add(option);
+                        _selectedOptionMap[_selectedTab].add(option);
                       }
                     });
                   },
@@ -360,7 +368,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.w300,
+                          isSelected ? FontWeight.w600 : FontWeight.w300,
                           color: const Color(0xff3c3c3c),
                         ),
                       ),
@@ -372,8 +380,8 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        height: 41.h,
-                        width: 96.w,
+                        height: 54.h,
+                        width:110.w,
                         decoration: BoxDecoration(
                             color: const Color(0xffF8F7F7),
                             borderRadius: BorderRadius.circular(8.0.r)),
@@ -381,6 +389,175 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           controller: durationController,
                           decoration: InputDecoration(
                               hintText: "Eg: 3",
+                              hintStyle: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: 16.sp, // Ensure this is proportionate
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xff666666),
+                                // Adjusted height ratio
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 27.w, vertical: 16.h)
+
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            bool isChanged = false;
+                            if (value.isNotEmpty){
+                              setState((){
+                                if(_selectedOptions.contains(option)){
+                                  for (int i = 0; i < _selectedOptions.length; i++){
+                                    if (_selectedOptions[i].contains(jobDurValue)) {
+                                      _selectedOptions[i] = "${durationController.text} $jobDurValue";
+                                      isChanged = true;
+                                    }
+                                  }
+                                  if (!isChanged){
+                                    _selectedOptions.add("${durationController.text} $jobDurValue");
+                                  }
+                                }
+                              });
+                            }
+                            else{
+
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 9.w,
+                      ),
+                      Container(
+                        height: 54.h,
+                        width:110.w,
+                        padding: EdgeInsets.symmetric(horizontal: 14.0.w),
+                        decoration: BoxDecoration(
+                            color: const Color(0xffF8F7F7),
+                            borderRadius: BorderRadius.circular(8.0.r)),
+                        child: DropdownButton<String>(
+                          value: jobDurValue,
+                          onChanged: (String? newValue) {
+                            setState((){
+                              bool isChanged=false;
+                              if(_selectedOptions.contains(option)){
+                                for (int i = 0; i < _selectedOptions.length; i++){
+                                  if (_selectedOptions[i].contains("${durationController.text} $jobDurValue")){
+                                    jobDurValue = newValue!;
+                                    _selectedOptions[i] = "${durationController.text} $jobDurValue";
+                                    isChanged = true;
+                                  }
+                                }
+                                if (!isChanged){
+                                  _selectedOptions.add("${durationController.text} $jobDurValue");
+                                }
+                              }
+                            });
+                          },
+                          icon: const Icon(IconlyLight.arrowDown2),
+                          underline: Container(),
+                          items: <String>['Days', 'Months', 'Years']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 16.sp, // Ensure this is proportionate
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xff666666),
+                                  // Adjusted height ratio
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    if(_selectedTab == "Stipend"){
+      return SizedBox(
+        height: _selectedOptions.isEmpty
+            ? MediaQuery.of(context).size.height - 152.h
+            : MediaQuery.of(context).size.height - 224.h,
+        child: ListView.builder(
+          itemCount: options.length,
+          itemBuilder: (context, index) {
+            String option = options[index];
+            bool isSelected = _selectedOptionMap[_selectedTab].contains(option);
+            return Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        // _selectedOptions.remove(option);
+                        // _selectedOptions.contains(option);
+                        if (_selectedOptions.contains(option)){
+                          _selectedOptions.remove(option);
+                        }
+                        if (_selectedOptionMap[_selectedTab].contains(option)){
+                          _selectedOptionMap[_selectedTab].remove(option);
+                        }
+                        if(_selectedOptions.contains("${stipendController.text}$stipendValue")){
+                          _selectedOptions.remove("${stipendController.text}$stipendValue");
+                        }
+                        stipendController.clear();
+                      }
+                      else {
+                        _selectedOptions.add(option);
+                        _selectedOptionMap[_selectedTab].add(option);
+                      }
+                    });
+                  },
+                  title: Row(
+                    children: [
+                      SizedBox(
+                        width: 8.w,
+                      ),
+                      Icon(
+                        isSelected ? Icons.check : null,
+                        color: Colors.black,
+                        size: 17.h,
+                      ),
+                      SizedBox(
+                        width: 16.w,
+                      ),
+                      Text(
+                        option,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w300,
+                          color: const Color(0xff3c3c3c),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (option == "Fixed" && isSelected)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 54.h,
+                        width:110.w,
+                        decoration: BoxDecoration(
+                            color: const Color(0xffF8F7F7),
+                            borderRadius: BorderRadius.circular(8.0.r)),
+                        child: TextField(
+                          controller: stipendController,
+                          decoration: InputDecoration(
+                              hintText: "Mention an Amount",
                               hintStyle: TextStyle(
                                 fontFamily: "Poppins",
                                 fontSize: 16.sp,
@@ -391,7 +568,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 27.w, vertical: 16.h)
-                                  ),
+                          ),
                           keyboardType: TextInputType.number,
                           onChanged: (value){
                             bool isChanged=false;
@@ -399,13 +576,13 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                               setState(() {
                                 if(_selectedOptions.contains(option)){
                                   for(int i=0; i<_selectedOptions.length; i++){
-                                    if(_selectedOptions[i].contains(jobDurValue)){
-                                      _selectedOptions[i]="${durationController.text} $jobDurValue";
+                                    if(_selectedOptions[i].contains(stipendValue)){
+                                      _selectedOptions[i]="${stipendController.text}$stipendValue";
                                       isChanged=true;
                                     }
                                   }
                                   if(!isChanged){
-                                    _selectedOptions.add("${durationController.text} $jobDurValue");
+                                    _selectedOptions.add("${stipendController.text}$stipendValue");
                                   }
                                 }
                               });
@@ -417,22 +594,34 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                         width: 9.w,
                       ),
                       Container(
-                        height: 41.h,
-                        width: 112.w,
+                        height: 54.h,
+                        width:110.w,
                         padding: EdgeInsets.symmetric(horizontal: 14.0.w),
                         decoration: BoxDecoration(
                             color: const Color(0xffF8F7F7),
                             borderRadius: BorderRadius.circular(8.0.r)),
                         child: DropdownButton<String>(
-                          value: jobDurValue,
+                          value: stipendValue,
                           onChanged: (String? newValue) {
                             setState(() {
-                              jobDurValue = newValue!;
+                              bool isChanged=false;
+                              if(_selectedOptions.contains(option)){
+                                for (int i = 0; i < _selectedOptions.length; i++){
+                                  if (_selectedOptions[i].contains("${stipendController.text}$stipendValue")){
+                                    stipendValue = newValue!;
+                                    _selectedOptions[i] = "${stipendController.text}$stipendValue";
+                                    isChanged = true;
+                                  }
+                                }
+                                if (!isChanged){
+                                  _selectedOptions.add("${stipendController.text}$stipendValue");
+                                }
+                              }
                             });
                           },
                           icon: const Icon(IconlyLight.arrowDown2),
                           underline: Container(),
-                          items: <String>['Days', 'Months', 'Years']
+                          items: <String>['/day', '/month', '/year']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -459,7 +648,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       );
     }
 
-    if (_selectedTab == "Location") {
+    if (_selectedTab == "Location"){
       options = locations;
       return SizedBox(
         height: _selectedOptions.isEmpty
@@ -516,7 +705,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
             filterSearchOptions.isEmpty && isQuery
                 ? const Text("No results") :   SizedBox(
               height: _selectedOptions.isEmpty
-                  ? MediaQuery.of(context).size.height - 220
+                  ? MediaQuery.of(context).size.height - 215
                   : MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: filterSearchOptions.isNotEmpty? filterSearchOptions.length: locations.length,
@@ -551,7 +740,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           width: 16.w,
                         ),
                         Text(
-                            truncateWithEllipsis(option, 20),
+                          truncateWithEllipsis(option, 20),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight:
@@ -572,7 +761,6 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       );
     }
 
-
     if(_selectedTab=="Start Date"){
       return SizedBox(
         height: _selectedOptions.isEmpty
@@ -588,24 +776,24 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                 onTap: ()async{
                   DateTime? picked;
 
-                     picked = await showDatePicker(
-                      context: context,
-                      initialDate: testDate,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
+                  picked = await showDatePicker(
+                    context: context,
+                    initialDate: testDate,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
                   setState(() {
                     // if (isSelected) {
 
-                      if (picked != null && picked != dateController.text) {
-                        testDate=picked;
-                        dateController.text = DateFormat('dd/MM/yyyy').format(picked);
-                      }
-                      filterData[_selectedTab][index]=dateController.text;
-                      // option=dateController.text;
+                    if (picked != null && picked != dateController.text) {
+                      testDate=picked;
+                      dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+                    }
+                    filterData[_selectedTab][index]=dateController.text;
+                    // option=dateController.text;
                     // }
-                      // _selectedOptions.remove(option);
-                      // _selectedOptions.contains(option);
+                    // _selectedOptions.remove(option);
+                    // _selectedOptions.contains(option);
                     //   if (_selectedOptions.contains(option)) {
                     //     _selectedOptions.remove(option);
                     //   }
@@ -688,7 +876,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
       );
     }
 
-else{
+    else{
       return SizedBox(
         height: _selectedOptions.isEmpty
             ? MediaQuery.of(context).size.height - 152.h
@@ -740,7 +928,6 @@ else{
         ),
       );
     }
-
   }
 
   Widget _buildSelectedOptions() {
@@ -784,9 +971,10 @@ else{
         itemCount: _selectedOptions.length,
         itemBuilder: (context, index) {
           String option = _selectedOptions[index];
+
           if(option=="Fixed"){
             return Container();
-          } else{
+          }
             return Container(
               margin: EdgeInsets.only(right: 4.w),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
@@ -812,14 +1000,23 @@ else{
                     onTap: () {
                       print("TAAAAAAAAAAPPPPPPPPPPPPPEEEEEEEEEEEDDDDDDDDDDDDDDD");
                       setState(() {
-                        _selectedOptionMap.forEach((key, value) {
-                          if (value is Map) {
-                            value.forEach((key, items) {
-                              if ((items is List) && (items.contains(option))) {
-                                items.remove(option);
-                              }
-                            });
+                        if(option=="${durationController.text} $jobDurValue"){
+                          _selectedOptionMap["Duration"].remove("Fixed");
+                          if(_selectedOptions.contains("Fixed")){
+                            _selectedOptions.remove("Fixed");
                           }
+                        }
+                        if(option=="${stipendController.text}$stipendValue"){
+                          _selectedOptionMap["Stipend"].remove("Fixed");
+                          if(_selectedOptions.contains("Fixed")){
+                            _selectedOptions.remove("Fixed");
+                          }
+
+                        }
+                        _selectedOptionMap.forEach((key,value){
+                              if ((value is List) && (value.contains(option))){
+                                value.remove(option);
+                              }
                         });
                         _selectedOptions.remove(option);
                         if (catOptions.contains(option)) {
@@ -838,7 +1035,6 @@ else{
                 ],
               ),
             );
-          }
 
         },
       ),
@@ -848,11 +1044,22 @@ else{
   int _getSelectedOptionsCount(String tab) {
     var options = filterData[tab] ?? [];
     count = 0;
-    for (var option in options) {
-      if (_selectedOptions.contains(option)) {
-        count++;
+    if(tab=="Duration" || tab=="Stipend"){
+      if(_selectedOptionMap[tab].isEmpty){
+        return 0;
+      }
+      else{
+        return _selectedOptionMap[tab].length;
       }
     }
+    else{
+      for (var option in options) {
+        if (_selectedOptions.contains(option)) {
+          count++;
+        }
+      }
+    }
+
     return count;
   }
 
@@ -908,75 +1115,75 @@ else{
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xffDDDDDD),
+                  width: 1.0.w,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: const Color(0xffDDDDDD),
-                        width: 1.0.w,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Container(
-                          child: _buildFilterTabs(),
-                        ),
-                      ),
-                      Flexible(
-                        flex: 4,
-                        child: Container(
-                          color: Colors.white,
-                          child: _buildFilterOptions(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // SizedBox(height: 4,),
-                _buildSelectedOptions(),
-                // SizedBox(height: 4,),
-                if (_selectedOptions.isNotEmpty)
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: const Color(0xffDDDDDD),
-                          width: 1.0.w,
-                        ),
-                      ),
-                    ),
-                  ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(_selectedOptions);
-                  },
+                Flexible(
+                  flex: 2,
                   child: Container(
-                    height: 50.h,
-                    margin: _selectedOptions.isNotEmpty
-                        ? EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w)
-                        : EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
-                    child: Center(
-                        child: Text(
-                      "APPLY FILTERS",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xff4a4a4a),
-                        height: (20 / 16).h,
-                      ),
-                      textAlign: TextAlign.left,
-                    )),
+                    child: _buildFilterTabs(),
+                  ),
+                ),
+                Flexible(
+                  flex: 4,
+                  child: Container(
+                    color: Colors.white,
+                    child: _buildFilterOptions(),
                   ),
                 ),
               ],
             ),
+          ),
+          // SizedBox(height: 4,),
+          _buildSelectedOptions(),
+          // SizedBox(height: 4,),
+          if (_selectedOptions.isNotEmpty)
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: const Color(0xffDDDDDD),
+                    width: 1.0.w,
+                  ),
+                ),
+              ),
+            ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop(_selectedOptions);
+            },
+            child: Container(
+              height: 50.h,
+              margin: _selectedOptions.isNotEmpty
+                  ? EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w)
+                  : EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+              child: Center(
+                  child: Text(
+                    "APPLY FILTERS",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xff4a4a4a),
+                      height: (20 / 16).h,
+                    ),
+                    textAlign: TextAlign.left,
+                  )),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

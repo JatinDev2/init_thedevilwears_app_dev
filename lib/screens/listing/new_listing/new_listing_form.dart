@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/screens/listing/new_listing/List_Model.dart';
 import 'package:lookbook/screens/listing/new_listing/preview_listing.dart';
 import 'package:lookbook/screens/listing/new_listing/tags_screen.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'ConfirmListing.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -28,7 +27,7 @@ class NewListingForm extends StatefulWidget {
 class _NewListingFormState extends State<NewListingForm> {
 
   ListModel? newModel;
-  List<Asset> selectedImages = [Asset("_identifier", "_name", 1, 1)];
+  // List<Asset> selectedImages = [Asset("_identifier", "_name", 1, 1)];
   List<String> selectedOption=[];
   Map<String,List<String>>_selectedOptions={};
   String dropdownValue = 'Movie Promotions';

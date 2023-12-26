@@ -53,7 +53,7 @@ dependencies:
   flutter_svg: ^2.0.3
   dropdown_button2: ^2.0.0
   image_picker: ^1.0.1
-  multi_image_picker: ^4.6.7
+#  multi_image_picker: ^4.6.7
   intl: ^0.18.1
   firebase_auth: ^4.7.1
   google_sign_in: ^6.1.4

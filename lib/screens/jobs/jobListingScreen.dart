@@ -81,10 +81,35 @@ class _JobListScreenState extends State<JobListScreen> {
     // fetchListingsFromFirestore();
   }
 
-  void filterListings(){
+  // void filterListings(){
+  //   filteredListings.clear();
+  //   for (var listing in _listings){
+  //     if (listing.tags.any((tag) => selectedOptions.contains(tag)) || selectedOptions.contains(listing.createdBy) || selectedOptions.contains(listing.stipendAmount) || selectedOptions.contains(listing.stipend) || selectedOptions.contains(listing.officeLoc) || selectedOptions.contains(listing.workMode) || selectedOptions.contains(listing.jobProfile) || selectedOptions.contains(listing.jobDuration) || selectedOptions.contains(listing.workMode) || selectedOptions.contains(listing.tentativeStartDate)){
+  //       setState(() {
+  //         filteredListings.add(listing);
+  //       });
+  //     }
+  //   }
+  // }
+
+  void filterListings() {
     filteredListings.clear();
-    for (var listing in _listings){
-      if (listing.tags.any((tag) => selectedOptions.contains(tag)) || selectedOptions.contains(listing.createdBy) || selectedOptions.contains(listing.stipendAmount) || selectedOptions.contains(listing.stipend) || selectedOptions.contains(listing.officeLoc) || selectedOptions.contains(listing.workMode) || selectedOptions.contains(listing.jobProfile) || selectedOptions.contains(listing.jobDuration) || selectedOptions.contains(listing.workMode) || selectedOptions.contains(listing.tentativeStartDate)){
+    for (var listing in _listings) {
+      // Check if all selected options are contained in the listing
+      var matchesAll = selectedOptions.every((option) =>
+      listing.tags.contains(option) ||
+          listing.createdBy == option ||
+          listing.stipendAmount == option ||
+          listing.stipend == option ||
+          listing.officeLoc == option ||
+          listing.workMode == option ||
+          listing.jobProfile == option ||
+          listing.jobDuration == option ||
+          listing.workMode == option ||
+          listing.tentativeStartDate == option ||
+          option =="${listing.stipendAmount}${listing.stipendVal}"
+      );
+      if (matchesAll) {
         setState(() {
           filteredListings.add(listing);
         });
