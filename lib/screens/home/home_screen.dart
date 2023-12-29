@@ -11,6 +11,7 @@ import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../listing/response_screen.dart';
+import '../search/JobSearchScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -136,7 +137,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final List<Widget> _tabItems = [
       LookbookScreen(),
-      SearchScreen(
+      // SearchScreen(
+      //   height: MediaQuery.of(context).viewInsets.bottom > 0 ? MediaQuery.of(context).size.height : 0,
+      // ),
+      JobSearchScreen(
         height: MediaQuery.of(context).viewInsets.bottom > 0 ? MediaQuery.of(context).size.height : 0,
       ),
       ListingScreen(),

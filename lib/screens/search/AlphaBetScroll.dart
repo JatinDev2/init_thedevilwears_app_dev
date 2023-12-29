@@ -1,6 +1,8 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 
+import 'JobSearchScreen.dart';
+
 class _AZItem extends ISuspensionBean {
   final String title;
   final String tag;
