@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:faker/faker.dart';
+import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'AlphaBetScrollJob.dart';
@@ -103,6 +103,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   List<PeopleClass> realPeopleData=[];
   List<PeopleClass> filteredPeopleList=[];
   int _selectedTab = 0;
+  final faker = Faker.instance;
+
 
   List<String> filterList=["All", "Brand", "Stylist"];
   List<String> roles=[
@@ -135,17 +137,14 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
 
-    // storeJobOpeningsData();
     _data=fetchJobOpeningsAndPeopleData();
     _tabController.addListener(() {
-      // The listener will trigger `setState` whenever the tab index changes.
       if (_tabController.index != _selectedTab) {
         setState(() {
           _selectedTab = _tabController.index;
         });
       }
     });
-
   }
 
   void _applyFilters() {
@@ -213,56 +212,56 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     }
   }
 
-  Future<void> storeJobOpeningsData() async {
-    final firestore = FirebaseFirestore.instance;
-    List<PeopleClass> peopleList = generateJobOpeningsData();
-    List<Map<String, dynamic>> jobOpeningsMapList = peopleList.map((job) => job.toJson()).toList();
-
-    try {
-      // Create the "jobOpenings" collection reference
-      final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
-
-      // Create the "companies" document and insert the list of job openings maps
-      await jobOpeningsCollectionRef.doc('people').set({
-        'openings': jobOpeningsMapList,
-      });
-
-      print('Job openings data stored successfully.');
-    } catch (error) {
-      print('Error storing job openings data: $error');
-    }
-  }
-
-  List<PeopleClass> generateJobOpeningsData(){
-    Random random = Random();
-    List<String> items=[
-      'Fashion Stylist',
-      'Fashion Designer',
-      'Communication Designer',
-      'Social media intern',
-      'Social media Manager',
-      'Production Associate',
-      'Fashion Consultant',
-      'Video Editor',
-      'Graphic Designers',
-      'Textile Designer',
-      'Shoot Manager',
-      'Shoot Assistant',
-      'Set designer',
-      'Set design assistant',
-      'Videographer',
-      'Photographer',
-    ];
-    List<PeopleClass> peopleList = List.generate(260, (index) {
-      return PeopleClass(
-        imgUrl: 'https://64.media.tumblr.com/dc5f1d74d3a62c0f2319d0e07ef9b306/tumblr_nifw86eFb11u8yztfo2_500.jpg', // Replace with actual image URL logic
-        name: faker.person.name(),
-        role: items[random.nextInt(items.length)],
-        companiesWorkedIn: faker.company.name()
-      );
-    });
-    return peopleList;
-  }
+  // Future<void> storeJobOpeningsData() async {
+  //   final firestore = FirebaseFirestore.instance;
+  //   List<PeopleClass> peopleList = generateJobOpeningsData();
+  //   List<Map<String, dynamic>> jobOpeningsMapList = peopleList.map((job) => job.toJson()).toList();
+  //
+  //   try {
+  //     // Create the "jobOpenings" collection reference
+  //     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
+  //
+  //     // Create the "companies" document and insert the list of job openings maps
+  //     await jobOpeningsCollectionRef.doc('people').set({
+  //       'openings': jobOpeningsMapList,
+  //     });
+  //
+  //     print('Job openings data stored successfully.');
+  //   } catch (error) {
+  //     print('Error storing job openings data: $error');
+  //   }
+  // }
+  // //
+  // List<PeopleClass> generateJobOpeningsData(){
+  //   Random random = Random();
+  //   List<String> items=[
+  //     'Fashion Stylist',
+  //     'Fashion Designer',
+  //     'Communication Designer',
+  //     'Social media intern',
+  //     'Social media Manager',
+  //     'Production Associate',
+  //     'Fashion Consultant',
+  //     'Video Editor',
+  //     'Graphic Designers',
+  //     'Textile Designer',
+  //     'Shoot Manager',
+  //     'Shoot Assistant',
+  //     'Set designer',
+  //     'Set design assistant',
+  //     'Videographer',
+  //     'Photographer',
+  //   ];
+  //   List<PeopleClass> peopleList = List.generate(260, (index) {
+  //     return PeopleClass(
+  //       imgUrl: '${faker.image.unsplash.image(keyword: 'fashion')},${Random().nextInt(100)}', // Replace with actual image URL logic
+  //       name: faker.name.firstName(),
+  //       role: items[random.nextInt(items.length)],
+  //       companiesWorkedIn: faker.company.companyName(),
+  //     );
+  //   });
+  //   return peopleList;
+  // }
 
   Future<JobAndPeopleData?> fetchJobOpeningsAndPeopleData() async {
     final firestore = FirebaseFirestore.instance;
@@ -297,6 +296,44 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     }
   }
 
+  // List<JobOpening> generateJobOpeningsData() {
+  //   Random random = Random();
+  //   List<String> locations = ['Delhi', 'Mumbai', 'Bangalore', 'New York', 'London'];
+  //   List<String> categories = ['Luxury Clothing', 'Fast Fashion', 'Sports Apparel', 'Formal Wear'];
+  //   List<String>roles=['Brand','Stylist'];
+  //   List<JobOpening> jobOpenings = List.generate(260, (index) {
+  //     return JobOpening(
+  //       imageUrl: '${faker.image.unsplash.image(keyword: 'fashion')},${Random().nextInt(100)}', // Replace with actual image URL logic
+  //       brandName: faker.company.companyName(),
+  //       category: roles[random.nextInt(roles.length)],
+  //       subCategory: categories[random.nextInt(categories.length)],
+  //       numberOfJobOpenings: random.nextInt(10) + 1, // Generates a random number between 1 and 10
+  //       location: locations[random.nextInt(locations.length)],
+  //     );
+  //   });
+  //   return jobOpenings;
+  // }
+  //
+  // Future<void> storeJobOpeningsData() async {
+  //   final firestore = FirebaseFirestore.instance;
+  //   List<JobOpening> peopleList = generateJobOpeningsData();
+  //   List<Map<String, dynamic>> jobOpeningsMapList = peopleList.map((job) => job.toJson()).toList();
+  //
+  //   try {
+  //     // Create the "jobOpenings" collection reference
+  //     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
+  //
+  //     // Create the "companies" document and insert the list of job openings maps
+  //     await jobOpeningsCollectionRef.doc('companies').set({
+  //       'openings': jobOpeningsMapList,
+  //     });
+  //
+  //     print('Job openings data stored successfully.');
+  //   } catch (error) {
+  //     print('Error storing job openings data: $error');
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -329,13 +366,10 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                           onChanged: (value) {
                             setState(() {
                               query_check = value;
-                                // filteredJobOpenings.clear();
-                              if(_selectedTab==0){
+
                                 _applyFilters();
-                              }
-                              else{
+
                                 _applyFiltersPeoople();
-                              }
                             });
                           },
                           cursorColor: Colors.black,

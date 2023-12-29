@@ -87,7 +87,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _buildListItem(item);
+        return _buildListItem(item,index);
       },
       indexBarOptions: IndexBarOptions(
         selectTextStyle:const TextStyle(
@@ -136,7 +136,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
     );
   }
 
-  Widget _buildListItem(_AZItem item){
+  Widget _buildListItem(_AZItem item, int index){
     final tag = item.getSuspensionTag();
     final offStage = !item.isShowSuspension;
     return Column(
@@ -156,6 +156,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   radius: 24.r,
                   backgroundImage: NetworkImage(
                     item.imageUrl,
@@ -205,7 +206,9 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
               ],
             ),
           ),
-        )
+        ),
+        if(index==items.length-1)
+          const SizedBox(height: 60,),
       ],
     );
   }
