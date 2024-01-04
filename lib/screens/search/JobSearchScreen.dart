@@ -1,9 +1,9 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:lookbook/screens/search/filterScreenJob.dart';
 import 'AlphaBetScrollJob.dart';
 import 'AlphaBetScrollPeople.dart';
 
@@ -104,6 +104,21 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   List<PeopleClass> filteredPeopleList=[];
   int _selectedTab = 0;
   final faker = Faker.instance;
+   List selectedOptions=[];
+   String tabSelectedInFilterScreen="";
+  Map<String, dynamic> _selectedOptionMap = {
+    "Type":[],
+    "Category":{
+      "Brands":[],
+      "Export houses":[],
+      "Stylists":[],
+      "Social Media agency":[],
+      "PR agency":[],
+      "AD agency":[],
+    },
+    "Opening":[],
+    "Location":[],
+  };
 
 
   List<String> filterList=["All", "Brand", "Stylist"];
@@ -129,7 +144,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   int _selectedChipIndex = 0;
   int _selectedIndexPeople=0;
   late TabController _tabController;
-
 
 
   @override
@@ -212,57 +226,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     }
   }
 
-  // Future<void> storeJobOpeningsData() async {
-  //   final firestore = FirebaseFirestore.instance;
-  //   List<PeopleClass> peopleList = generateJobOpeningsData();
-  //   List<Map<String, dynamic>> jobOpeningsMapList = peopleList.map((job) => job.toJson()).toList();
-  //
-  //   try {
-  //     // Create the "jobOpenings" collection reference
-  //     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
-  //
-  //     // Create the "companies" document and insert the list of job openings maps
-  //     await jobOpeningsCollectionRef.doc('people').set({
-  //       'openings': jobOpeningsMapList,
-  //     });
-  //
-  //     print('Job openings data stored successfully.');
-  //   } catch (error) {
-  //     print('Error storing job openings data: $error');
-  //   }
-  // }
-  // //
-  // List<PeopleClass> generateJobOpeningsData(){
-  //   Random random = Random();
-  //   List<String> items=[
-  //     'Fashion Stylist',
-  //     'Fashion Designer',
-  //     'Communication Designer',
-  //     'Social media intern',
-  //     'Social media Manager',
-  //     'Production Associate',
-  //     'Fashion Consultant',
-  //     'Video Editor',
-  //     'Graphic Designers',
-  //     'Textile Designer',
-  //     'Shoot Manager',
-  //     'Shoot Assistant',
-  //     'Set designer',
-  //     'Set design assistant',
-  //     'Videographer',
-  //     'Photographer',
-  //   ];
-  //   List<PeopleClass> peopleList = List.generate(260, (index) {
-  //     return PeopleClass(
-  //       imgUrl: '${faker.image.unsplash.image(keyword: 'fashion')},${Random().nextInt(100)}', // Replace with actual image URL logic
-  //       name: faker.name.firstName(),
-  //       role: items[random.nextInt(items.length)],
-  //       companiesWorkedIn: faker.company.companyName(),
-  //     );
-  //   });
-  //   return peopleList;
-  // }
-
   Future<JobAndPeopleData?> fetchJobOpeningsAndPeopleData() async {
     final firestore = FirebaseFirestore.instance;
     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
@@ -296,45 +259,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     }
   }
 
-  // List<JobOpening> generateJobOpeningsData() {
-  //   Random random = Random();
-  //   List<String> locations = ['Delhi', 'Mumbai', 'Bangalore', 'New York', 'London'];
-  //   List<String> categories = ['Luxury Clothing', 'Fast Fashion', 'Sports Apparel', 'Formal Wear'];
-  //   List<String>roles=['Brand','Stylist'];
-  //   List<JobOpening> jobOpenings = List.generate(260, (index) {
-  //     return JobOpening(
-  //       imageUrl: '${faker.image.unsplash.image(keyword: 'fashion')},${Random().nextInt(100)}', // Replace with actual image URL logic
-  //       brandName: faker.company.companyName(),
-  //       category: roles[random.nextInt(roles.length)],
-  //       subCategory: categories[random.nextInt(categories.length)],
-  //       numberOfJobOpenings: random.nextInt(10) + 1, // Generates a random number between 1 and 10
-  //       location: locations[random.nextInt(locations.length)],
-  //     );
-  //   });
-  //   return jobOpenings;
-  // }
-  //
-  // Future<void> storeJobOpeningsData() async {
-  //   final firestore = FirebaseFirestore.instance;
-  //   List<JobOpening> peopleList = generateJobOpeningsData();
-  //   List<Map<String, dynamic>> jobOpeningsMapList = peopleList.map((job) => job.toJson()).toList();
-  //
-  //   try {
-  //     // Create the "jobOpenings" collection reference
-  //     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
-  //
-  //     // Create the "companies" document and insert the list of job openings maps
-  //     await jobOpeningsCollectionRef.doc('companies').set({
-  //       'openings': jobOpeningsMapList,
-  //     });
-  //
-  //     print('Job openings data stored successfully.');
-  //   } catch (error) {
-  //     print('Error storing job openings data: $error');
-  //   }
-  // }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -366,9 +290,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                           onChanged: (value) {
                             setState(() {
                               query_check = value;
-
                                 _applyFilters();
-
                                 _applyFiltersPeoople();
                             });
                           },
@@ -397,8 +319,24 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                               data: const IconThemeData(color: Colors.black),
                               child: IconButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/searchFilterScreen');
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                   return FiltersTabJobScreen(
+                                     tabString: _tabController.index==0? "Companies" : "People",
+                                     selectedFilterOption: selectedOptions,
+                                     selectedOptionMap: _selectedOptionMap,
+                                   );
+                                 })).then((value) {
+                                   setState(() {
+                                     // _tabController.index=value=="Companies"?0 : 1;
+                                     if(value is Map){
+                                       _selectedOptionMap=value["selectedOptionMapFromFilterScreen"];
+                                       selectedOptions=value["selectedOptionListFromFilterScreen"];
+                                       tabSelectedInFilterScreen=value["tab"];
+                                       value["tab"]=="Companies"? _tabController.index=0 : _tabController.index=1;
+                                     }
+                                     ;
+                                   });
+                                 });
                                 },
                                 icon: const Icon(
                                   IconlyLight.filter,
@@ -464,11 +402,12 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                               unselectedLabelColor: const Color(0xff9D9D9D),
                             ),
                           ),
+
                           FutureBuilder<JobAndPeopleData?>(
                               future: _data,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                  return const CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else if (!snapshot.hasData || snapshot.data == null) {
@@ -483,58 +422,66 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                     child: TabBarView(
                                         controller: _tabController,
                                       children: [
-                                        Container(
-                                          margin: const EdgeInsets.all(8.0),
-                                          child: query_check.isNotEmpty &&
-                                              filteredJobOpenings.isEmpty
-                                              ? Container(
-                                            margin: const EdgeInsets.all(16.0),
-                                            child: const Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "No search results found",
-                                                  style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color(0xff9d9d9d),
-                                                    height: 24 / 16,
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                )
-                                              ],
+                                        ListView(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.all(8.0),
+                                              child: query_check.isNotEmpty &&
+                                                  filteredJobOpenings.isEmpty
+                                                  ? Container(
+                                                margin: const EdgeInsets.all(16.0),
+                                                child: const Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "No search results found",
+                                                      style: TextStyle(
+                                                        fontFamily: "Poppins",
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color(0xff9d9d9d),
+                                                        height: 24 / 16,
+                                                      ),
+                                                      textAlign: TextAlign.left,
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                                  : AlphaBetScrollPageJob(
+                                                selectedItems: tabSelectedInFilterScreen=="Companies"? selectedOptions : [],
+                                                // onListUpdated: (){
+                                                //
+                                                // },
+                                                height: query_check.isEmpty
+                                                    ? (widget.height ==
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height
+                                                    ? 0
+                                                    : MediaQuery.of(context)
+                                                    .size
+                                                    .height)
+                                                    : filteredJobOpenings.isEmpty
+                                                    ? 0
+                                                    : (widget.height ==
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height
+                                                    ? 0
+                                                    : MediaQuery.of(context)
+                                                    .size
+                                                    .height),
+                                                query_check: query_check,
+                                                onClickedItem: (item) {},
+                                                jobList:  filteredJobOpenings.isNotEmpty
+                                                    ? filteredJobOpenings
+                                                    : data, selectedOptionsMap: tabSelectedInFilterScreen=="Companies"? _selectedOptionMap : {},
+                                              ),
                                             ),
-                                          )
-                                              : AlphaBetScrollPageJob(
-                                            height: query_check.isEmpty
-                                                ? (widget.height ==
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .height
-                                                ? 0
-                                                : MediaQuery.of(context)
-                                                .size
-                                                .height)
-                                                : filteredJobOpenings.isEmpty
-                                                ? 0
-                                                : (widget.height ==
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .height
-                                                ? 0
-                                                : MediaQuery.of(context)
-                                                .size
-                                                .height),
-                                            query_check: query_check,
-                                            onClickedItem: (item) {},
-                                            jobList:  filteredJobOpenings.isNotEmpty
-                                                ? filteredJobOpenings
-                                                : data,
-                                          ),
+                                          ],
                                         ),
                                         Container(
                                           margin: EdgeInsets.all(8.0),
@@ -563,6 +510,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                             ),
                                           )
                                               : AlphaBetScrollPagePeople(
+                                selectedOptionsMap: tabSelectedInFilterScreen=="People"? _selectedOptionMap : {},
                                             height: query_check.isEmpty
                                                 ? (widget.height ==
                                                 MediaQuery.of(context)
@@ -585,6 +533,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                             query_check: query_check,
                                             onClickedItem: (item) {},
                                              peopleList: filteredPeopleList.isNotEmpty? filteredPeopleList: dataPeople,
+                                            selectedItems: tabSelectedInFilterScreen=="People"? selectedOptions : [],
                                           ),
                                         ),
 

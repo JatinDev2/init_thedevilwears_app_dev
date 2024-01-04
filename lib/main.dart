@@ -2,37 +2,31 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lookbook/Login/firebase_api.dart';
 import 'package:lookbook/Provider/google_auth_provider.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
-import 'package:lookbook/screens/jobs/createNewJobListing.dart';
 import 'package:lookbook/screens/jobs/filterScreen.dart';
 import 'package:lookbook/screens/jobs/jobListingScreen.dart';
 import 'package:lookbook/screens/listing/Confirmation_screen.dart';
-import 'package:lookbook/screens/listing/Details_Screen.dart';
 import 'package:lookbook/screens/listing/FiltersScreen_Listing.dart';
 import 'package:lookbook/screens/listing/PreviewScreen_first.dart';
 import 'package:lookbook/screens/listing/PriviewScreen_second.dart';
 import 'package:lookbook/screens/listing/listing_screen.dart';
 import 'package:lookbook/screens/listing/lookbook_details_grid.dart';
-import 'package:lookbook/screens/listing/new_listing/List_Model.dart';
 import 'package:lookbook/screens/listing/new_listing/new_listing_form.dart';
 import 'package:lookbook/screens/listing/new_listing/options_screen.dart';
 import 'package:lookbook/screens/listing/response_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_image_details.dart';
-import 'package:lookbook/screens/profile/profile_screen.dart';
-import 'package:lookbook/screens/search/FiltersScreen.dart';
+import 'package:lookbook/screens/profile/StudentProfileScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+
 import 'Login/first_screen.dart';
-import 'Login/interest_screen.dart';
-import 'Login/options_screen.dart';
 import 'Login/phoneNumber_screen.dart';
 
 void main() async{
@@ -110,6 +104,7 @@ class _MyAppState extends State<MyApp> {
             title: 'LookBook',
             theme: ThemeData(
               // primaryColor: Colors.black,
+              useMaterial3: false,
               colorScheme: const ColorScheme.light(
                 primary: Color(0xffFF9431),
               ),
@@ -126,6 +121,7 @@ class _MyAppState extends State<MyApp> {
           // CreateNewJobListing(),
           // FilterJobListings(),
           // JobListScreen(),
+          // StudentProfileScreen(),
           StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
@@ -273,7 +269,7 @@ class _MyAppState extends State<MyApp> {
               '/lookbookDetailsScreen': (BuildContext ctx) => LookbookDetailsScreen(),
               '/lookbookImagesSliderScreen': (BuildContext ctx) => LookbookImagesSliderScreen(),
               '/lookbookImageDetailsScreen': (BuildContext ctx) => LookbookImageDetailsScreen(),
-              '/searchFilterScreen': (BuildContext ctx) => FiltersScreen(),
+              // '/searchFilterScreen': (BuildContext ctx) => FiltersScreen(),
               '/listingScreen' : (BuildContext ctx) => ListingScreen(),
               // 'listingDetailsScreen' : (BuildContext ctx) => Details_Screen(),
               '/listingResponseScreen' : (BuildContext ctx) => ResponseScreen(),

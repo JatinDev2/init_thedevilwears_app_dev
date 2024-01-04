@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'JobSearchScreen.dart';
 
-class _AZItem extends ISuspensionBean {
+class _AZItem extends ISuspensionBean{
   final String title;
   final String tag;
   String imageUrl;
@@ -25,19 +25,24 @@ class _AZItem extends ISuspensionBean {
   String getSuspensionTag() => tag;
 }
 
-class AlphaBetScrollPageJob extends StatefulWidget {
+class AlphaBetScrollPageJob extends StatefulWidget{
   double height;
   String query_check;
   // final List<String> items;
   final List<JobOpening> jobList;
   final ValueChanged<String> onClickedItem;
+  final List selectedItems;
+  final Map<String,dynamic> selectedOptionsMap;
+  // final VoidCallback onListUpdated;
 
   AlphaBetScrollPageJob({
     required this.height,
     required this.query_check,
-    // required this.items,
     required this.jobList,
     required this.onClickedItem,
+    required this.selectedItems,
+    required this.selectedOptionsMap,
+    // required this.onListUpdated,
   });
 
   @override
@@ -80,59 +85,80 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     initList(widget.jobList);
-    return AzListView(
-      data: items,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return _buildListItem(item,index);
-      },
-      indexBarOptions: IndexBarOptions(
-        selectTextStyle:const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-        indexHintTextStyle:const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w300,
-          color: Color(0xff0f1015),
-          height: 468/12,
-        ),
-        needRebuild: true,
-        indexHintAlignment: Alignment.centerRight,
-        indexHintOffset: const Offset(-10, 0),
-        selectItemDecoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-      ),
-      indexBarHeight:widget.height,
-
-      indexHintBuilder: (context, hint){
-        selectedTag=hint;
-        return Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            shape: BoxShape.circle,
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if(widget.selectedItems.isNotEmpty)
+        Container(
+          height: 40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: widget.selectedItems.length,
+              itemBuilder: (BuildContext context, index){
+                return _buildChip(widget.selectedItems[index]);
+              }
           ),
-          alignment: Alignment.center,
-          child: Center(
-            child: Text(
-              hint,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+        ),
+          Container(
+            height: MediaQuery.of(context).size.height-300,
+            child: AzListView(
+              data: items,
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return _buildListItem(item,index);
+              },
+              indexBarOptions: IndexBarOptions(
+                selectTextStyle:const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+                indexHintTextStyle:const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300,
+                  color: Color(0xff0f1015),
+                  height: 468/12,
+                ),
+                needRebuild: true,
+                indexHintAlignment: Alignment.centerRight,
+                indexHintOffset: const Offset(-10, 0),
+                selectItemDecoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
               ),
+              indexBarHeight:widget.height,
+
+              indexHintBuilder: (context, hint){
+                selectedTag=hint;
+                return Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: Text(
+                      hint,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -189,7 +215,6 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       ),
                       textAlign: TextAlign.left,
                     ),
-
                     Text(
                       "${item.numberOfJobOpenings} Job Openings , ${item.location}",
                       style: const TextStyle(
@@ -215,9 +240,9 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
 
   Widget buildHeader(String tag) {
     return Container(
-      margin: const EdgeInsets.only(
+      margin:  EdgeInsets.only(
         left: 8,
-        top: 20,
+        top: tag=="A"? 2: 20,
         bottom: 4,
       ),
       child: Text(
@@ -233,4 +258,75 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
       )
     );
   }
+
+  Widget _buildChip(String tag){
+    return Container(
+      margin: const EdgeInsets.only(
+          top: 2.0,
+          right: 7.0,
+          bottom: 7.0), // Adjust the margin for tighter packing
+      child: GestureDetector(
+        onTap: () {
+
+        },
+        child: Container(
+          // padding: const EdgeInsets.symmetric(horizontal: 2.0),
+          // decoration: BoxDecoration(
+          //   color: Color(0xffF7F7F7),
+          //   border: Border.all(color: Colors.grey.shade300),
+          //   borderRadius: BorderRadius.circular(20.0), // Stadium shape
+          // ),
+          child: Row(
+            mainAxisSize: MainAxisSize
+                .min, // Use the minimum space that's needed by the child widgets
+            children: [
+              Text(
+                tag,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff303030),
+                ),
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    widget.selectedOptionsMap.forEach((key, value) {
+                      if(value is List && value.isNotEmpty){
+                        if(value.contains(tag)){
+                          value.remove(tag);
+                        }
+                      }
+                     else if(value is Map){
+                        value.forEach((key, subValue) {
+                          if(subValue is List && subValue.isNotEmpty){
+                            if(subValue.contains(tag)){
+                              subValue.remove(tag);
+                            }
+                          }
+                        });
+                      }
+                    });
+                    widget.selectedItems.remove(tag);
+                  });
+                },
+                child: Icon(
+                  Icons.close,
+                  size: 13.0,
+                  color: Color(0xff303030),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }
+
