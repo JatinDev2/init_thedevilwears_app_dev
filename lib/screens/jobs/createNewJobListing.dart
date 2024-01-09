@@ -838,6 +838,9 @@ setState(() {
                               jobDurVal:jobDurValue,
                               stipendVal:stipendValue,
                               tags:tags,
+                              clicked: false,
+                              applicationCount: 0,
+                              docId: "",
                             );
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return PreviewJobListing(newJobModel: newJobModel,);
@@ -888,10 +891,10 @@ setState(() {
                         else{
                           tags=[dropdownValue,jobType,jobDur];
                         }
+                        DocumentReference docRef = listCollection.doc();
 
                         if(_formKey.currentState!.validate()){
-
-                          listCollection.add({
+                          docRef.set({
                             "jobType": jobType,
                             "jobProfile": dropdownValue,
                             "responsibilities": responsibilityText.text,
@@ -910,6 +913,9 @@ setState(() {
                             "jobDurVal":jobDurValue,
                             "stipendVal":stipendValue,
                             "tags": tags,
+                            "docId": docRef.id,
+                            "clicked": false,
+                            "applicationCount": 0
                           }).then((value) {
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return const ConfirmJobListingScreen();

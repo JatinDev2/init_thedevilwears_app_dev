@@ -17,6 +17,9 @@ class jobModel{
   final String jobDurVal;
   final String stipendVal;
   final List tags;
+  final int applicationCount;
+  final bool clicked;
+  final String docId;
 
   jobModel({
     required this.jobType,
@@ -37,6 +40,9 @@ class jobModel{
     required this.jobDurVal,
     required this.stipendVal,
     required this.tags,
+    required this.applicationCount,
+    required this.clicked,
+    required this.docId,
 });
 
 }

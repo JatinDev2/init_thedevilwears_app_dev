@@ -61,6 +61,9 @@ class _JobListScreenState extends State<JobListScreen> {
            jobDurVal : data["jobDurVal"] ?? "",
            stipendVal : data["stipendVal"] ?? "",
            tags : data["tags"] ?? [],
+            applicationCount: data["applicationCount"] ?? 0,
+            clicked: data["clicked"] ?? false,
+            docId: data["docId"] ?? ""
           );
           listings.add(listModel);
         }

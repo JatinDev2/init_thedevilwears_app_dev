@@ -7,22 +7,24 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../profileForms/educationForm.dart';
-import '../profileForms/projectForm.dart';
-import '../profileForms/skillsForm.dart';
-import '../profileForms/workExperienceForm.dart';
-import '../profileModels/educationModel.dart';
-import '../profileModels/projectModel.dart';
-import '../profileModels/workModel.dart';
+import '../../profile/profileForms/skillsForm.dart';
+import '../../profile/profileModels/educationModel.dart';
+import '../../profile/profileModels/projectModel.dart';
+import '../../profile/profileModels/workModel.dart';
 
-class Tab1St extends StatefulWidget {
-  const Tab1St({super.key});
+class previewApplicationTabBody extends StatefulWidget {
+  final String additionalInfo;
+
+  // const previewApplicationTabBody({super.key});
+  previewApplicationTabBody({
+   required this.additionalInfo,
+});
 
   @override
-  State<Tab1St> createState() => _Tab1StState();
+  State<previewApplicationTabBody> createState() => _previewApplicationTabBodyState();
 }
 
-class _Tab1StState extends State<Tab1St> {
+class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
   String uid = "";
   bool isDataLoading = true;
   @override
@@ -36,7 +38,6 @@ class _Tab1StState extends State<Tab1St> {
       });
     });
   }
-
 
 
   Future<String> fetchId() async {
@@ -56,275 +57,216 @@ class _Tab1StState extends State<Tab1St> {
     }
   }
 
-  Future<void> storeSkills() async {
-    final List<String> skills = [
-      "Attention to detail",
-      "Analytical thinking",
-      "Adaptability",
-      "Collaboration",
-      "Curiosity",
-      "Customer service skills",
-      "Community management",
-      "Communication",
-      "Empathy",
-      "Leadership skills",
-      "Networking skills",
-      "Open mindedness",
-      "Problem solving",
-      "Patience",
-      "Positive attitude",
-      "Time management",
-    ];
-
-    final CollectionReference jobSkills = FirebaseFirestore.instance.collection('jobSkills');
-
-    await jobSkills.doc('Soft Skills').set({
-      'Soft Skills': skills,
-    }).then((_) {
-      print('Document successfully written!');
-    }).catchError((error) {
-      print('Error writing document: $error');
-    });
-  }
-
-  Future<void> storehardSkills() async {
-    final List<String> hardSkills = [
-      "After effects",
-      "Ads creating and management",
-      "Budgeting & financial analysis",
-      "Brand strategy development",
-      "CAD",
-      "Content creation & management",
-      "Competitive analysis",
-      "Content creation & management",
-      "Copywriting",
-      "Draping",
-      "Dyeing",
-      "Digital marketing",
-      "Data analytics",
-      "Grading",
-      "Graphic design",
-      "Illustration",
-      "Adobe Creative Suite",
-      "Khakha making",
-      "Market research & analysis",
-      "Merchandising",
-      "Project management",
-      "Public relations",
-      "Print making",
-      "Premier pro",
-      "Pattern making",
-      "Photoshop",
-      "Quality Control",
-      "Sketching",
-      "Sewing & garment construction",
-      "Styling",
-      "Social media",
-      "SEO",
-      "Trend forecasting",
-      "Technical drawing",
-      "Textile designing",
-      "Textile knowledge",
-      "Video editing",
-      "Whatsapp marketing",
-      "3D modelling softwares"
-    ];
-
-
-    final CollectionReference jobSkills = FirebaseFirestore.instance.collection('jobSkills');
-
-    await jobSkills.doc('Hard Skills').set({
-      'Hard Skills': hardSkills,
-    }).then((_) {
-      print('Document successfully written!');
-    }).catchError((error) {
-      print('Error writing document: $error');
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: isDataLoading
           ? Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
           : StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Profiles')
-                  .doc(uid)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text("Something went wrong");
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                // if (!snapshot.hasData || !snapshot.data!.exists) {
-                //   return const Text("Document does not exist");
-                // }
-                // Extracting data from the snapshot
-                var projectsList = <dynamic>[];
-                var workList = <dynamic>[];
-                var educationList=<dynamic>[];
-                var hardSkills=<dynamic>[];
-                var softSkills=<dynamic>[];
-                List<String> hardSkillsStringList = [];
-                List<String> softSkillsStringList = [];
-                List<ProjectModel> projects=[];
-                List<WorkModel> workExperiences=[];
-                List<EducationModel> educationEntries=[];
+        stream: FirebaseFirestore.instance
+            .collection('Profiles')
+            .doc(uid)
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Something went wrong");
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: const CircularProgressIndicator());
+          }
+          // if (!snapshot.hasData || !snapshot.data!.exists) {
+          //   return const Text("Document does not exist");
+          // }
+          // Extracting data from the snapshot
+          var projectsList = <dynamic>[];
+          var workList = <dynamic>[];
+          var educationList=<dynamic>[];
+          var hardSkills=<dynamic>[];
+          var softSkills=<dynamic>[];
+          List<String> hardSkillsStringList = [];
+          List<String> softSkillsStringList = [];
+          List<ProjectModel> projects=[];
+          List<WorkModel> workExperiences=[];
+          List<EducationModel> educationEntries=[];
 
-                // Check if the snapshot has data and is not null.
-                if (snapshot.hasData && snapshot.data!.data() != null) {
-                  var data = snapshot.data!.data() as Map<String, dynamic>;
-                   projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
-                   workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
-                   educationList = (data['Education'] is List<dynamic>) ? List<dynamic>.from(data['Education']) : [];
-                   hardSkills = (data['Hard Skills'] is List<dynamic>) ? List<dynamic>.from(data['Hard Skills']) : [];
-                   hardSkillsStringList = hardSkills.map((skill) => skill.toString()).toList();
+          // Check if the snapshot has data and is not null.
+          if (snapshot.hasData && snapshot.data!.data() != null) {
+            var data = snapshot.data!.data() as Map<String, dynamic>;
+            projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
+            workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
+            educationList = (data['Education'] is List<dynamic>) ? List<dynamic>.from(data['Education']) : [];
+            hardSkills = (data['Hard Skills'] is List<dynamic>) ? List<dynamic>.from(data['Hard Skills']) : [];
+            hardSkillsStringList = hardSkills.map((skill) => skill.toString()).toList();
 
-                   softSkills = (data['Soft Skills'] is List<dynamic>) ? List<dynamic>.from(data['Soft Skills']) : [];
-                   softSkillsStringList = softSkills.map((skill) => skill.toString()).toList();
-                  projects = projectsList
-                      .map((projectData) => ProjectModel.fromMap(projectData))
-                      .toList();
-                  workExperiences = workList.map((workData) => WorkModel.fromMap(workData)).toList();
-                  workExperiences.sort((a, b) {
-                    return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
-                  });
+            softSkills = (data['Soft Skills'] is List<dynamic>) ? List<dynamic>.from(data['Soft Skills']) : [];
+            softSkillsStringList = softSkills.map((skill) => skill.toString()).toList();
+            projects = projectsList
+                .map((projectData) => ProjectModel.fromMap(projectData))
+                .toList();
+            workExperiences = workList.map((workData) => WorkModel.fromMap(workData)).toList();
+            workExperiences.sort((a, b) {
+              return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
+            });
 
-                educationEntries = educationList.map((educationData) => EducationModel.fromMap(educationData)).toList();
-                  educationEntries.sort((a, b) {
-                    return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
-                  });
-                }
+            educationEntries = educationList.map((educationData) => EducationModel.fromMap(educationData)).toList();
+            educationEntries.sort((a, b) {
+              return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
+            });
+          }
 
-                // var data = snapshot.data?.data() as Map<String, dynamic>;
-                // var projectsList = data['projects'] as List<dynamic> ?? [];
-                // var workList = data['Work Experience'] as List<dynamic> ?? [];
-                // var educationList = data['Education'] as List<dynamic> ?? [];
+          // var data = snapshot.data?.data() as Map<String, dynamic>;
+          // var projectsList = data['projects'] as List<dynamic> ?? [];
+          // var workList = data['Work Experience'] as List<dynamic> ?? [];
+          // var educationList = data['Education'] as List<dynamic> ?? [];
 
-                // educationList.sort((a, b) {
-                //   return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
-                // });
+          // educationList.sort((a, b) {
+          //   return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
+          // });
 
-                // Converting data into model instances
+          // Converting data into model instances
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 24.h),
+                decoration: BoxDecoration(
+                    color: Color(0xffF9F9F9),
+                    borderRadius: BorderRadius.circular(12.0.r)
+                ),
+                child:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Additional Info",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff1a1a1a),
+                        height: 19/16,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(widget.additionalInfo, style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff000000),
+                      height: 16/14,
+                    ),)
+                  ],
+                ),
+              ),
 
 
-                return SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      // Projects
-                      Header(
-                        label: "Projects",
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      if (projects.isEmpty)
-                        const Center(child: Text("Nothing to show in Projects")),
-                     ...projects.map((project) => ProjectCard(
-                            title: project.projectHeading,
-                            subtitle: project.projectType,
-                            description: project.description,
-                        link: project.projectLink,
-                          )),
-                      // Work Experience
-                      SizedBox(
-                        height: 30.h,
-                      ),
-                      Header(
-                        label: "Work Experience",
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      if (workExperiences.isEmpty)
-                        Center(child: const Text("Nothing to show in Work Experience")),
+              // Projects
+              Header(
+                label: "Projects",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              if (projects.isEmpty)
+                const Center(child: Text("Nothing to show in Projects")),
+              ...projects.map((project) => ProjectCard(
+                title: project.projectHeading,
+                subtitle: project.projectType,
+                description: project.description,
+                link: project.projectLink,
+              )),
+              // Work Experience
+              SizedBox(
+                height: 30.h,
+              ),
+              Header(
+                label: "Work Experience",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              if (workExperiences.isEmpty)
+                Center(child: const Text("Nothing to show in Work Experience")),
 
-                      ...workExperiences.map((work) => WorkCard(
-                            // Map WorkModel properties to WorkCard widget
-                            description: work.description,
-                            companyName: work.companyName,
-                            projectLink: work.projectLink,
-                            roleInCompany: work.roleInCompany,
-                            timePeriod: work.timePeriod,
-                            workType: work.workType,
-                            location: work.location,
-                        link: work.projectLink,
-                          )),
-                      // Education
-                      SizedBox(
-                        height: 30.h,
-                      ),
-                      Header(
-                        label: "Education",
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      if (educationEntries.isEmpty)
-                        Center(child: const Text("Nothing to show in Education")),
-                      ...educationEntries.map((education) => EducationCard(
-                            // Map EducationModel properties to EducationCard widget
-                            description: education.description,
-                            timePeriod: education.timePeriod,
-                            location: education.location,
-                            degreeName: education.degreeName,
-                            instituteName: education.instituteName,
-                          )),
-                      // Rest of your widgets...
-                      SizedBox(
-                        height: 30.h,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 4),
-                        child: Text(
-                          "Skillset",
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1a1a1a),
-                            height: 19 / 16,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Header(
-                        label: "Hard skills",
-                      ),
-                      TagChips(
-                        label: "Hard skills",
-                        tags: hardSkillsStringList,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Header(
-                        label: "Soft skills",
-                      ),
-                      TagChips(
-                        label: "Soft skills",
-                        tags: softSkillsStringList,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+              ...workExperiences.map((work) => WorkCard(
+                // Map WorkModel properties to WorkCard widget
+                description: work.description,
+                companyName: work.companyName,
+                projectLink: work.projectLink,
+                roleInCompany: work.roleInCompany,
+                timePeriod: work.timePeriod,
+                workType: work.workType,
+                location: work.location,
+                link: work.projectLink,
+              )),
+              // Education
+              SizedBox(
+                height: 30.h,
+              ),
+              Header(
+                label: "Education",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              if (educationEntries.isEmpty)
+                Center(child: const Text("Nothing to show in Education")),
+              ...educationEntries.map((education) => EducationCard(
+                // Map EducationModel properties to EducationCard widget
+                description: education.description,
+                timePeriod: education.timePeriod,
+                location: education.location,
+                degreeName: education.degreeName,
+                instituteName: education.instituteName,
+              )),
+              // Rest of your widgets...
+              // SizedBox(
+              //   height: 30.h,
+              // ),
+              // Container(
+              //   margin: EdgeInsets.only(left: 4),
+              //   child: Text(
+              //     "Skillset",
+              //     style: const TextStyle(
+              //       fontFamily: "Poppins",
+              //       fontSize: 16,
+              //       fontWeight: FontWeight.w600,
+              //       color: Color(0xff1a1a1a),
+              //       height: 19 / 16,
+              //     ),
+              //     textAlign: TextAlign.left,
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Header(
+              //   label: "Hard skills",
+              // ),
+              // TagChips(
+              //   label: "Hard skills",
+              //   tags: hardSkillsStringList,
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Header(
+              //   label: "Soft skills",
+              // ),
+              // TagChips(
+              //   label: "Soft skills",
+              //   tags: softSkillsStringList,
+              // ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -349,7 +291,7 @@ class Header extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poppins",
               fontSize:
-                  (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
+              (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
               fontWeight: (label == "Hard skills" || label == "Soft skills")
                   ? FontWeight.w500
                   : FontWeight.bold,
@@ -360,49 +302,7 @@ class Header extends StatelessWidget {
           ),
           // IconButton(
           //   icon:
-          if (label != "Hard skills" && label != "Soft skills")
-            GestureDetector(
-                onTap: () {
-                  if (label == "Work Experience") {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                      return AddNewWorkExperience();
-                    }));
-                  } else if (label == "Projects") {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                      return AddNewProjectForm();
-                    }));
-                  } else if (label == "Education") {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                      return AddNewEducationForm();
-                    }));
-                  }
-                },
-                child: const Icon(Icons.add, size: 20.0)),
 
-          if (label == "Hard skills")
-            const Text(
-              "Delete all",
-              style: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff000000),
-                height: 18 / 12,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          if (label == "Soft skills")
-            const Text(
-              "Delete all",
-              style: TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff000000),
-                height: 18 / 12,
-              ),
-              textAlign: TextAlign.left,
-            ),
         ],
       ),
     );
@@ -465,9 +365,9 @@ class ProjectCard extends StatelessWidget {
                   onTap: () async{
                     String url=link;
                     if (await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(Uri.parse(url));
+                      await launchUrl(Uri.parse(url));
                     } else {
-                    print('Could not launch $url');
+                      print('Could not launch $url');
                     }
                   },
                   child: const Text(
@@ -631,27 +531,27 @@ class WorkCard extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
                 if(link.isNotEmpty)
-                InkWell(
-                  onTap: () async{
-                    String url=link;
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      print('Could not launch $url');
-                    }
-                  },
-                  child: const Text(
-                    "Check out my work",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xfff54e44),
-                      height: 19 / 12,
+                  InkWell(
+                    onTap: () async{
+                      String url=link;
+                      if (await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(Uri.parse(url));
+                      } else {
+                        print('Could not launch $url');
+                      }
+                    },
+                    child: const Text(
+                      "Check out my work",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xfff54e44),
+                        height: 19 / 12,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
-                ),
                 if (description.isNotEmpty)
                   ExpandableText(
                     description, // Your text goes here
@@ -761,71 +661,71 @@ class EducationCard extends StatelessWidget {
           SizedBox(width: 13.0.w),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  instituteName,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff000000),
-                    height: 19 / 16,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    instituteName,
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff000000),
+                      height: 19 / 16,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  degreeName,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff000000),
-                    height: 19 / 12,
+                  Text(
+                    degreeName,
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff000000),
+                      height: 19 / 12,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "$location, India • ${formatTimePeriod(timePeriod)}",
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff000000),
-                    height: 19 / 12,
+                  Text(
+                    "$location, India • ${formatTimePeriod(timePeriod)}",
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff000000),
+                      height: 19 / 12,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-              if (description.isNotEmpty)
-      ExpandableText(
-      description, // Your text goes here
-      style: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.normal,
-      ),
-      expandText: 'more',
-      collapseText: '...less',
-      maxLines: 2,
-      linkColor: Color(0xffa8a8a8),
-      linkStyle: const TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: Color(0xffa8a8a8),
-      ),
-      prefixText: "Description",
-      prefixStyle: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 12,
-        color: Colors.black,
-      ),
-      animation: true,
-        linkEllipsis: true,
-      animationDuration: Duration(milliseconds: 500), // Custom animation duration
-      animationCurve: Curves.easeInOut, // Custom animation curve
-      collapseOnTextTap: true,
-    ),
-            ]),
+                  if (description.isNotEmpty)
+                    ExpandableText(
+                      description, // Your text goes here
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      expandText: 'more',
+                      collapseText: '...less',
+                      maxLines: 2,
+                      linkColor: Color(0xffa8a8a8),
+                      linkStyle: const TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffa8a8a8),
+                      ),
+                      prefixText: "Description",
+                      prefixStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
+                      animation: true,
+                      linkEllipsis: true,
+                      animationDuration: Duration(milliseconds: 500), // Custom animation duration
+                      animationCurve: Curves.easeInOut, // Custom animation curve
+                      collapseOnTextTap: true,
+                    ),
+                ]),
           ),
         ],
       ),
@@ -837,7 +737,7 @@ class TagChips extends StatefulWidget {
   final String label;
   final List<String> tags;
 
-   TagChips({
+  TagChips({
     Key? key,
     required this.label,
     required this.tags,

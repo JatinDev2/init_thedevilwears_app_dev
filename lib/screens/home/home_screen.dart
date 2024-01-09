@@ -8,6 +8,7 @@ import 'package:lookbook/screens/listing/listing_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../brandProfile/brandProfileScreen.dart';
 import '../listing/response_screen.dart';
 import '../profile/StudentProfileScreen.dart';
 import '../search/JobSearchScreen.dart';
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   void initState() {
     setSharedPrefrence();
     gridItems = GridItemData.generateItems();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() => _select(_tabController.index));
     super.initState();
   }
@@ -145,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ListingScreen(),
       // ProfileScreen()
       StudentProfileScreen(),
+      BrandProfileScreen(),
     ];
 
     return Scaffold(
@@ -172,6 +174,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               backgroundColor: Colors.white,
               icon: Icon(IconlyLight.document),
               activeIcon: CustomIcon(selectedIcon: IconlyBold.document),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              backgroundColor: Colors.white,
+              icon: Icon(IconlyLight.profile),
+              activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
               label: '',
             ),
             BottomNavigationBarItem(

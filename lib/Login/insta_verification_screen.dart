@@ -71,7 +71,7 @@ class _InstaVerificationState extends State<InstaVerification> {
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (_) {
-                        return  InstagramView(map: widget.map,);
+                        return  InstagramView(map: widget.map, label: "Insta Verify",);
                       }));
                     },
                     child: Image.asset("assets/insta.png")),

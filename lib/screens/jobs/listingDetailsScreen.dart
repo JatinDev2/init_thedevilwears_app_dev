@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lookbook/screens/profile/profileModels/workModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Services/profiles.dart';
 import '../common_widgets.dart';
+import 'Applications/previewApplication.dart';
+import 'Applications/previewTab.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
 
@@ -20,8 +25,305 @@ class JobListingDetailsScreen extends StatefulWidget {
 }
 
 class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
+  TextEditingController additionalInfoController= TextEditingController();
+  bool isSubmitLoading=false;
 
-  @override
+  void _showDialog(BuildContext context, String workString, String education, String name, String jobType) {
+    setState(() {
+      isLoading=false;
+    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Text(
+                        "Your Application",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff0f1015),
+                          height: 20/18,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+                  SizedBox(height: 33.h,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        // backgroundImage: NetworkImage("image_url"),
+                        radius: 30.0.r,
+                      ),
+                      SizedBox(width: 11.w),
+                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text(
+                           name,
+                           style: const TextStyle(
+                             fontFamily: "Poppins",
+                             fontSize: 16,
+                             fontWeight: FontWeight.w600,
+                             color: Color(0xff0f1015),
+                             height: 20/16,
+                           ),
+                           textAlign: TextAlign.left,
+                         ),
+                         Text(
+                           jobType,
+                           style: const TextStyle(
+                             fontFamily: "Poppins",
+                             fontSize: 14,
+                             fontWeight: FontWeight.w400,
+                             color: Color(0xff616161),
+                             height: 19/14,
+                           ),
+                           textAlign: TextAlign.left,
+                         ),
+                       ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30.h),
+                  const Text(
+                    "Worked with",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff7d7d7d),
+                      height: 19/16,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  ExpandableText(
+                    workString, // Your text goes here
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff7d7d7d),
+                    ),
+                    expandText: 'more',
+                    collapseText: '...less',
+                    maxLines: 2,
+                    linkColor: Color(0xffa8a8a8),
+                    linkStyle: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xffa8a8a8),
+                    ),
+                    linkEllipsis: true,
+                    animation: true,
+                    animationDuration: Duration(milliseconds: 500), // Custom animation duration
+                    animationCurve: Curves.easeInOut, // Custom animation curve
+                    collapseOnTextTap: true,
+                  ),
+
+                  SizedBox(height: 30.h),
+                  const Text(
+                    "Education",
+                    style:  TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff7d7d7d),
+                      height: 21/14,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(education),
+                  SizedBox(height: 25.h),
+                  const Text(
+                    "Additional Information",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff000000),
+                      height: 19/16,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: additionalInfoController,
+                    maxLines: 7,
+                    decoration: const InputDecoration(
+                      hintText: "What additional information would you like to provide?\n\nWe recommend adding relevant projects links & giving a small write-up about why you are the right fit for this role",
+                      border: OutlineInputBorder(),
+                      hintStyle: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff787878),
+                    ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: isSubmitLoading? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+                    children: [
+                      if(!isSubmitLoading)
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                              return PreviewJobApplocation(
+                                additionalinfo: additionalInfoController.text,
+                                listing: widget.newJobModel,
+                                jobType: jobType,
+                                education: education,
+                                name: name,
+                                workString: workString,
+                              );
+                            }));
+                          },
+                          child: Container(
+                            height: 56.h,
+                            width: 134.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffE6E6E6),
+                              borderRadius: BorderRadius.circular(5.0.r),
+                            ),
+                            child: Center(
+                              child:  Text(
+                                "Preview",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xff373737),
+                                  height: (24/16).h,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if(!isSubmitLoading)
+                        GestureDetector(
+                            onTap: ()async{
+                              setState((){
+                                 isSubmitLoading=true;
+                              });
+                              final prefs = await SharedPreferences.getInstance();
+                              final userId = prefs.getString('userId');
+                              final firstName = prefs.getString('firstName');
+                              final lastName = prefs.getString('lastName');
+                              Map<String,dynamic> applicationData={
+                                "additionalInfo" : additionalInfoController.text,
+                                "userId":  userId,
+                                "workedAt": workString,
+                                "education":education,
+                                "statusOfApplication":"Pending",
+                                "appliedBy":name,
+                                "createdBy": "$firstName $lastName",
+                                "jobProfile":jobType,
+                              };
+                              // Reference to Firestore
+                              final firestore = FirebaseFirestore.instance;
+
+                              try {
+                                // Reference to the specific job listing document
+                                DocumentReference jobRef = firestore.collection('jobListing').doc(widget.newJobModel.docId);
+
+                                DocumentSnapshot jobSnapshot = await jobRef.get();
+                                if (!jobSnapshot.exists) {
+                                  throw Exception('Job listing not found');
+                                }
+                                CollectionReference applicationsRef = jobRef.collection('Applications');
+
+                                await firestore.runTransaction((transaction) async {
+                                  transaction.set(applicationsRef.doc(userId), applicationData, SetOptions(merge: true));
+                                  transaction.update(jobRef, {
+                                    'applicationCount': FieldValue.increment(1),
+                                    'clicked': false
+                                  });
+                                });
+                                print('Application successfully created');
+                                setState(() {
+                                    isSubmitLoading=false;
+                                });
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+
+                              } catch (e) {
+                                print('Error creating application: $e');
+                                throw e; // Rethrow the exception
+                              }
+                            },
+
+                          child: Container(
+                            height: 56.h,
+                            width: 134.w,
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(5.0.r),
+                            ),
+                            child: Center(
+                                child:isSubmitLoading?
+                                const CircularProgressIndicator(
+                                  color: Colors.white,
+                                ) :  Text(
+                                  "Submit",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xff010100),
+                                    height: (24/16).h,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                )
+                            ),
+                          ),
+                        ),
+                      if(isSubmitLoading)
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                    ],
+                  )
+
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  bool isLoading=false;
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -200,9 +502,24 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () async{
+                  setState(() {
+                    isLoading=true;
+                  });
+                  final prefs = await SharedPreferences.getInstance();
+                  // final userId = prefs.getString('userId');
+                  final firstName = prefs.getString('firstName');
+                  final lastName = prefs.getString('lastName');
+                  String workString="";
+                  String education="";
 
-
+                  ProfileServices().fetchWorkExperienceCompanies().then((value) {
+                    workString=value;
+                    ProfileServices().fetchLatestEducation().then((educationVal) {
+                      education=educationVal!;
+                      _showDialog(context, workString,education ,"${firstName} ${lastName}","Fashion Stylist");
+                    });
+                  });
                 },
                 child: Container(
                   height: 56.h,
@@ -211,8 +528,8 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(5.0.r),
                   ),
-                  child: const Center(
-                      child: Text(
+                  child:  Center(
+                      child: isLoading ? const CircularProgressIndicator( color:  Colors.white,) : const Text(
                         "Send your application",
                         style: TextStyle(
                           fontFamily: "Poppins",

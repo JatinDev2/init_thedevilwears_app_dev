@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lookbook/Login/firebase_api.dart';
 import 'package:lookbook/Provider/google_auth_provider.dart';
+import 'package:lookbook/screens/brandProfile/brandProfileScreen.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
 import 'package:lookbook/screens/jobs/filterScreen.dart';
 import 'package:lookbook/screens/jobs/jobListingScreen.dart';
@@ -28,6 +29,7 @@ import 'package:uni_links/uni_links.dart';
 
 import 'Login/first_screen.dart';
 import 'Login/phoneNumber_screen.dart';
+import 'instaLogin/insta_test.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,6 +124,8 @@ class _MyAppState extends State<MyApp> {
           // FilterJobListings(),
           // JobListScreen(),
           // StudentProfileScreen(),
+          // BrandProfileScreen(),
+          // InstagramMediaWidget(),
           StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {

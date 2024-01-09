@@ -191,7 +191,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
           tempFiltered.add(realPeopleData[i]);
         }
       }
-    } else {
+    }
+    else {
       tempFiltered.addAll(realPeopleData);
     }
     if (_selectedIndexPeople != null &&

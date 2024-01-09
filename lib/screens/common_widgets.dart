@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:lookbook/screens/jobs/job_model.dart';
 import 'package:lookbook/screens/jobs/listingDetailsScreen.dart';
 import 'package:share/share.dart';
+import 'jobs/Applications/viewApplicationsScreen.dart';
 import 'listing/Details_Screen.dart';
 import 'listing/new_listing/List_Model.dart';
 
@@ -72,6 +74,7 @@ class BuildCustomCard extends StatelessWidget {
         margin: const EdgeInsets.all(16),
         child: InkWell(
           onTap: () {
+
             Navigator.of(context).push(MaterialPageRoute(builder: (_){
               return Details_Screen(listing: listing);
             }));
@@ -471,6 +474,233 @@ class BuildCustomJobCard extends StatelessWidget {
 }
 
 
+class BuildCustomBrandJobListingCard extends StatelessWidget {
+  final jobModel listing;
+
+  const BuildCustomBrandJobListingCard({
+    super.key,
+    required this.listing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      margin:  EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+      child: InkWell(
+        onTap: () {
+          if(!listing.clicked){
+            print("Yo i was tapped");
+            FirebaseFirestore firestore = FirebaseFirestore.instance;
+            DocumentReference docRef = firestore.collection('jobListing').doc(listing.docId);
+            // Update the 'clicked' field of this document
+            docRef.update({'clicked': true}).then((_) {
+              print('Document successfully updated');
+            }).catchError((error) {
+              // Handle any errors here
+              print('Error updating document: $error');
+            });
+          }
+          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+            return JobListingDetailsScreen( newJobModel: listing,);
+          }));
+        },
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
+              height: 50.h,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: listing.tags.map((option){
+                        return OptionChipDisplay(
+                          title: option,
+                        );
+                      }).toList(),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 20.r,
+                    backgroundImage: const NetworkImage(
+                      "https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 6.w,
+                  ),
+                  Expanded(
+                      child: Text(
+                        listing.createdBy,
+                        style:  TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xff0f1015),
+                          height: (20 / 18).h,
+                        ),
+                        textAlign: TextAlign.left,
+                      )),
+                ],
+              ),
+            ),
+            Container(
+              padding:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              margin:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              color: const Color(0xffF9F9F9),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BuildInfoColumns(heading_text: "Work Mode", info_text: listing.workMode),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    height: 50.h,
+                    width: 2.w,
+                    color: const Color(0xffB7B7B9),
+                  ),
+                  BuildInfoColumns(heading_text:"Location", info_text:listing.officeLoc),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    height: 50.h,
+                    width: 2.w,
+                    color: const Color(0xffB7B7B9),
+                  ),
+                  BuildInfoColumns(heading_text:"Stipend", info_text:listing.stipend!="Unpaid" ? "${listing.stipendAmount}${listing.stipendVal}"  : "${listing.stipend}"),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: 'Responsibilities ',
+                      style:  TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff2F2F2F),
+                      ),
+                      children: [
+                        TextSpan(
+                          // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
+                          // text: "}"
+                          text: listing.responsibilities,
+                          style:  TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.normal,
+                            color: const Color(0xff424242),
+                          ),
+                        ),
+                      ],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8.h),
+                  Row(
+                    children: [
+                      Text(
+                        getTimeAgo(listing.createdAt),
+                        // "37 Mins ago",
+                        style:  TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xff8b8b8b),
+                          height: (18 / 12).h,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const Spacer(),
+                      if(!listing.clicked)
+                      Container(
+                        padding:  EdgeInsets.symmetric(vertical: 4.0.h, horizontal: 8.0.w),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(14.0.r),
+                        ),
+                         child:  Text(
+                           "New",
+                           style:  TextStyle(
+                             fontFamily: "Poppins",
+                             fontSize: 15.sp,
+                             fontWeight: FontWeight.w500,
+                             color: Colors.white,
+                             height: (20/13).h,
+                           ),
+                           textAlign: TextAlign.left,
+                         ),
+                      ),
+                      SizedBox(width: 5.w,),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                            return AllAplicationsScreen(jobId:listing.docId,);
+                          }));
+                        },
+                        child: Text(
+                          "${listing.applicationCount} Applications",
+                          style:  TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.primary,
+                            height: (20/13).h,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  String getTimeAgo(String timestampString) {
+    // Convert the Firestore timestamp string to a DateTime
+    DateTime timestamp = DateTime.parse(timestampString);
+
+    // Get the current time
+    DateTime now = DateTime.now();
+
+    // Calculate the time difference
+    Duration difference = now.difference(timestamp);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} seconds ago';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} days ago';
+    } else {
+      // Format the timestamp in a custom way if it's more than a week ago
+      String formattedDate = DateFormat('MMM d, yyyy').format(timestamp);
+      return 'on $formattedDate';
+    }
+  }
+}
+
+
+
 class OptionChipDisplay extends StatelessWidget {
   final String title;
 
@@ -508,3 +738,4 @@ class OptionChipDisplay extends StatelessWidget {
     ) : Container();
   }
 }
+

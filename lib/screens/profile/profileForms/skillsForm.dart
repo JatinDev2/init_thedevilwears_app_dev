@@ -4,6 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SkillsSelectionScreen extends StatefulWidget {
+
+  final String label;
+  final Map<String, bool> selectedoptions;
+
+  SkillsSelectionScreen({
+    required this.label,
+    required this.selectedoptions,
+});
+
   @override
   _SkillsSelectionScreenState createState() => _SkillsSelectionScreenState();
 }
@@ -11,10 +20,43 @@ class SkillsSelectionScreen extends StatefulWidget {
 class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
   bool isLoading = false;
   Map<String, bool> selectedSkills = {};
-  late Future<List<String>?> skillsFuture;
+  late  Future<List<String>?> skillsFuture;
   void initState() {
     super.initState();
-    skillsFuture = fetchSkills(); // Fetch the skills once here
+    print("label is ${widget.label}");
+    if(widget.label=="Soft Skills"){
+      skillsFuture=fetchSoftSkills();
+    }
+     if(widget.label=="Hard Skills"){
+      skillsFuture=fetchHardSkills();
+    }
+    if(widget.selectedoptions.isNotEmpty){
+      selectedSkills.addAll(widget.selectedoptions);
+    }
+  }
+  Future<bool> addSoftSkillsToUserProfile(List<String> selectedSkillsList) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId!.isEmpty) {
+      print('User ID is null or empty');
+      return false;
+    }
+    setState(() {
+      isLoading=true;
+    });
+
+    DocumentReference userDoc =
+    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    try {
+      await userDoc.set({
+        'Soft Skills': selectedSkillsList
+        }, SetOptions(merge: true));
+      print('Work added successfully');
+      return true;
+    } catch (error) {
+      print('Error adding Work: $error');
+      return false;
+    }
   }
 
   Future<bool> addSkillsToUserProfile(List<String> selectedSkillsList) async {
@@ -33,7 +75,7 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
     try {
       await userDoc.set({
         'Hard Skills': selectedSkillsList
-        }, SetOptions(merge: true));
+      }, SetOptions(merge: true));
       print('Work added successfully');
       return true;
     } catch (error) {
@@ -42,30 +84,47 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
     }
   }
 
-  Future<List<String>?> fetchSkills() async {
-    CollectionReference skillsCollection = FirebaseFirestore.instance.collection('jobSkills');
+
+  Future<List<String>> fetchSoftSkills() async {
+    final DocumentReference softSkillsDoc = FirebaseFirestore.instance.collection('jobSkills').doc('Soft Skills');
+
+    List<String> softSkillsList = [];
 
     try {
-      QuerySnapshot querySnapshot = await skillsCollection.limit(1).get();
-      if (querySnapshot.docs.isNotEmpty) {
-        DocumentSnapshot snapshot = querySnapshot.docs.first;
+      DocumentSnapshot snapshot = await softSkillsDoc.get();
+      if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        if (data.containsKey('Skills')) {
-          List<String> skillsList = List<String>.from(data['Skills']);
-          print('Skills fetched successfully');
-          return skillsList;
-        } else {
-          print('"Skills" field is not found');
-          return null;
-        }
+        softSkillsList = List<String>.from(data['Soft Skills']);
+        print('Document successfully read!');
       } else {
-        print('No documents found in the jobSkills collection');
-        return null;
+        print('No such document!');
       }
     } catch (error) {
-      print('Error fetching skills: $error');
-      return null;
+      print('Error reading document: $error');
     }
+
+    return softSkillsList;
+  }
+
+  Future<List<String>> fetchHardSkills() async {
+    final DocumentReference hardSkillsDoc = FirebaseFirestore.instance.collection('jobSkills').doc('Hard Skills');
+
+    List<String> hardSkillsList = [];
+
+    try {
+      DocumentSnapshot snapshot = await hardSkillsDoc.get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        hardSkillsList = List<String>.from(data['Hard Skills']);
+        print('Document successfully read!');
+      } else {
+        print('No such document!');
+      }
+    } catch (error) {
+      print('Error reading document: $error');
+    }
+
+    return hardSkillsList;
   }
 
   @override
@@ -166,14 +225,27 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
                           }
                         });
                         if(selectedSkillsList.isNotEmpty){
-                          addSkillsToUserProfile(selectedSkillsList).then((value) {
-                            if(value==true){
-                              setState(() {
-                                isLoading=false;
-                                Navigator.of(context).pop();
-                              });
-                            }
-                          });
+                          if(widget.label=="Soft Skills"){
+                            addSoftSkillsToUserProfile(selectedSkillsList).then((value) {
+                              if(value==true){
+                                setState(() {
+                                  isLoading=false;
+                                  Navigator.of(context).pop();
+                                });
+                              }
+                            });
+                          }
+                          else{
+                            addSkillsToUserProfile(selectedSkillsList).then((value) {
+                              if(value==true){
+                                setState(() {
+                                  isLoading=false;
+                                  Navigator.of(context).pop();
+                                });
+                              }
+                            });
+                          }
+
                         }
                       },
                       child: Container(

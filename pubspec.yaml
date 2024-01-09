@@ -76,6 +76,7 @@ dependencies:
   csc_picker: ^0.2.7
   country_state_city: ^0.1.6
   expandable_text: ^2.3.0
+  cached_network_image: ^3.3.1
 
 
 

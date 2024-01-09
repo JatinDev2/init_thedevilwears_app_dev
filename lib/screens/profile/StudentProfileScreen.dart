@@ -137,14 +137,22 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
         if (snapshot.hasError) {
           return Center(child: Text("Error: ${snapshot.error}"));
         }
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Center(child: Text("No data found"));
-        }
+        // if (!snapshot.hasData || !snapshot.data!.exists) {
+        //   return Center(child: Text("No data found"));
+        // }
 else{
-          var data = snapshot.data!.data() as Map<String, dynamic>;
-          var projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
-          var workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
+          var projectsList = <dynamic>[];
+          var workList = <dynamic>[];
 
+          // Check if the snapshot has data and is not null.
+          if (snapshot.hasData && snapshot.data!.data() != null) {
+            var data = snapshot.data!.data() as Map<String, dynamic>;
+            projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
+            workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
+          }
+          // var data = snapshot.data!.data() as Map<String, dynamic> ?? {};
+          // var projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
+          // var workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
 
           return Scaffold(
             body: Material(

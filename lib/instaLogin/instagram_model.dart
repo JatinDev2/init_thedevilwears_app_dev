@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'insta_test.dart';
 import 'instagram_constant.dart';
 
 class InstagramModel {
@@ -29,7 +31,12 @@ class InstagramModel {
     });
     accessToken = json.decode(response.body)['access_token'];
     print(accessToken);
+    var prefs= await SharedPreferences.getInstance();
+    prefs.setString('accessToken', accessToken.toString());
+
     userID = json.decode(response.body)['user_id'].toString();
+    prefs.setString('userIdInsta', userID.toString());
+
     return (accessToken != null && userID != null) ? true : false;
   }
 
@@ -45,4 +52,73 @@ class InstagramModel {
     print('username: $username');
     return instaProfile != null ? true : false;
   }
+
+  Future<List<String>> getUserMedia() async {
+
+    final prefs = await SharedPreferences.getInstance();
+    final accessTokenFromStorage = prefs.getString('accessToken');
+    final userIdFromStorage = prefs.getString('userIdInsta');
+
+    print("The access token is : ${accessTokenFromStorage}");
+    print("The user id is : ${userIdFromStorage}");
+    if (accessTokenFromStorage == null || userIdFromStorage == null) {
+      // Handle the error: accessToken or userID is null
+      return [];
+    }
+
+    final url = Uri.parse(
+        'https://graph.instagram.com/$userIdFromStorage/media?fields=id,caption&access_token=$accessTokenFromStorage');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      List<dynamic> mediaItems = data['data'];
+      return mediaItems.map((item) => item['id'].toString()).toList();
+    } else {
+      print("getUserMedia ${response.statusCode}");
+      print(response.body);
+      // Handle the error or throw an exception
+      return [];
+    }
+  }
+
+
+
+  Future<Map<String, dynamic>> getMediaDetails(String mediaId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessTokenFromStorage = prefs.getString('accessToken');
+    if (accessTokenFromStorage == null) {
+      // Handle the error: accessToken is null
+      return {};
+    }
+
+    final url = Uri.parse(
+        'https://graph.instagram.com/$mediaId?fields=id,media_type,media_url,username,timestamp&access_token=$accessTokenFromStorage');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      print("Hello");
+      return json.decode(response.body);
+    }
+    else {
+      print(response.statusCode);
+      // Handle the error or throw an exception
+      return {};
+    }
+  }
+
+ static Future<List<InstagramMedia>> fetchMedia() async {
+    final InstagramModel instagramModel = InstagramModel(); // Your InstagramModel instance
+    List<String> mediaIds = await instagramModel.getUserMedia();
+    print("The list is : ");
+    print(mediaIds);
+    List<InstagramMedia> tempList = [];
+    for (String id in mediaIds) {
+      var mediaData = await instagramModel.getMediaDetails(id);
+      tempList.add(InstagramMedia.fromJson(mediaData));
+    }
+    return tempList;
+  }
+
+
 }

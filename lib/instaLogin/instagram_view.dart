@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Login/final_screen.dart';
+import '../screens/home/home_screen.dart';
+import 'insta_test.dart';
 import 'instagram_constant.dart';
 import 'instagram_model.dart';
 
 class InstagramView extends StatelessWidget {
   final Map<String,List<String>>map;
+  final String label;
    InstagramView({
     super.key,
    required this.map,
+     required this.label,
 });
   // const InstagramView({Key? key}) : super(key: key);
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
@@ -32,28 +36,42 @@ class InstagramView extends StatelessWidget {
   }
 
   Future<void> addUser(BuildContext context,String instaUserName) async {
-  try {
     final prefs = await SharedPreferences.getInstance();
-    final firstName = prefs.getString('firstName');
-    final lastName = prefs.getString('lastName');
-    final phoneNumber = prefs.getString('phoneNumber');
-    final userEmail = prefs.getString('userEmail');
-    final userType = prefs.getString('userType');
-    final userId = prefs.getString('userId');
-    await usersCollection.doc("$userId").set({
-      'firstName': firstName,
-      'lastName': lastName,
-      'phoneNumber': phoneNumber!.replaceAll(" ", ""),
-      'userEmail': userEmail,
-      'preferences': map,
-      'userType': userType,
-      'instaUserName':instaUserName,
-    }).then((value) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-        return ConfirmedLoginScreen();
-      }));
-    });
-    print('User added to Firestore');
+  try {
+    if(label=="Login"){
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()), // Replace HomeScreen with your home screen widget
+            (Route<dynamic> route) => false, // Conditions for routes to remove; false removes all
+      );
+    }
+    else{
+      final firstName = prefs.getString('firstName');
+      final lastName = prefs.getString('lastName');
+      final phoneNumber = prefs.getString('phoneNumber');
+      final userEmail = prefs.getString('userEmail');
+      final userType = prefs.getString('userType');
+      final userId = prefs.getString('userId');
+      await usersCollection.doc("$userId").set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'phoneNumber': phoneNumber!.replaceAll(" ", ""),
+        'userEmail': userEmail,
+        'preferences': map,
+        'userType': userType,
+        'instaUserName':instaUserName,
+      }).then((value) {
+
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+          return ConfirmedLoginScreen();
+        }));
+        // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        //   return InstagramMediaWidget();
+        // }));
+      });
+      print('User added to Firestore');
+    }
+
   } catch (e) {
     print('Error adding user to Firestore: $e');
   }
