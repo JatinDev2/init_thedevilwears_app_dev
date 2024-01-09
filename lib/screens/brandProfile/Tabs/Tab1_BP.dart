@@ -22,6 +22,7 @@ class _Tab1_BPState extends State<Tab1_BP> {
 
     return SingleChildScrollView(
       child: Container(
+        color: Colors.white,
         margin: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,8 +190,8 @@ class _Tab1_BPState extends State<Tab1_BP> {
           height: 75.h,
           width: 184.w,
           decoration:  BoxDecoration(
-            // color:  Color(0xffF9F9F9)
-            color: Colors.blue
+            color:  Color(0xffF9F9F9)
+            // color: Colors.blue
             ,
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -228,8 +229,8 @@ class _Tab1_BPState extends State<Tab1_BP> {
           height: 75.h,
           width: 184.w,
           decoration:  BoxDecoration(
-            // color:  Color(0xffF9F9F9),
-    color: Colors.orange,
+            color:  Color(0xffF9F9F9),
+    // color: Colors.orange,
 
             borderRadius: BorderRadius.circular(8.0),
           ),
