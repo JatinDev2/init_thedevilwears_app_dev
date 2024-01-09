@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../Services/profiles.dart';
 import 'applicationModel.dart';
@@ -173,7 +174,7 @@ class _CandidateCardState extends State<CandidateCard> {
       case 'Accept':
         return Colors.green;
       default:
-        return Colors.white; // Default color
+        return Colors.grey; // Default color
     }
   }
 
@@ -198,7 +199,7 @@ class _CandidateCardState extends State<CandidateCard> {
       elevation: 4.0,
       margin: const EdgeInsets.all(8.0),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -222,49 +223,46 @@ class _CandidateCardState extends State<CandidateCard> {
               child: Text('Education', style: TextStyle(color: Colors.grey)),
             ),
             Text(widget.educationString),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // SelectableButton(
-                  //   text: 'Reject',
-                  //   isSelected: selectedButton == 'Reject',
-                  //   onSelect: () {
-                  //     Future.delayed(Duration.zero, () {
-                  //       setState(() {
-                  //         selectedButton = 'Reject';
-                  //       });
-                  //     });
-                  //   },
-                  // ),
-                  // SelectableButton(
-                  //   text: 'Shortlist',
-                  //   isSelected: selectedButton == 'Shortlist',
-                  //   onSelect: () {
-                  //     Future.delayed(Duration.zero, () {
-                  //       setState(() {
-                  //         selectedButton = 'Shortlist';
-                  //       });
-                  //     });
-                  //   },
-                  // ),
-                  // SelectableButton(
-                  //   text: 'Accept',
-                  //   isSelected: selectedButton == 'Accept',
-                  //   onSelect: () {
-                  //     Future.delayed(Duration.zero, () {
-                  //       setState(() {
-                  //         selectedButton = 'Accept';
-                  //       });
-                  //     });
-                  //   },
-                  // ),
-                  for (String buttonType in ['Reject', 'Shortlist', 'Accept'])
-                    _selectableButton(buttonType),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // SelectableButton(
+                //   text: 'Reject',
+                //   isSelected: selectedButton == 'Reject',
+                //   onSelect: () {
+                //     Future.delayed(Duration.zero, () {
+                //       setState(() {
+                //         selectedButton = 'Reject';
+                //       });
+                //     });
+                //   },
+                // ),
+                // SelectableButton(
+                //   text: 'Shortlist',
+                //   isSelected: selectedButton == 'Shortlist',
+                //   onSelect: () {
+                //     Future.delayed(Duration.zero, () {
+                //       setState(() {
+                //         selectedButton = 'Shortlist';
+                //       });
+                //     });
+                //   },
+                // ),
+                // SelectableButton(
+                //   text: 'Accept',
+                //   isSelected: selectedButton == 'Accept',
+                //   onSelect: () {
+                //     Future.delayed(Duration.zero, () {
+                //       setState(() {
+                //         selectedButton = 'Accept';
+                //       });
+                //     });
+                //   },
+                // ),
+                for (String buttonType in ['Reject', 'Shortlist', 'Accept'])
+                  _selectableButton(buttonType),
 
-                ],
-              ),
+              ],
             ),
           ],
         ),
@@ -272,27 +270,41 @@ class _CandidateCardState extends State<CandidateCard> {
     );
   }
   Widget _selectableButton(String buttonType) {
-    return ElevatedButton.icon(
-      icon: Icon(
-        _getButtonIcon(buttonType),
-        color: Colors.white,
-      ),
-      label: Text(buttonType),
-      onPressed: () {
-        setState(() {
-          selectedButton = buttonType;
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        primary: selectedButton == buttonType
-            ? _getButtonColor(buttonType) // Selected color
-            : Colors.white, // Unselected color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton.icon(
+          icon: Icon(
+            _getButtonIcon(buttonType),
+            size: 16, // Smaller icon size
+            color: selectedButton == buttonType? Colors.black : _getButtonColor(buttonType) ,
+          ),
+          label: Text(
+            buttonType,
+            style: TextStyle(
+              fontSize: 14,
+              color: selectedButton == buttonType? Colors.black : _getButtonColor(buttonType)
+            ),
+          ),
+          onPressed: () {
+            setState(() {
+              selectedButton = buttonType;
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            primary: selectedButton == buttonType
+                ? _getButtonColor(buttonType) // Selected color
+                : Colors.white, // Unselected color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), // Reduced padding
+          ),
         ),
       ),
     );
   }
+
 
 }
 

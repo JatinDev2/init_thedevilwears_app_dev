@@ -150,6 +150,8 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
 
             // return
               Scaffold(
+                backgroundColor: Colors.white,
+
               body: Material(
                 child: DefaultTabController(
                   length: 3,

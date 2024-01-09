@@ -204,7 +204,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                           },
                           child: Container(
                             height: 56.h,
-                            width: 134.w,
+                            width: 124.w,
                             decoration: BoxDecoration(
                               color: const Color(0xffE6E6E6),
                               borderRadius: BorderRadius.circular(5.0.r),
@@ -280,7 +280,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
 
                           child: Container(
                             height: 56.h,
-                            width: 134.w,
+                            width: 124.w,
                             decoration: BoxDecoration(
                               color: Colors.orange,
                               borderRadius: BorderRadius.circular(5.0.r),
@@ -524,6 +524,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                 child: Container(
                   height: 56.h,
                   width: 396.w,
+                  margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(5.0.r),

@@ -718,7 +718,7 @@ class OptionChipDisplay extends StatelessWidget {
           right: 4.0.w,
           bottom: 4.0.h
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
       decoration: BoxDecoration(
         color:const Color(0xffF9F9F9),
         borderRadius: BorderRadius.circular(20.r),
