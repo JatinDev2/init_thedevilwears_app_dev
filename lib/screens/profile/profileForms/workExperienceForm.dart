@@ -3,10 +3,12 @@ import 'package:country_state_city/utils/city_utils.dart';
 import 'package:country_state_city/utils/country_utils.dart';
 import 'package:country_state_city/utils/state_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../profileModels/workModel.dart';
@@ -60,6 +62,7 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
   TextEditingController dateController=TextEditingController();
   TextEditingController descriptionText=TextEditingController();
   TextEditingController projectLink=TextEditingController();
+  bool isChecked=false;
 
   String? selectedStateValueDrop;
   late FocusNode myFocusNode;
@@ -88,16 +91,100 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
     });
     Map<String, dynamic> workData = workExp.toJson();
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
     try {
       await userDoc.set({
         'Work Experience': FieldValue.arrayUnion([workData])
       }, SetOptions(merge: true));
+      if(isChecked==true){
+       await sendRequestForVerification(companyName.text);
+      }
       print('Work added successfully');
       return true;
     } catch (error) {
       print('Error adding Work: $error');
       return false;
+    }
+  }
+
+  // Future<void> sendRequestForVerification(String brandName) async {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   String currentUserId = auth.currentUser!.uid;  // Get the current user's ID
+  //
+  //   try {
+  //     CollectionReference brands = firestore.collection('brandProfiles');
+  //
+  //     // Query for the document with the specific brandName
+  //     QuerySnapshot querySnapshot = await brands.where('brandName', isEqualTo: brandName).get();
+  //
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       // Assuming brandName is unique and there's only one such document
+  //       DocumentSnapshot brandDocument = querySnapshot.docs.first;
+  //
+  //       // Check if data exists and if 'Requests' field is present
+  //       Map<String, dynamic> documentData = brandDocument.data() as Map<String, dynamic>? ?? {};
+  //       Map<String, dynamic> requests = documentData['Requests'] as Map<String, dynamic>? ?? {};
+  //
+  //       // Add or update the current user's request
+  //       requests[currentUserId] = "pending";
+  //
+  //       // Update the document
+  //       brandDocument.reference.update({'Requests': requests});
+  //     } else {
+  //       print('Brand not found');
+  //       // Handle the case where the brandName does not exist
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     // Handle any errors here
+  //   }
+  // }
+
+  Future<void> sendRequestForVerification(String brandName) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String currentUserId = auth.currentUser!.uid; // Get the current user's ID
+
+    // Retrieve requester's name from shared preferences
+    final prefs = await SharedPreferences.getInstance();
+    final firstName = prefs.getString('firstName') ?? 'Unknown'; // Default to 'Unknown' if not set
+    final lastName = prefs.getString('lastName') ?? 'Unknown'; // Default to 'Unknown' if not set
+final requesterName="${firstName} ${lastName}";
+
+    try {
+      CollectionReference brands = firestore.collection('brandProfiles');
+
+      // Query for the document with the specific brandName
+      QuerySnapshot querySnapshot = await brands.where('brandName', isEqualTo: brandName).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Assuming brandName is unique and there's only one such document
+        DocumentSnapshot brandDocument = querySnapshot.docs.first;
+
+        // Check if data exists and if 'Requests' field is present
+        Map<String, dynamic> documentData = brandDocument.data() as Map<String, dynamic>? ?? {};
+        List<dynamic> requests = documentData['Requests'] as List<dynamic>? ?? [];
+
+        // Create a new request map
+        Map<String, String> newRequest = {
+          'userId': currentUserId,
+          'status': 'pending',
+          'requesterName': requesterName,
+        };
+
+        // Add the new request map to the 'Requests' list
+        requests.add(newRequest);
+
+        // Update the document
+        brandDocument.reference.update({'Requests': requests});
+      } else {
+        print('Brand not found');
+        // Handle the case where the brandName does not exist
+      }
+    } catch (e) {
+      print(e.toString());
+      // Handle any errors here
     }
   }
 
@@ -283,7 +370,33 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                     return null;
                   },
                 ),
-                const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
+
+            Row(
+              children: <Widget>[
+                Checkbox(
+                  value: isChecked ?? false,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isChecked = value!;
+                    });
+                  },
+                  checkColor: Colors.white,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                ),
+                const Text(
+                  "Send a request for verifying your experience",
+                  style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff404040),
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+
+            const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
                 const SizedBox(height: 13,),
                 const Text(
                   "Location",
@@ -517,10 +630,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                     children: [
                         GestureDetector(
                           onTap: ()async{
-                            final prefs = await SharedPreferences.getInstance();
-                            final userId = prefs.getString('userId');
-                            // final firstName = prefs.getString('firstName');
-                            // final lastName = prefs.getString('lastName');
 
                             WorkModel newRokModel=WorkModel(
                                 roleInCompany: dropdownValue,
@@ -529,10 +638,11 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                                 timePeriod: "${dateController.text} - ${startDate}",
                                 description: descriptionText.text,
                                 projectLink: projectLink.text,
-                                location: cityValue
+                                location: cityValue,
+                              status: "pending"
                             );
                             if (_formKey.currentState!.validate()) {
-                              await addWorkToUserProfile(userId!, newRokModel)
+                              await addWorkToUserProfile(LoginData().getUserId(), newRokModel)
                                   .then((value) {
                                 if (value == true) {
                                   setState(() {

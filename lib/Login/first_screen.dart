@@ -1,11 +1,4 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lookbook/Login/phoneNumber_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/home/home_screen.dart';
-import '../screens/listing/new_listing/options_screen.dart';
 import 'login_options.dart';
 
 class FirstPage extends StatefulWidget {

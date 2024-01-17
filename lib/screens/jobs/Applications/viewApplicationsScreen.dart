@@ -1,7 +1,7 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lookbook/colorManager.dart';
 import '../../../Services/profiles.dart';
 import 'applicationModel.dart';
 
@@ -125,7 +125,9 @@ class _AllAplicationsScreenState extends State<AllAplicationsScreen> {
                           jobType: application.jobProfile,
                           workString: application.workedAt,
                           educationString: application.education,
-
+                          userId: application.userId,
+                          jobId: widget.jobId,
+                          status: application.statusOfApplication
                         );
                       },
                     );
@@ -149,12 +151,18 @@ class CandidateCard extends StatefulWidget {
   final String educationString;
   final String workString;
   final String jobType;
+  final String userId;
+  final String jobId;
+  final String status;
 
   CandidateCard({
    required this.jobType,
    required this.name,
     required this.workString,
     required this.educationString,
+    required this.jobId,
+    required this.userId,
+    required this.status,
 });
 
   @override
@@ -168,15 +176,16 @@ class _CandidateCardState extends State<CandidateCard> {
     // Define colors for different buttons
     switch (buttonType) {
       case 'Reject':
-        return Colors.red;
+        return ColorsManager.darkRed;
       case 'Shortlist':
-        return Colors.orange;
+        return ColorsManager.darkOrange;
       case 'Accept':
-        return Colors.green;
+        return ColorsManager.darkGreen;
       default:
-        return Colors.grey; // Default color
+        return Colors.grey;
     }
   }
+
 
   IconData _getButtonIcon(String buttonType) {
     // Define icons for different buttons
@@ -194,74 +203,144 @@ class _CandidateCardState extends State<CandidateCard> {
 
 
   @override
+
+  void initState() {
+    super.initState();
+    // Set the initial selected button based on the status
+    switch (widget.status) {
+      case "Accepted":
+        selectedButton = "Accept";
+        break;
+      case "Shortlisted":
+        selectedButton = "Shortlist";
+        break;
+      case "Rejected":
+        selectedButton = "Reject";
+        break;
+      default:
+        selectedButton = ""; // No button selected
+        break;
+    }
+  }
+
   Widget build(BuildContext context) {
     return Card(
       elevation: 4.0,
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(6.0),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(7.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: CircleAvatar(
-                // Replace with your network image or asset
-                backgroundImage: AssetImage('assets/avatar.jpg'),
-              ),
-              title: Text(widget.name, style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(widget.jobType),
-              trailing: Icon(Icons.phone, color: Colors.grey),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text('Worked at', style: TextStyle(color: Colors.grey)),
-            ),
-            Text(widget.workString),
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
-              child: Text('Education', style: TextStyle(color: Colors.grey)),
-            ),
-            Text(widget.educationString),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // SelectableButton(
-                //   text: 'Reject',
-                //   isSelected: selectedButton == 'Reject',
-                //   onSelect: () {
-                //     Future.delayed(Duration.zero, () {
-                //       setState(() {
-                //         selectedButton = 'Reject';
-                //       });
-                //     });
-                //   },
-                // ),
-                // SelectableButton(
-                //   text: 'Shortlist',
-                //   isSelected: selectedButton == 'Shortlist',
-                //   onSelect: () {
-                //     Future.delayed(Duration.zero, () {
-                //       setState(() {
-                //         selectedButton = 'Shortlist';
-                //       });
-                //     });
-                //   },
-                // ),
-                // SelectableButton(
-                //   text: 'Accept',
-                //   isSelected: selectedButton == 'Accept',
-                //   onSelect: () {
-                //     Future.delayed(Duration.zero, () {
-                //       setState(() {
-                //         selectedButton = 'Accept';
-                //       });
-                //     });
-                //   },
-                // ),
+                CircleAvatar(
+                  backgroundColor:Theme.of(context).colorScheme.primary,
+                  // radius: 16,
+                ),
+                SizedBox(width: 10,),
+                Column(children: [
+                  Text(
+                    widget.name,
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xff0f1015),
+                      height: 20/18,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    widget.jobType,
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff8b8b8b),
+                      height: 18/12,
+                    ),
+                    textAlign: TextAlign.left,
+                  )
+                ],),
+                Spacer(),
+                SvgPicture.asset("assets/Vector.svg", color: Colors.black,),
+                SizedBox(width: 5,),
+                Icon(Icons.more_vert)
+              ],
+            ),
+            SizedBox(height: 16,),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Worked at",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff1a1a1a),
+                  height: 19/16,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+             SizedBox(height: 4,),
+             Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                widget.workString,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff1a1a1a),
+                  // height: 21/13,
+                ),
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: 13,),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Education",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff1a1a1a),
+                  height: 19/16,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            SizedBox(height: 4,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                widget.educationString,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff1a1a1a),
+                  // height: 21/13,
+                ),
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: 9,),
+            Divider(height: 1, thickness: 1,color: ColorsManager.greyishColor,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
                 for (String buttonType in ['Reject', 'Shortlist', 'Accept'])
                   _selectableButton(buttonType),
-
               ],
             ),
           ],
@@ -274,24 +353,55 @@ class _CandidateCardState extends State<CandidateCard> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: ElevatedButton.icon(
-          icon: Icon(
-            _getButtonIcon(buttonType),
-            size: 16, // Smaller icon size
-            color: selectedButton == buttonType? Colors.black : _getButtonColor(buttonType) ,
+          icon: Container(
+            padding: const EdgeInsets.all(1.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: selectedButton == buttonType? Colors.white : _getButtonColor(buttonType)
+              )
+            ),
+            child: Icon(
+              _getButtonIcon(buttonType),
+              size: 16,
+              color: selectedButton == buttonType? Colors.white : _getButtonColor(buttonType) ,
+            ),
           ),
           label: Text(
             buttonType,
             style: TextStyle(
               fontSize: 14,
-              color: selectedButton == buttonType? Colors.black : _getButtonColor(buttonType)
+              fontWeight: FontWeight.w600,
+              color: selectedButton == buttonType? Colors.white : _getButtonColor(buttonType)
             ),
+            overflow: TextOverflow.ellipsis,
           ),
-          onPressed: () {
+          onPressed: () async{
             setState(() {
               selectedButton = buttonType;
             });
+            print("widget.jobId");
+            print(widget.jobId);
+            print("widget.userId");
+            print(widget.userId);
+            String status="";
+            if(buttonType=="Accept"){
+              status="Accepted";
+            }
+            else if(buttonType=="Shortlist"){
+              status="Shortlisted";
+            }
+            else if(buttonType=="Reject"){
+              status="Rejected";
+            }
+            else{
+              status="Pending";
+            }
+            await ProfileServices().updateApplicationStatus(widget.jobId, widget.userId, status);
+
           },
           style: ElevatedButton.styleFrom(
+            elevation: 0,
             primary: selectedButton == buttonType
                 ? _getButtonColor(buttonType) // Selected color
                 : Colors.white, // Unselected color
@@ -300,44 +410,6 @@ class _CandidateCardState extends State<CandidateCard> {
             ),
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), // Reduced padding
           ),
-        ),
-      ),
-    );
-  }
-
-
-}
-
-class SelectableButton extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final Function onSelect;
-
-  const SelectableButton({
-    // Key key,
-    required this.text,
-    required this.isSelected,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          isSelected ? Colors.green : Colors.grey[300],
-        ),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-          ),
-        ),
-      ),
-      onPressed: onSelect(),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
         ),
       ),
     );

@@ -20,6 +20,8 @@ class jobModel{
   final int applicationCount;
   final bool clicked;
   final String docId;
+  final List applicationsIDS;
+  final List interests;
 
   jobModel({
     required this.jobType,
@@ -43,6 +45,8 @@ class jobModel{
     required this.applicationCount,
     required this.clicked,
     required this.docId,
+    required this.applicationsIDS,
+    required this.interests,
 });
 
 }

@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:country_state_city/utils/city_utils.dart';
-import 'package:country_state_city/utils/country_utils.dart';
-import 'package:country_state_city/utils/state_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/jobs/previewListingScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../CitiesAndStates/models/cities_model.dart';
+import '../../CitiesAndStates/models/country_state_model.dart' as cs_model;
+import '../../CitiesAndStates/repositories/country_state_city_repo.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
 
@@ -29,17 +29,13 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   String jobDurValue='Months';
   String stipend="Unpaid";
   String stipendValue="/month";
-  bool isLoading=false;
+  bool isLoading=true;
   final _formKey = GlobalKey<FormState>();
-  String countryValue = "";
-  String stateValue = "";
-  String cityValue = "";
-  String address = "";
-  List countryStates=[];
-  List<String> countryStatesStringList=[];
+  final String userName="${LoginData().getUserFirstName()} ${LoginData().getUserLastName()}";
+  final String userId=LoginData().getUserId();
+  String stateValue="";
+  String cityValue="";
 
-  List countryCitis=[];
-  List<String> countryCitisStringList=[];
 
   bool isLoadingData=true;
   TextEditingController textEditingController=TextEditingController();
@@ -64,6 +60,56 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
     'Other'
   ];
 
+  Map<String, bool>  selectedSkills= {
+    'Illustrating' : false,
+    'Stylist': false,
+    'Brand': false,
+    'Visual Designer': false,
+    'Fashion': false,
+    'Designing': false,
+    'Fashion Styling': false,
+    'Video Editing': false,
+    'Content Creation': false,
+    'Copywriting': false,
+    'Illustrator': false,
+    'Dyeing': false,
+    'Digital Marketing': false,
+    'Data Analytics': false,
+    'Grading': false,
+    'Graphic Design': false,
+    'Illustration': false,
+    'Adobe Creative Suite': false,
+    'Khakha Maker': false,
+    'Market Research & Analysis': false,
+    'Merchandising': false,
+    'Project Management': false,
+  };
+
+  List<String> businessSkills = [
+    'Illustrating',
+    'Stylist',
+    'Brand',
+    'Visual Designer',
+    'Fashion',
+    'Designing',
+    'Fashion Styling',
+    'Video Editing',
+    'Content Creation',
+    'Copywriting',
+    'Illustrator',
+    'Dyeing',
+    'Digital Marketing',
+    'Data Analytics',
+    'Grading',
+    'Graphic Design',
+    'Illustration',
+    'Adobe Creative Suite',
+    'Khakha Maker',
+    'Market Research & Analysis',
+    'Merchandising',
+    'Project Management',
+  ];
+
   Map<String, bool> checkboxes = {
     'Certificate': false,
     'Letter of Recommendation': false,
@@ -80,10 +126,73 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   TextEditingController officeLocController=TextEditingController();
   TextEditingController openingsController=TextEditingController();
   final CollectionReference listCollection = FirebaseFirestore.instance.collection('jobListing');
-  String _selectedItem = 'Select Item';
-  String? selectedStateValueDrop;
-  String? selectedCityValueDrop;
 
+
+  final CountryStateCityRepo _countryStateCityRepo = CountryStateCityRepo();
+
+  List<String> states = [];
+  List<String> cities = [];
+  cs_model.CountryStateModel countryStateModel =
+  cs_model.CountryStateModel(error: false, msg: '', data: []);
+
+  CitiesModel citiesModel = CitiesModel(error: false, msg: '', data: []);
+
+  String selectedCountry = 'India';
+  String selectedState = 'Select State';
+  String selectedCity = 'Select City';
+  bool isDataLoaded = false;
+
+  String finalTextToBeDisplayed = '';
+
+
+  getStatesOfIndia() async {
+    //
+    countryStateModel = await _countryStateCityRepo.getCountriesStates();
+    states.add('Select State');
+    cities.add('Select City');
+    for (var element in countryStateModel.data) {
+      if (element.name == 'India') {
+        for (var state in element.states) {
+          states.add(state.name);
+        }
+        break;
+      }
+    }
+    isLoading = false;
+    setState(() {});
+    //
+  }
+
+  getCitiesOfState() async {
+    //
+    isDataLoaded = false;
+    citiesModel = await _countryStateCityRepo.getCities(
+        country: selectedCountry, state: selectedState);
+    setState(() {
+      resetCities();
+    });
+    for (var city in citiesModel.data) {
+      cities.add(city);
+    }
+    isDataLoaded = true;
+    setState(() {});
+    //
+  }
+
+
+  resetCities() {
+    cities = [];
+    cities.add('Select City');
+    selectedCity = 'Select City';
+    finalTextToBeDisplayed = '';
+  }
+
+  resetStates() {
+    states = [];
+    states.add('Select State');
+    selectedState = 'Select State';
+    finalTextToBeDisplayed = '';
+  }
 
 
   void updateJobType(String type) {
@@ -120,27 +229,23 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData().then((value) {
-setState(() {
-  isLoadingData=false;
-});
-    });
+   getStatesOfIndia();
   }
 
-  Future<void> getData()async{
-
-    final country = await getCountryFromCode('IN');
-    if (country != null) {
-       countryStates = await getStatesOfCountry(country.isoCode);
-       countryCitis = await getCountryCities(country.isoCode);
-       for(int i=0; i<countryStates.length;i++){
-         countryStatesStringList.add(countryStates[i].name);
-       }
-       for(int i=0; i<countryCitis.length;i++){
-         countryCitisStringList.add(countryCitis[i].name);
-       }
-    }
-  }
+  // Future<void> getData()async{
+  //
+  //   final country = await getCountryFromCode('IN');
+  //   if (country != null) {
+  //      countryStates = await getStatesOfCountry(country.isoCode);
+  //      countryCitis = await getCountryCities(country.isoCode);
+  //      for(int i=0; i<countryStates.length;i++){
+  //        countryStatesStringList.add(countryStates[i].name);
+  //      }
+  //      for(int i=0; i<countryCitis.length;i++){
+  //        countryCitisStringList.add(countryCitis[i].name);
+  //      }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +268,7 @@ setState(() {
           textAlign: TextAlign.left,
         ),
       ),
-      body: isLoadingData? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+      body: isLoading? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
         padding: const EdgeInsets.only(
           left: 22,
           right: 22,
@@ -442,14 +547,14 @@ setState(() {
                   DropdownButtonHideUnderline(
                     child: DropdownButton2<String>(
                       isExpanded: true,
-                      hint: Text(
-                        'Select State',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      items: countryStatesStringList
+                      // hint: Text(
+                      //   'Select State',
+                      //   style: TextStyle(
+                      //     fontSize: 14,
+                      //     color: Theme.of(context).hintColor,
+                      //   ),
+                      // ),
+                      items: states
                           .map((item) => DropdownMenuItem(
                         value: item,
                         child: Text(
@@ -460,12 +565,15 @@ setState(() {
                         ),
                       ))
                           .toList(),
-                      value: selectedStateValueDrop,
+                      value: selectedState,
                       onChanged: (value){
                         setState((){
-                          selectedStateValueDrop = value;
-                          stateValue=value!;
+                          selectedState = value!;
+                          stateValue=value;
                         });
+                        if (selectedState != 'Select State') {
+                          getCitiesOfState();
+                        }
                       },
                       buttonStyleData: const ButtonStyleData(
                         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -520,17 +628,12 @@ setState(() {
                     ),
                   ),
                   Spacer(),
+
                   DropdownButtonHideUnderline(
                     child: DropdownButton2<String>(
                       isExpanded: true,
-                      hint: Text(
-                        'Select City',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      items: countryCitisStringList
+                      items: selectedState != 'Select State' && isDataLoaded
+                          ?   cities
                           .map((item) => DropdownMenuItem(
                         value: item,
                         child: Text(
@@ -539,15 +642,15 @@ setState(() {
                             fontSize: 14,
                           ),
                         ),
-                      ))
-                          .toList(),
-                      value: selectedCityValueDrop,
-                      onChanged: (value){
+                      )).toList() : [DropdownMenuItem(value: selectedCity, child: Text(selectedCity))],
+                      value: selectedCity,
+                      onChanged: selectedState != 'Select State' && isDataLoaded
+                          ?  (value){
                         setState((){
-                          selectedCityValueDrop = value;
-                          cityValue=value!;
+                          selectedCity = value!;
+                          cityValue=value;
                         });
-                      },
+                      } : null,
                       buttonStyleData: const ButtonStyleData(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         height: 40,
@@ -588,7 +691,7 @@ setState(() {
                             ),
                           ),
                         ),
-                        searchMatchFn: (item, searchValue){
+                        searchMatchFn: (item, searchValue) {
                           return item.value.toString().toLowerCase().contains(searchValue);
                         },
                       ),
@@ -795,6 +898,39 @@ setState(() {
               SizedBox(height: 22.h,),
               const Divider(height: 2,thickness: 2,color: Color(0xffE7E7E7),),
               SizedBox(height: 50.h,),
+              const Text(
+                "Employee profile preferences",
+                style:  TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff2d2d2d),
+                  height: 24/16,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              Wrap(
+                spacing: 3.0,
+                runSpacing: 0.0,
+                children: businessSkills.map((skill) => ChoiceChip(
+                  label: Text(skill),
+                  selected: selectedSkills[skill]!,
+                  onSelected: (bool selected) {
+                    setState(() {
+                      selectedSkills[skill] = selected;
+                    });
+                  },
+                  selectedColor: Theme.of(context).colorScheme.primary,
+                  labelStyle: TextStyle(
+                    color: selectedSkills[skill]! ? Colors.white : Colors.black,
+                    fontFamily: "Poppins",
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  backgroundColor: Colors.grey[200],
+                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 0.0),
+                )).toList(),
+              ),
               Container(
                 child: Row(
                   mainAxisAlignment: isLoading? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
@@ -804,16 +940,21 @@ setState(() {
                         onTap: ()async{
 
                           if(_formKey.currentState!.validate()){
-                            final prefs = await SharedPreferences.getInstance();
-                            final userId = prefs.getString('userId');
-                            final firstName = prefs.getString('firstName');
-                            final lastName = prefs.getString('lastName');
+
                             List<String>_perks=[];
                             checkboxes.forEach((key, value) {
                               if(value==true){
                                 _perks.add(key);
                               }
                             });
+
+                            List <String> selectedOpportunitiesList=[];
+                            selectedSkills.forEach((key, value) {
+                              if(value==true && !selectedOpportunitiesList.contains(key)){
+                                selectedOpportunitiesList.add(key);
+                              }
+                            });
+
                             List<String>tags=[dropdownValue,jobType,"${jobDurController.text} $jobDurValue"];
 
                             print("Tags:::::::::::::::::::::::::::::::::::::::::::::::::::::::");
@@ -833,14 +974,16 @@ setState(() {
                               numberOfOpenings: openingsController.text,
                               perks: _perks,
                               createdAt: DateTime.now().toString(),
-                              createdBy: "$firstName $lastName",
-                              userId: userId!,
+                              createdBy: userName,
+                              userId: userId,
                               jobDurVal:jobDurValue,
                               stipendVal:stipendValue,
                               tags:tags,
                               clicked: false,
                               applicationCount: 0,
                               docId: "",
+                              applicationsIDS: [],
+                              interests: selectedOpportunitiesList,
                             );
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return PreviewJobListing(newJobModel: newJobModel,);
@@ -873,17 +1016,20 @@ setState(() {
                     if(!isLoading)
                       GestureDetector(
                       onTap: ()async{
-
-                        final prefs = await SharedPreferences.getInstance();
-                        final userId = prefs.getString('userId');
-                        final firstName = prefs.getString('firstName');
-                        final lastName = prefs.getString('lastName');
                         List<String>_perks=[];
                         checkboxes.forEach((key, value) {
                           if(value==true){
                             _perks.add(key);
                           }
                         });
+
+                        List <String> selectedOpportunitiesList=[];
+                        selectedSkills.forEach((key, value) {
+                          if(value==true && !selectedOpportunitiesList.contains(key)){
+                            selectedOpportunitiesList.add(key);
+                          }
+                        });
+
                         List<String>tags=[];
                         if(jobDur=="Fixed"){
                           tags=[dropdownValue,jobType,"${jobDurController.text} $jobDurValue"];
@@ -908,14 +1054,15 @@ setState(() {
                             "numberOfOpenings": openingsController.text,
                             "perks": _perks,
                             "createdAt": DateTime.now().toString(),
-                            "createdBy": "$firstName $lastName",
+                            "createdBy": userName,
                             "userId": userId,
                             "jobDurVal":jobDurValue,
                             "stipendVal":stipendValue,
                             "tags": tags,
                             "docId": docRef.id,
                             "clicked": false,
-                            "applicationCount": 0
+                            "applicationCount": 0,
+                            "interests": selectedOpportunitiesList,
                           }).then((value) {
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return const ConfirmJobListingScreen();

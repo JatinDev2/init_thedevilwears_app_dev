@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:lookbook/Preferences/LoginData.dart';
 import '../../common_widgets.dart';
 import '../../jobs/job_model.dart';
 
@@ -16,13 +15,12 @@ class _BrandListingsTabState extends State<BrandListingsTab> {
 
   late final Stream<List<jobModel>>_listingsStream;
   List<jobModel> _listings = [];
-  bool isLoading=true;
 
-  Stream<List<jobModel>> fetchListingsFromFirestoreStream(String currentUserId) {
+  Stream<List<jobModel>> fetchListingsFromFirestoreStream() {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('jobListing');
       return collection
-          .where('userId', isEqualTo: currentUserId)
+          .where('userId', isEqualTo: LoginData().getUserId())
           .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((docSnapshot) {
@@ -50,6 +48,8 @@ class _BrandListingsTabState extends State<BrandListingsTab> {
             applicationCount: data["applicationCount"] ?? 0,
             clicked: data["clicked"] ?? false,
             docId: data["docId"] ?? "",
+            applicationsIDS: data["applicationsIDS"] ?? [],
+            interests: data["interests"] ?? [],
           );
         }).toList();
       });
@@ -63,28 +63,14 @@ class _BrandListingsTabState extends State<BrandListingsTab> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // _fetchListingsFuture = fetchListingsFromFirestore();
-
-    getId().then((value){
-      _listingsStream = fetchListingsFromFirestoreStream(value);
-      setState((){
-        isLoading=false;
-      });
-    });
-    // fetchListingsFromFirestore();
-  }
-
-  Future<String> getId()async{
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
+    _listingsStream = fetchListingsFromFirestoreStream();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xffF7F7F7),
-      child: isLoading? Center(child: CircularProgressIndicator(),) : Stack(
+      child: Stack(
           children: [
             StreamBuilder<List<jobModel>>(
               stream: _listingsStream,

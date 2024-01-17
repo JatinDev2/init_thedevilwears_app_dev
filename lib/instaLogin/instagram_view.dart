@@ -61,7 +61,6 @@ class InstagramView extends StatelessWidget {
         'userType': userType,
         'instaUserName':instaUserName,
       }).then((value) {
-
         Navigator.of(context).push(MaterialPageRoute(builder: (_) {
           return ConfirmedLoginScreen();
         }));

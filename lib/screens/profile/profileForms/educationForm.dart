@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/profile/profileModels/educationModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,7 +57,7 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
     });
     Map<String, dynamic> workData = education.toJson();
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
     try {
       await userDoc.set({
         'Education': FieldValue.arrayUnion([workData])
@@ -420,8 +421,7 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                     children: [
                       GestureDetector(
                         onTap: ()async{
-                final prefs = await SharedPreferences.getInstance();
-                final userId = prefs.getString('userId');
+
 
                 EducationModel newEduModel=EducationModel(
                     timePeriod: "${dateController.text} - ${startDate}",
@@ -431,7 +431,7 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                     degreeName: degreeName.text
                 );
                 if (_formKey.currentState!.validate()) {
-                  await addEducationToUserProfile(userId!, newEduModel)
+                  await addEducationToUserProfile(LoginData().getUserId(), newEduModel)
                       .then((value) {
                     if (value == true) {
                       setState(() {

@@ -6,6 +6,7 @@ class WorkModel {
   final String description;
   final String projectLink;
   final String location;
+  final String status;
 
   const WorkModel({
     required this.roleInCompany,
@@ -15,6 +16,7 @@ class WorkModel {
     required this.description,
     required this.projectLink,
     required this.location,
+    required this.status,
   });
 
   // Convert a WorkModel instance to a map
@@ -27,6 +29,7 @@ class WorkModel {
       'description': description,
       'projectLink': projectLink,
       'location': location,
+      'status':status,
     };
   }
 
@@ -40,6 +43,7 @@ class WorkModel {
       description: map['description'] ?? '',
       projectLink: map['projectLink'] ?? '',
       location: map['location'] ?? '',
+      status: map['status'] ?? 'pending',
     );
   }
 }

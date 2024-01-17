@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../listing/new_listing/options_screen.dart';
-
-
 class ConfirmJobListingScreen extends StatelessWidget {
   const ConfirmJobListingScreen({Key? key}) : super(key: key);
 
@@ -57,9 +54,9 @@ class ConfirmJobListingScreen extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                  return OptionsScreen();
-                }));
+                // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                //   return OptionsScreen();
+                // }));
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,

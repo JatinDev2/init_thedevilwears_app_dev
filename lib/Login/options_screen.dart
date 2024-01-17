@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'interest_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lookbook/Login/phoneNumber_screen.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 
 class OptionsInScreen extends StatefulWidget {
 
@@ -10,8 +10,8 @@ class OptionsInScreen extends StatefulWidget {
 }
 
 class _OptionsInScreenState extends State<OptionsInScreen> {
-  bool isBrand=false;
-  bool isStylist=false;
+  bool isCompany=false;
+  bool isPerson=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +25,7 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "Are you a... ",
+                  "I am a... ",
                   style: TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 32,
@@ -36,34 +36,34 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                   // textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 79,),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
                       onTap: (){
                         setState(() {
-                          isBrand=true;
-                          isStylist=false;
+                          isCompany=true;
+                          isPerson=false;
                         });
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_){
                         //   return InterestSccreen();
                         // }));
                       },
                       child: Container(
-                        height: 70,
-                        width: 160,
+                        height: 70.h,
+                        width: 370.w,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
-                          color:isBrand? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
+                          color:isCompany? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
                         ),
                         child: Center(
                           child: Text(
-                            "Brand",
+                            "Company",
                             style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: isBrand? Colors.white : Color(0xff000000),
+                              fontWeight: isCompany? FontWeight.w600 : FontWeight.w400 ,
+                              color: isCompany? Colors.white : Color(0xff000000),
                               height: 30/20,
                             ),
                             textAlign: TextAlign.center,
@@ -71,36 +71,36 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12,),
+                    SizedBox(height: 9,),
                     GestureDetector(
                       onTap: (){
                         setState((){
-                          isBrand=false;
-                          isStylist=true;
+                          isCompany=false;
+                          isPerson=true;
                         });
                         // Navigator.of(context).push(MaterialPageRoute(builder: (_){
                         //   return InterestSccreen();
                         // }));
                       },
                       child: Container(
-                        height: 70,
-                        width: 160,
+                        height: 70.h,
+                        width: 370.w,
                         decoration: BoxDecoration(
-                          color: isStylist? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
+                          color: isPerson? Theme.of(context).colorScheme.primary : Color(0xffF8F7F7),
                          borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Center(
                           child: Text(
-                            "Stylist",
+                            "Person",
                             style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: isStylist? Colors.white : Color(0xff000000),
+                              fontWeight:isPerson? FontWeight.w600 : FontWeight.w400,
+                              color: isPerson? Colors.white : Color(0xff000000),
                               height: 30/20,
                             ),
                             textAlign: TextAlign.center,
-                          )
+                          ),
                         ),
                       ),
                     ),
@@ -111,74 +111,104 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () async{
-                    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-                    await prefs.setBool('optionSelected', true);
-                    await prefs.setString('userType', isBrand?"Brand" : "Stylist")
-                        .then((value) {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                        return InterestSccreen();
-                      }));
-                    });
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 109,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                          height: 20/16,
-                        ),
-                        textAlign: TextAlign.left,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                     const Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                         Icon(Icons.info_outline, size: 17,),
+                          SizedBox(width: 6,),
+                         Text(
+                            "You will not be able to change this later",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff12121d),
+                              height: 16/12,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 58,),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "3",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          height: 24/16,
+                    SizedBox(height: 28.h,),
+                    GestureDetector(
+                      onTap: () {
+                        // final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+                        // await prefs.setBool('optionSelected', true);
+                        // await prefs.setString('userType', isCompany?"Company" : "Person")
+                        //     .then((value) {
+                        //
+                        // });
+                        LoginData().writeOptionSelectedVal(true);
+                        LoginData().writeUserType(isCompany?"Company" : "Person");
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                          return const PhoneNumber_Screen();
+                        }));
+                      },
+                      child: Container(
+                        height: 50,
+                        width: 109,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        textAlign: TextAlign.left,
-                      ),
-                      Text(
-                        "/5",
-                        style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            height: 24/16,
-                            color: Colors.grey
+                        child: const Center(
+                          child: Text(
+                            "Next",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                              height: 20/16,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                        textAlign: TextAlign.left,
                       ),
-                    ],
-                  ),
+                    ),
+                     SizedBox(height: 47.h,),
+                    // const Align(
+                    //   alignment: Alignment.bottomCenter,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Text(
+                    //         "2",
+                    //         style: TextStyle(
+                    //           fontFamily: "Poppins",
+                    //           fontSize: 16,
+                    //           fontWeight: FontWeight.w400,
+                    //           height: 24/16,
+                    //         ),
+                    //         textAlign: TextAlign.left,
+                    //       ),
+                    //       Text(
+                    //         "/5",
+                    //         style: TextStyle(
+                    //             fontFamily: "Poppins",
+                    //             fontSize: 16,
+                    //             fontWeight: FontWeight.w400,
+                    //             height: 24/16,
+                    //             color: Colors.grey
+                    //         ),
+                    //         textAlign: TextAlign.left,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // SizedBox(height: 40,),
+                  ],
                 ),
-                SizedBox(height: 40,),
-              ],
+              ),
             ),
           ),
         ],

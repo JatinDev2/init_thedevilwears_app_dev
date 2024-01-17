@@ -35,6 +35,7 @@
 import "package:flutter/material.dart";
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
@@ -56,12 +57,14 @@ class GoogleSignInProvider extends ChangeNotifier {
       idToken: googleAuth.idToken,
     );
 
-    await FirebaseAuth.instance.signInWithCredential(credential).then((value) async{
-      final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-      await prefs.setString('userEmail', value.user!.email.toString());
-      print("(((((((******************************))))))))))");
-      print(value.user!.uid.toString());
-      await prefs.setString('userId', value.user!.uid.toString());
+    await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+      LoginData().writeUserEmail(value.user!.email.toString());
+      LoginData().writeUserId(value.user!.uid.toString());
+      // final prefs = await SharedPreferences.getInstance();
+      // await prefs.setString('userEmail', value.user!.email.toString());
+      // print("(((((((******************************))))))))))");
+      // print(value.user!.uid.toString());
+      // await prefs.setString('userId', value.user!.uid.toString());
     });
     notifyListeners();
     return true;

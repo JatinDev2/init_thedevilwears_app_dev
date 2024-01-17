@@ -3,18 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/screens/brandProfile/brandProfileScreen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_screen.dart';
-import 'package:lookbook/screens/listing/listing_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../brandProfile/brandProfileScreen.dart';
-import '../listing/response_screen.dart';
+import '../jobs/jobListingScreen.dart';
 import '../profile/StudentProfileScreen.dart';
 import '../search/JobSearchScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final int? tabVal;
+
+  HomeScreen({ this.tabVal});
+  // const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -41,9 +44,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     setSharedPrefrence();
-    gridItems = GridItemData.generateItems();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() => _select(_tabController.index));
+    if(widget.tabVal!=null){
+      _selected=widget.tabVal!;
+    }
     super.initState();
   }
 
@@ -143,10 +148,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       JobSearchScreen(
         height: MediaQuery.of(context).viewInsets.bottom > 0 ? MediaQuery.of(context).size.height : 0,
       ),
-      ListingScreen(),
+      // ListingScreen(),
+      JobListScreen(),
       // ProfileScreen()
-      StudentProfileScreen(),
-      BrandProfileScreen(),
+      LoginData().getUserType()=="Company"? BrandProfileScreen(): StudentProfileScreen(),
+      // BrandProfileScreen(),
     ];
 
     return Scaffold(
@@ -182,12 +188,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
               label: '',
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(IconlyLight.profile),
-              activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
-              label: '',
-            ),
+            // BottomNavigationBarItem(
+            //   backgroundColor: Colors.white,
+            //   icon: Icon(IconlyLight.profile),
+            //   activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
+            //   label: '',
+            // ),
           ],
           currentIndex: _selected,
           selectedItemColor: Colors.black,

@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import '../common_widgets.dart';
-import '../listing/listing_screen.dart';
 import 'createNewJobListing.dart';
 import 'filterScreen.dart';
 import 'job_model.dart';
@@ -63,7 +63,9 @@ class _JobListScreenState extends State<JobListScreen> {
            tags : data["tags"] ?? [],
             applicationCount: data["applicationCount"] ?? 0,
             clicked: data["clicked"] ?? false,
-            docId: data["docId"] ?? ""
+            docId: data["docId"] ?? "",
+            applicationsIDS: data["applicationsIDS"] ?? [],
+            interests: data["interests"] ?? [],
           );
           listings.add(listModel);
         }
@@ -73,6 +75,48 @@ class _JobListScreenState extends State<JobListScreen> {
       // Handle any errors or exceptions here
       print('Error fetching data: $e');
       throw e; // You can choose to throw the error to handle it elsewhere
+    }
+  }
+
+  List<jobModel> sortJobListings(List<jobModel> jobListings, List<String> studentInterests, List<String> studentJobProfiles) {
+    // Scoring and sorting function
+    jobListings.sort((a, b) {
+      int scoreA = calculateMatchScore(a, studentInterests, studentJobProfiles);
+      int scoreB = calculateMatchScore(b, studentInterests, studentJobProfiles);
+
+      // If scores are equal, sort by time (most recent first)
+      if (scoreA == scoreB) {
+        // Assuming createdAt is a DateTime object. If it's a string, convert it to DateTime.
+        return b.createdAt.compareTo(a.createdAt);
+      }
+
+      // Otherwise, sort by score (higher score first)
+      return scoreB.compareTo(scoreA);
+    });
+
+    return jobListings;
+  }
+
+  int calculateMatchScore(jobModel job, List<String> studentInterests, List<String> studentJobProfiles) {
+    // Count how many interests match
+    int matchingInterestsCount = job.interests.where((interest) => studentInterests.contains(interest)).length;
+
+    // Check if job profile matches
+    bool matchesJobProfile = studentJobProfiles.contains(job.jobProfile);
+
+    // Adjusted scoring logic
+    if (matchesJobProfile && matchingInterestsCount > 0) {
+      // Matches both job profile and interests
+      return 1000 + matchingInterestsCount; // Highest score
+    } else if (matchingInterestsCount > 0) {
+      // Matches interests only
+      return 500 + matchingInterestsCount; // Medium-high score
+    } else if (matchesJobProfile) {
+      // Matches job profile only
+      return 100; // Medium score
+    } else {
+      // No match
+      return 0; // Lowest score
     }
   }
 
@@ -143,13 +187,21 @@ class _JobListScreenState extends State<JobListScreen> {
                 );
               } else {
                 final data = snapshot.data!;
-                data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                _listings=data;
+                print("Interests");
+                print(LoginData().getUserInterests());
+                print("Job");
+                print(LoginData().getUserJobProfile());
+
+                List<jobModel>sortedListings=  sortJobListings(data,LoginData().getUserInterests(),LoginData().getUserJobProfile());
+
+                _listings=sortedListings;
                 return Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5.0.w, vertical: 5.0.h),
+                      // margin: EdgeInsets.only(horizontal: 5.0.w, vertical: 5.0.h),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 4),
                       width: MediaQuery.of(context).size.width,
+                      color: Colors.white,
                       child: Row(
                         children: [
                           Container(
@@ -194,7 +246,7 @@ class _JobListScreenState extends State<JobListScreen> {
                           // selectedOptions.isEmpty? // Use the showListView flag to conditionally show the ListView or Wrap
                           Expanded(
                             child: SizedBox(
-                              height: 50.h,
+                              height: 50,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: filterOptions.map((option) {
@@ -222,7 +274,7 @@ class _JobListScreenState extends State<JobListScreen> {
                     ),
                     if (selectedOptions.isNotEmpty)
                       SizedBox(
-                        height: 50.h,
+                        height: 50,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: selectedOptions.map((option) {
@@ -256,6 +308,7 @@ class _JobListScreenState extends State<JobListScreen> {
                           }).toList(),
                         ),
                       ),
+                    SizedBox(height: 8,),
                     Expanded(
                       child: ListView.builder(
                         itemCount: selectedOptions.isNotEmpty? filteredListings.length:  _listings.length,
@@ -271,7 +324,7 @@ class _JobListScreenState extends State<JobListScreen> {
             },
           ),
 
-          Align(
+        LoginData().getUserType()=="Company"?  Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () async {
@@ -298,7 +351,7 @@ class _JobListScreenState extends State<JobListScreen> {
                 ),
               ),
             ),
-          ),
+          ) : Container(),
         ]),
     );
   }

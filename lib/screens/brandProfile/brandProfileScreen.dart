@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../listing/response_screen.dart';
 import '../profile/StudentTabs/tab1_st.dart';
 import 'Tabs/Tab1_BP.dart';
 import 'Tabs/Tab2_BP.dart';
+import 'Tabs/Tab3_BP.dart';
 
 class BrandProfileScreen extends StatefulWidget{
   const BrandProfileScreen({Key? key}) : super(key: key);
@@ -16,9 +17,7 @@ class BrandProfileScreen extends StatefulWidget{
 
 class _BrandProfileScreenState extends State<BrandProfileScreen>
     with SingleTickerProviderStateMixin {
-  List gridItems = [];
-  String uid="";
-  bool isDataLoading=true;
+  String uid=LoginData().getUserId();
   late TabController _tabController;
   List<bool> _tabSelectedState = [true, false, false, false]; // Initially, the first tab is selected
 
@@ -97,13 +96,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
 
   @override
   void initState() {
-    fetchId().then((value) {
-      setState(() {
-        isDataLoading = false;
-        uid = value;
-      });
-    });
-    gridItems = GridItemData.generateItems();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabChange);
     super.initState();
@@ -118,15 +110,10 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
     });
   }
 
-  Future<String> fetchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return isDataLoading? Scaffold(body: Center(child: CircularProgressIndicator(),),) :
+    return
     // StreamBuilder<DocumentSnapshot>(
     //     stream: FirebaseFirestore.instance
     //         .collection('Profiles')
@@ -153,8 +140,7 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                 backgroundColor: Colors.white,
 
               body: Material(
-                child: DefaultTabController(
-                  length: 3,
+                // child:
                   child: NestedScrollView(
                     headerSliverBuilder: (context, innerBoxIsScrolled) {
                       return [
@@ -164,205 +150,233 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                           floating: true,
                           pinned: false,
                           flexibleSpace: FlexibleSpaceBar(
-                            background: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.all(8.0),
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Material(
-                                        elevation: 4,
-                                        shape: CircleBorder(),
-                                        clipBehavior: Clip.none,
-                                        child: Stack(
-                                          alignment: Alignment.bottomRight,
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 40,
-                                              backgroundImage: NetworkImage(
-                                                  "https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w"),
-                                            ),
+                            background:
 
-                                          ],
-                                        ),
+                            StreamBuilder<DocumentSnapshot>(
+                              stream:FirebaseFirestore.instance
+                                  .collection('brandProfiles')
+                                  .doc(uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                      }
+                      if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return Center(child: Text("No data found"));
+                      }
+                      var data = snapshot.data!.data() as Map<String, dynamic>;
+                      String userName=data['brandName'];
+                      List<String> userDescriptionList = (data['userDescription'] is List<dynamic>)
+                      ? List<String>.from(data['brandDescription'].map((item) => item.toString()))
+                          : [];
+                      String descriptionsWithBullets = userDescriptionList.join('  •  ');
+                     return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(8.0),
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Material(
+                                  elevation: 4,
+                                  shape: CircleBorder(),
+                                  clipBehavior: Clip.none,
+                                  child: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: NetworkImage(
+                                            "https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w"),
                                       ),
-                                      // SizedBox(
-                                      //   width: 48,
-                                      // ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset("assets/Global.svg", height: 20, width: 20,),
-                                              const Text(
-                                                "Website",
-                                                style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color(0xff6b6b6b),
-                                                  height: 20 / 12,
-                                                ),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 32,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Image.asset("assets/Letter.png", height: 20, width: 20,),
-                                              const Text(
-                                                "Email",
-                                                style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color(0xff6b6b6b),
-                                                  height: 20 / 12,
-                                                ),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 28,
-                                          ),
-                                          GestureDetector(
-                                            onTap: (){
-                                              bottomSheet(context);
-                                            },
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                SvgPicture.asset(
-                                                  "assets/contact.svg",
-                                                  height: 16,
-                                                  width: 13,
-                                                ),
-                                                const Text(
-                                                  "Contact",
-                                                  style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color(0xff6b6b6b),
-                                                    height: 20 / 12,
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+
                                     ],
                                   ),
                                 ),
-                                Container(
-                                    margin: EdgeInsets.only(top: 5, left: 11),
-                                    child: const Row(
+                                // SizedBox(
+                                //   width: 48,
+                                // ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          "Gucci • ",
+                                        SvgPicture.asset("assets/Global.svg", height: 20, width: 20,),
+                                        const Text(
+                                          "Website",
                                           style: TextStyle(
                                             fontFamily: "Poppins",
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            color: Color(0xff0f1015),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff6b6b6b),
+                                            height: 20 / 12,
                                           ),
                                           textAlign: TextAlign.left,
                                         ),
-                                        Text(
-                                          "Student",
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 32,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/Letter.png", height: 20, width: 20,),
+                                        const Text(
+                                          "Email",
                                           style: TextStyle(
                                             fontFamily: "Poppins",
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: Color(0xffababab),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff6b6b6b),
+                                            height: 20 / 12,
                                           ),
                                           textAlign: TextAlign.left,
-                                        )
+                                        ),
                                       ],
-                                    )
-                                ),
-                                Container(
-                                    margin: const EdgeInsets.only(top: 5, left: 11),
-                                    child: const Text(
-                                      "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                                      style: TextStyle(
-                                        fontFamily: "Poppins",
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xff5a5a5a),
+                                    ),
+                                    const SizedBox(
+                                      width: 28,
+                                    ),
+                                    GestureDetector(
+                                      onTap: (){
+                                        bottomSheet(context);
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/contact.svg",
+                                            height: 16,
+                                            width: 13,
+                                          ),
+                                          const Text(
+                                            "Contact",
+                                            style: TextStyle(
+                                              fontFamily: "Poppins",
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: Color(0xff6b6b6b),
+                                              height: 20 / 12,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
                                       ),
-                                      textAlign: TextAlign.left,
-                                    )),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(top: 5, left: 11),
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    "Gucci • ",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff0f1015),
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  Text(
+                                    "Student",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xffababab),
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  )
+                                ],
+                              )
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 5, left: 11),
+                              child: const Text(
+                                "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff5a5a5a),
+                                ),
+                                textAlign: TextAlign.left,
+                              )),
+                        ],
+                      );
+                      }),
+
                           ),
                         ),
-                        SliverPersistentHeader(
-                          delegate: _SliverAppBarDelegate(
-                            TabBar(
-                              controller: _tabController,
-                              labelColor: Colors.black,
-                              indicatorColor: Colors.black,
-                              tabs: [
-                                Tab(
-                                  icon: SvgPicture.asset("assets/tab1_bp.svg", color: _tabSelectedState[0] ? Colors.black : Colors.grey, )
-                                  // child: _tabSelectedState[0]
-                                  //     ? SvgPicture.asset(
-                                  //   "assets/tab1_st_s.svg",
-                                  // )
-                                  //     : SvgPicture.asset(
-                                  //   "assets/tab1_st_un.svg",
-                                  // ),
-                                ),
-                                Tab(
-                                  icon: SvgPicture.asset("assets/tab2_bp.svg", color: _tabSelectedState[1] ? Colors.black : Colors.grey, ),
-                                  // child: _tabSelectedState[1]
-                                  //     ? SvgPicture.asset(
-                                  //   "assets/tab2_s.svg",
-                                  // )
-                                  //     : SvgPicture.asset(
-                                  //   "assets/tab2_un.svg",
-                                  // ),
-                                ),
+                      DefaultTabController(
+                      length: 3,
+                          child: SliverPersistentHeader(
+                            delegate: _SliverAppBarDelegate(
+                              TabBar(
+                                controller: _tabController,
+                                labelColor: Colors.black,
+                                indicatorColor: Colors.black,
+                                tabs: [
+                                  Tab(
+                                    icon: SvgPicture.asset("assets/tab1_bp.svg", color: _tabSelectedState[0] ? Colors.black : Colors.grey, )
+                                    // child: _tabSelectedState[0]
+                                    //     ? SvgPicture.asset(
+                                    //   "assets/tab1_st_s.svg",
+                                    // )
+                                    //     : SvgPicture.asset(
+                                    //   "assets/tab1_st_un.svg",
+                                    // ),
+                                  ),
+                                  Tab(
+                                    icon: SvgPicture.asset("assets/tab2_bp.svg", color: _tabSelectedState[1] ? Colors.black : Colors.grey, ),
+                                    // child: _tabSelectedState[1]
+                                    //     ? SvgPicture.asset(
+                                    //   "assets/tab2_s.svg",
+                                    // )
+                                    //     : SvgPicture.asset(
+                                    //   "assets/tab2_un.svg",
+                                    // ),
+                                  ),
 
-                                Tab(
-                                  icon: SvgPicture.asset("assets/tab3_bp.svg", color: _tabSelectedState[2] ? Colors.black : Colors.grey, ),
+                                  Tab(
+                                    icon: SvgPicture.asset("assets/tab3_bp.svg", color: _tabSelectedState[2] ? Colors.black : Colors.grey, ),
 
-                                  // child: _tabSelectedState[2]
-                                  //     ? SvgPicture.asset(
-                                  //   "assets/tab4_s.svg",
-                                  // )
-                                  //     : SvgPicture.asset(
-                                  //   "assets/tab4_un.svg",
-                                  // ),
-                                ),
-                              ],
+                                    // child: _tabSelectedState[2]
+                                    //     ? SvgPicture.asset(
+                                    //   "assets/tab4_s.svg",
+                                    // )
+                                    //     : SvgPicture.asset(
+                                    //   "assets/tab4_un.svg",
+                                    // ),
+                                  ),
+                                ],
+                              ),
                             ),
+                            pinned: true,
                           ),
-                          pinned: true,
                         ),
                       ];
                     },
@@ -374,11 +388,12 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                         // tabFour(),
                         // Container(),
                         BrandListingsTab(),
-                        Container(),
+                        // Container(),
+                        RequestsTab(),
                       ],
                     ),
                   ),
-                ),
+                // ),
               ),
             );
         //   }

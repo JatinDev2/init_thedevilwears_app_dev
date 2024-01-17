@@ -3,10 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Login/phoneNumber_screen.dart';
+import 'package:lookbook/Services/autheticationAPIs.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Provider/google_auth_provider.dart';
 import '../screens/home/home_screen.dart';
+import 'options_screen.dart';
 
 class LoginOptions extends StatefulWidget {
   const LoginOptions({Key? key}) : super(key: key);
@@ -18,30 +20,6 @@ class LoginOptions extends StatefulWidget {
 class _LoginOptionsState extends State<LoginOptions> {
 
   bool isLoading=false;
-  Future<bool> checkUserEmailInFirestore() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final userId = prefs.getString('userId');
-
-      final firestore = FirebaseFirestore.instance;
-      final userCollection = firestore.collection('users');
-      final userDocument = await userCollection.doc(userId).get();
-      if (userDocument.exists) {
-        var userData = userDocument.data();
-
-           prefs.setString('firstName', userData!["firstName"].toString());
-           prefs.setString('lastName', userData["lastName"].toString());
-
-        return true;
-      }
-      else {
-        return false;
-      }
-    } catch (e) {
-      print("Error checking userEmail in Firestore: $e");
-      return false; // Return false in case of any error
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +110,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                       setState(() {
                         isLoading=true;
                       });
-                      checkUserEmailInFirestore().then((value) {
+                     FirebaseAuthAPIs().checkStudentEmailInFireStore().then((value) {
                         print("TTTTHHHHHHHEEEEEEEEEEE    VVVVVVVVVVVAAAALLLLLUEEEEEEEEEEEEEE ::: ${value}");
                         if(value){
                           setState(() {
@@ -148,7 +126,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                             isLoading=false;
                           });
                           Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                            return PhoneNumber_Screen();
+                            return OptionsInScreen();
                           }));
                         }
                       });

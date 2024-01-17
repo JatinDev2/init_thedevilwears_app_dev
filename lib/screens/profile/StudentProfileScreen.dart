@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../listing/response_screen.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/colorManager.dart';
 import 'StudentTabs/tab1_st.dart';
-import 'editProfile/editProfileScreen.dart';
+import 'StudentTabs/tab2_st.dart';
 
 class StudentProfileScreen extends StatefulWidget{
   const StudentProfileScreen({Key? key}) : super(key: key);
@@ -16,10 +16,12 @@ class StudentProfileScreen extends StatefulWidget{
 class _StudentProfileScreenState extends State<StudentProfileScreen>
     with SingleTickerProviderStateMixin {
   List gridItems = [];
-  String uid="";
+  String uid=LoginData().getUserId();
   bool isDataLoading=true;
   late TabController _tabController;
-  List<bool> _tabSelectedState = [true, false, false, false]; // Initially, the first tab is selected
+  List<bool> _tabSelectedState = [true, false, false];// Initially, the first tab is selected
+  late Stream<DocumentSnapshot> profileInfoStream;
+
 
   void bottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -96,40 +98,44 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
 
   @override
   void initState() {
-    fetchId().then((value) {
-      setState(() {
-        isDataLoading = false;
-        uid = value;
-      });
-    });
-    gridItems = GridItemData.generateItems();
+    // fetchId().then((value) {
+    //   setState(() {
+    //     isDataLoading = false;
+    //     uid = value;
+    //   });
+    // });
+    // gridItems = GridItemData.generateItems();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabChange);
+    profileInfoStream=getStudentProfileStream(uid);
     super.initState();
   }
 
   void _handleTabChange() {
     setState(() {
       // Reset all tab selected states to false
-      _tabSelectedState = [false, false, false, false];
+      _tabSelectedState = [false, false, false];
       // Set the selected tab's state to true
       _tabSelectedState[_tabController.index] = true;
     });
   }
 
-  Future<String> fetchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
+  // Future<String> fetchId() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final userId = prefs.getString('userId');
+  //   return userId!;
+  // }
+  Stream<DocumentSnapshot> getStudentProfileStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection('studentProfiles')
+        .doc(uid)
+        .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
-    return isDataLoading? Scaffold(body: Center(child: CircularProgressIndicator(),),) : StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('Profiles')
-          .doc(uid)
-          .snapshots(),
+    return StreamBuilder<DocumentSnapshot>(
+      stream: profileInfoStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -143,12 +149,24 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
 else{
           var projectsList = <dynamic>[];
           var workList = <dynamic>[];
+          var userDescriptionList=<dynamic>[];
+          String userName="";
+          String descriptionsWithBullets="";
 
           // Check if the snapshot has data and is not null.
           if (snapshot.hasData && snapshot.data!.data() != null) {
             var data = snapshot.data!.data() as Map<String, dynamic>;
             projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
             workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
+            // userDescriptionList=(data['userDescription'] is List<dynamic>) ? List<dynamic>.from(data['userDescription']) : [];
+            List<String> userDescriptionList = (data['userDescription'] is List<dynamic>)
+                ? List<String>.from(data['userDescription'].map((item) => item.toString()))
+                : [];
+
+             descriptionsWithBullets = userDescriptionList.join('  •  ');
+
+            userName="${data["firstName"]} ${data["lastName"]}";
+
           }
           // var data = snapshot.data!.data() as Map<String, dynamic> ?? {};
           // var projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
@@ -163,7 +181,7 @@ else{
                     return [
                       SliverAppBar(
                         backgroundColor: Colors.white,
-                        expandedHeight: 200,
+                        expandedHeight: 270,
                         floating: true,
                         pinned: false,
                         flexibleSpace: FlexibleSpaceBar(
@@ -326,31 +344,39 @@ else{
                               ),
                               Container(
                                   margin: EdgeInsets.only(top: 5, left: 11),
-                                  child: const Row(
+                                  child:  Row(
                                     children: [
-                                      Text(
-                                        "Srishti Doshi • ",
-                                        style: TextStyle(
-                                          fontFamily: "Poppins",
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xff0f1015),
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      Text(
-                                        "Student",
-                                        style: TextStyle(
-                                          fontFamily: "Poppins",
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xffababab),
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      )
+                                  Text(
+                                  "Hey,\nI’m $userName",
+                                  style: const TextStyle(
+                                  fontFamily: "Poppins",
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff0f1015),
+                                    // height: 48/24,
+                                  ),
+                                textAlign: TextAlign.left,
+                              )
                                     ],
                                   )
                               ),
+                              Container(
+                                margin: EdgeInsets.only(top: 5, left: 11),
+                                child: Text(
+                                  descriptionsWithBullets,
+                                  style: const TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff000000),
+                                    height: 20/16,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+
                               Container(
                                   margin: const EdgeInsets.only(top: 5, left: 11),
                                   child: const Text(
@@ -375,32 +401,13 @@ else{
                             indicatorColor: Colors.black,
                             tabs: [
                               Tab(
-                                child: _tabSelectedState[0]
-                                    ? SvgPicture.asset(
-                                  "assets/tab1_st_s.svg",
-                                )
-                                    : SvgPicture.asset(
-                                  "assets/tab1_st_un.svg",
-                                ),
-                              ),
+                                child:  SvgPicture.asset("assets/tab1_st_s.svg",color: _tabSelectedState[0] ?Colors.black : ColorsManager.unSelectedTabColor,)),
                               Tab(
-                                child: _tabSelectedState[1]
-                                    ? SvgPicture.asset(
-                                  "assets/tab2_s.svg",
-                                )
-                                    : SvgPicture.asset(
-                                  "assets/tab2_un.svg",
-                                ),
-                              ),
+                                child: SvgPicture.asset("assets/tab2_s.svg",color: _tabSelectedState[1]? Colors.black : ColorsManager.unSelectedTabColor,)),
 
                               Tab(
-                                child: _tabSelectedState[2]
-                                    ? SvgPicture.asset(
-                                  "assets/tab4_s.svg",
-                                )
-                                    : SvgPicture.asset(
-                                  "assets/tab4_un.svg",
-                                ),
+                                child: SvgPicture.asset(
+                                  "assets/tab4_s.svg", color: _tabSelectedState[2]? Colors.black : ColorsManager.unSelectedTabColor,)
                               ),
                             ],
                           ),
@@ -415,7 +422,7 @@ else{
                       const Tab1St(),
                       // tabThree(),
                       // tabFour(),
-                      Container(),
+                      Tab2St(),
                       Container(),
                     ],
                   ),

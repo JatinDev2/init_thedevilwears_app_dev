@@ -3,7 +3,10 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/colorManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,27 +26,7 @@ class Tab1St extends StatefulWidget {
 }
 
 class _Tab1StState extends State<Tab1St> {
-  String uid = "";
-  bool isDataLoading = true;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchId().then((value) {
-      setState(() {
-        isDataLoading = false;
-        uid = value;
-      });
-    });
-  }
-
-
-
-  Future<String> fetchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
-  }
+  String uid = LoginData().getUserId();
 
   DateTime _getStartDate(String dateRange) {
     try {
@@ -147,15 +130,9 @@ class _Tab1StState extends State<Tab1St> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: isDataLoading
-          ? Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : StreamBuilder<DocumentSnapshot>(
+      child: StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('Profiles')
+                  .collection('studentProfiles')
                   .doc(uid)
                   .snapshots(),
               builder: (BuildContext context,
@@ -225,13 +202,43 @@ class _Tab1StState extends State<Tab1St> {
                     children: <Widget>[
                       // Projects
                       Header(
-                        label: "Projects",
+                        label: "My Projects",
                       ),
                       SizedBox(
                         height: 20,
                       ),
                       if (projects.isEmpty)
-                        const Center(child: Text("Nothing to show in Projects")),
+                         GestureDetector(
+                           onTap: (){
+                               Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                                 return AddNewProjectForm();
+                               }));
+                           },
+                           child: Center(child: Row(
+                            children: [
+                              Container(
+                                padding:const EdgeInsets.all(14),
+                                decoration:const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ColorsManager.lightPink,
+                                ),
+                                child: SvgPicture.asset("assets/project.svg"),
+                              ),
+                             const SizedBox(width: 8,),
+                             const Text(
+                                "Add your projects",
+                                style:  TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff000000),
+                                  height: 19/14,
+                                ),
+                                textAlign: TextAlign.left,
+                              )
+                            ],
+                                                   )),
+                         ),
                      ...projects.map((project) => ProjectCard(
                             title: project.projectHeading,
                             subtitle: project.projectType,
@@ -243,13 +250,44 @@ class _Tab1StState extends State<Tab1St> {
                         height: 30.h,
                       ),
                       Header(
-                        label: "Work Experience",
+                        label: "My Work Experience",
                       ),
-                      SizedBox(
+                      const  SizedBox(
                         height: 20,
                       ),
                       if (workExperiences.isEmpty)
-                        Center(child: const Text("Nothing to show in Work Experience")),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                              return AddNewWorkExperience();
+                            }));
+                          },
+                          child: Center(child: Row(
+
+                            children: [
+                              Container(
+                                padding:const EdgeInsets.all(14),
+                                decoration:const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ColorsManager.lightPink,
+                                ),
+                                child: SvgPicture.asset("assets/work.svg"),
+                              ),
+                              const SizedBox(width: 8,),
+                              const Text(
+                                "Add your work experiences",
+                                style:  TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff000000),
+                                  height: 19/14,
+                                ),
+                                textAlign: TextAlign.left,
+                              )
+                            ],
+                          )),
+                        ),
 
                       ...workExperiences.map((work) => WorkCard(
                             // Map WorkModel properties to WorkCard widget
@@ -261,19 +299,52 @@ class _Tab1StState extends State<Tab1St> {
                             workType: work.workType,
                             location: work.location,
                         link: work.projectLink,
+                        status: work.status,
                           )),
                       // Education
                       SizedBox(
                         height: 30.h,
                       ),
                       Header(
-                        label: "Education",
+                        label: "My Education",
                       ),
                       SizedBox(
                         height: 20,
                       ),
                       if (educationEntries.isEmpty)
-                        Center(child: const Text("Nothing to show in Education")),
+                        GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                                return AddNewEducationForm();
+                              }));
+                            },
+
+                          child: Center(child: Row(
+
+                            children: [
+                              Container(
+                                padding:const EdgeInsets.all(14),
+                                decoration:const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ColorsManager.lightPink,
+                                ),
+                                child: SvgPicture.asset("assets/education.svg"),
+                              ),
+                              const SizedBox(width: 8,),
+                              const Text(
+                                "Add your education",
+                                style:  TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff000000),
+                                  height: 19/14,
+                                ),
+                                textAlign: TextAlign.left,
+                              )
+                            ],
+                          )),
+                        ),
                       ...educationEntries.map((education) => EducationCard(
                             // Map EducationModel properties to EducationCard widget
                             description: education.description,
@@ -288,9 +359,9 @@ class _Tab1StState extends State<Tab1St> {
                       ),
                       Container(
                         margin: EdgeInsets.only(left: 4),
-                        child: Text(
-                          "Skillset",
-                          style: const TextStyle(
+                        child: const Text(
+                          "My Skillset",
+                          style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -349,7 +420,7 @@ class Header extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poppins",
               fontSize:
-                  (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
+                  (label == "Hard skills" || label == "Soft skills") ? 14 : 24,
               fontWeight: (label == "Hard skills" || label == "Soft skills")
                   ? FontWeight.w500
                   : FontWeight.bold,
@@ -363,15 +434,15 @@ class Header extends StatelessWidget {
           if (label != "Hard skills" && label != "Soft skills")
             GestureDetector(
                 onTap: () {
-                  if (label == "Work Experience") {
+                  if (label == "My Work Experience") {
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                       return AddNewWorkExperience();
                     }));
-                  } else if (label == "Projects") {
+                  } else if (label == "My Projects") {
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                       return AddNewProjectForm();
                     }));
-                  } else if (label == "Education") {
+                  } else if (label == "My Education") {
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                       return AddNewEducationForm();
                     }));
@@ -529,6 +600,7 @@ class WorkCard extends StatelessWidget {
   final String projectLink;
   final String location;
   final String link;
+  final String status;
 
   const WorkCard({
     Key? key,
@@ -540,6 +612,7 @@ class WorkCard extends StatelessWidget {
     required this.workType,
     required this.location,
     required this.link,
+    required this.status,
   }) : super(key: key);
 
   String formatTimePeriod(String timePeriod) {

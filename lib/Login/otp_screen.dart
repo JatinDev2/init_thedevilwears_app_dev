@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lookbook/Login/interestScreen.dart';
 import 'package:lookbook/Login/options_screen.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {
   const PinCodeVerificationScreen({
@@ -44,19 +44,23 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     });
     try {
       // Link the phone number credential with the existing Google user
-      await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential).then((value) async{
-        final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-        final userEmail= prefs.getString('userEmail');
-        await prefs.setBool('phoneVerified', true);
-        await prefs.setString('firstName', widget.firstName);
-        await prefs.setString('lastName', widget.lastName);
-        await prefs.setString('phoneNumber', "${widget.dialCode}${widget.phoneNumber}");
-        await prefs.setString('email', userEmail!);
+      await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential).then((value){
+        // final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
+        // final userEmail= prefs.getString('userEmail');
+        // await prefs.setBool('phoneVerified', true);
+        // await prefs.setString('firstName', widget.firstName);
+        // await prefs.setString('lastName', widget.lastName);
+        // await prefs.setString('phoneNumber', "${widget.dialCode}${widget.phoneNumber}");
+        // await prefs.setString('email', userEmail!);
+        LoginData().writePhoneVerifiedStatus(true);
+        LoginData().writeUserFirstName(widget.firstName);
+        LoginData().writeUserLastName(widget.lastName);
+        LoginData().writeUserPhoneNumber("${widget.dialCode}${widget.phoneNumber}");
         setState(() {
           _isLoading=false;
         });
         Navigator.of(context).push(MaterialPageRoute(builder: (_){
-          return OptionsInScreen();
+          return InterestScreen();
         }));
       });
     } on FirebaseAuthException catch (e) {
@@ -81,35 +85,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   final formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    errorController = StreamController<ErrorAnimationType>();
-    super.initState();
-    // textEditingController.text = widget.smsCode!;
-    listenForSms();
-  }
 
-  void listenForSms() async {
-    await SmsAutoFill().listenForCode;
-    SmsAutoFill().code.listen((code){
-        setAutoFilledCode(code);
-    });
-  }
-
-  void setAutoFilledCode(String code) {
-    setState(() {
-      print("HELLO GAIZ");
-      print(code);
-      textEditingController.text = code;
-    });
-  }
-
-  @override
-  void dispose() {
-    errorController!.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // Use flutter_screenutil for responsive design
     ScreenUtil.init(context);

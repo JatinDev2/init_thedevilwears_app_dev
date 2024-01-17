@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/colorManager.dart';
 import 'package:lookbook/screens/profile/profileModels/workModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Services/profiles.dart';
@@ -15,9 +17,11 @@ import 'job_model.dart';
 
 class JobListingDetailsScreen extends StatefulWidget {
   final jobModel newJobModel;
+  final bool hasApplied;
 
   JobListingDetailsScreen({
     required this.newJobModel,
+    required this.hasApplied,
   });
 
   @override
@@ -27,6 +31,7 @@ class JobListingDetailsScreen extends StatefulWidget {
 class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
   TextEditingController additionalInfoController= TextEditingController();
   bool isSubmitLoading=false;
+ 
 
   void _showDialog(BuildContext context, String workString, String education, String name, String jobType) {
     setState(() {
@@ -227,24 +232,23 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
 
                       if(!isSubmitLoading)
                         GestureDetector(
-                            onTap: ()async{
-                              setState((){
-                                 isSubmitLoading=true;
+                          onTap: () async {
+                            if (!widget.hasApplied) {
+                              setState(() {
+                                isSubmitLoading = true;
                               });
-                              final prefs = await SharedPreferences.getInstance();
-                              final userId = prefs.getString('userId');
-                              final firstName = prefs.getString('firstName');
-                              final lastName = prefs.getString('lastName');
-                              Map<String,dynamic> applicationData={
-                                "additionalInfo" : additionalInfoController.text,
-                                "userId":  userId,
+
+                              Map<String, dynamic> applicationData = {
+                                "additionalInfo": additionalInfoController.text,
+                                "userId": LoginData().getUserId(),
                                 "workedAt": workString,
-                                "education":education,
-                                "statusOfApplication":"Pending",
-                                "appliedBy":name,
-                                "createdBy": "$firstName $lastName",
-                                "jobProfile":jobType,
+                                "education": education,
+                                "statusOfApplication": "Pending",
+                                "appliedBy": name,
+                                "createdBy": widget.newJobModel.createdBy,
+                                "jobProfile": jobType,
                               };
+
                               // Reference to Firestore
                               final firestore = FirebaseFirestore.instance;
 
@@ -252,31 +256,85 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                 // Reference to the specific job listing document
                                 DocumentReference jobRef = firestore.collection('jobListing').doc(widget.newJobModel.docId);
 
-                                DocumentSnapshot jobSnapshot = await jobRef.get();
+                                // Reference to student profile document
+                                DocumentReference studentRef = firestore.collection('studentProfiles').doc(LoginData().getUserId());
+
+                                DocumentSnapshot jobSnapshot = await jobRef
+                                    .get();
                                 if (!jobSnapshot.exists) {
                                   throw Exception('Job listing not found');
                                 }
-                                CollectionReference applicationsRef = jobRef.collection('Applications');
+                                CollectionReference applicationsRef = jobRef
+                                    .collection('Applications');
 
+                                // await firestore.runTransaction((transaction) async {
+                                //   // Check and update applicationsApplied in student profile
+                                //   DocumentSnapshot studentSnapshot = await transaction.get(studentRef);
+                                //
+                                //   Map<String, String> applicationsApplied = studentSnapshot.data().containsKey('applicationsApplied')
+                                //       ? new Map<String, String>.from(studentSnapshot.get('applicationsApplied'))
+                                //       : {};
+                                //   applicationsApplied[widget.newJobModel.docId] = "Pending"; // Update with new application status
+                                //
+                                //   transaction.set(studentRef, {'applicationsApplied': applicationsApplied}, SetOptions(merge: true));
+                                //
+                                //   // Update job listing document
+                                //   transaction.set(applicationsRef.doc(LoginData().getUserId()), applicationData, SetOptions(merge: true));
+                                //   transaction.update(jobRef, {
+                                //     'applicationCount': FieldValue.increment(1),
+                                //     'clicked': false,
+                                //     'applicationsIDS': FieldValue.arrayUnion([LoginData().getUserId()]),
+                                //   });
+                                // });
                                 await firestore.runTransaction((transaction) async {
-                                  transaction.set(applicationsRef.doc(userId), applicationData, SetOptions(merge: true));
+                                  DocumentSnapshot studentSnapshot = await transaction.get(studentRef);
+
+                                  // Initialize applicationsApplied as an empty map
+                                  Map<String, String> applicationsApplied = {};
+
+                                  // Get the data from the studentSnapshot
+                                  var studentData = studentSnapshot.data() as Map<String, dynamic>?;
+
+                                  // Check if studentData is not null and contains 'applicationsApplied'
+                                  if (studentData != null && studentData.containsKey('applicationsApplied')) {
+                                    applicationsApplied = Map<String, String>.from(studentData['applicationsApplied']);
+                                  }
+
+                                  // Add or update the application status
+                                  applicationsApplied[widget.newJobModel.docId] = "Pending";
+
+                                  // Set updated applicationsApplied map in student profile
+                                  transaction.set(studentRef, {'applicationsApplied': applicationsApplied}, SetOptions(merge: true));
+
+                                  // Update job listing document
+                                  transaction.set(applicationsRef.doc(LoginData().getUserId()), applicationData, SetOptions(merge: true));
                                   transaction.update(jobRef, {
                                     'applicationCount': FieldValue.increment(1),
-                                    'clicked': false
+                                    'clicked': false,
+                                    'applicationsIDS': FieldValue.arrayUnion([LoginData().getUserId()]),
                                   });
                                 });
+
+
+
                                 print('Application successfully created');
                                 setState(() {
-                                    isSubmitLoading=false;
+                                  isSubmitLoading = false;
                                 });
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
-
                               } catch (e) {
                                 print('Error creating application: $e');
-                                throw e; // Rethrow the exception
+                                setState(() {
+                                  isSubmitLoading = false;
+                                });
+                                // Handle the error appropriately
                               }
-                            },
+                            } else {
+                              // Handle the case where the user has already applied
+                            }
+                          },
+
 
                           child: Container(
                             height: 56.h,
@@ -322,6 +380,13 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
   }
 
   bool isLoading=false;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+  }
 
     @override
   Widget build(BuildContext context) {
@@ -498,45 +563,78 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                       color: const Color(0xff141414),
                       fontSize: 16.sp,
                     ),),
+                    SizedBox(height: 5.h,),
+                    const Text("Profile preferences",style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xff2e2e2e),
+                      height: 19/16,
+                    ),),
+                    Container(
+                      height: 50.h,
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: widget.newJobModel.interests.map((option){
+                                return OptionChipDisplay(
+                                  title: option,
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),),
                   ],
                 ),
               ),
+              if(LoginData().getUserType()=="Person")
               GestureDetector(
                 onTap: () async{
-                  setState(() {
-                    isLoading=true;
-                  });
-                  final prefs = await SharedPreferences.getInstance();
-                  // final userId = prefs.getString('userId');
-                  final firstName = prefs.getString('firstName');
-                  final lastName = prefs.getString('lastName');
-                  String workString="";
-                  String education="";
-
-                  ProfileServices().fetchWorkExperienceCompanies().then((value) {
-                    workString=value;
-                    ProfileServices().fetchLatestEducation().then((educationVal) {
-                      education=educationVal!;
-                      _showDialog(context, workString,education ,"${firstName} ${lastName}","Fashion Stylist");
+                  if(!widget.hasApplied){
+                    setState(() {
+                      isLoading=true;
                     });
-                  });
+
+                    // final prefs = await SharedPreferences.getInstance();
+                    // // final userId = prefs.getString('userId');
+                    // final firstName = prefs.getString('firstName');
+                    // final lastName = prefs.getString('lastName');
+                    String workString="";
+                    String education="";
+
+                    ProfileServices().fetchWorkExperienceCompanies().then((value){
+                      workString=value;
+                      ProfileServices().fetchLatestEducation().then((educationVal) {
+                        education=educationVal!;
+                        _showDialog(context, workString,education ,"${LoginData().getUserFirstName()} ${LoginData().getUserLastName()}","Fashion Stylist");
+                      });
+                    });
+                  }
+                  else{
+
+                  }
+
                 },
                 child: Container(
                   height: 56.h,
                   width: 396.w,
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: widget.hasApplied? ColorsManager.greyishColor : Colors.orange,
                     borderRadius: BorderRadius.circular(5.0.r),
                   ),
                   child:  Center(
-                      child: isLoading ? const CircularProgressIndicator( color:  Colors.white,) : const Text(
-                        "Send your application",
+                      child: isLoading ? const CircularProgressIndicator( color:  Colors.white,) :  Text(
+                       widget.hasApplied? "Already Applied!": "Send your application",
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color:widget.hasApplied? Colors.black: Colors.white,
                           height: 24/16,
                         ),
                         textAlign: TextAlign.left,

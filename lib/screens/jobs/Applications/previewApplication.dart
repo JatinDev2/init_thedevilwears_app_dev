@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/jobs/Applications/previewTab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../listing/response_screen.dart';
-import '../../profile/StudentTabs/tab1_st.dart';
 import '../job_model.dart';
 
 class PreviewJobApplocation extends StatefulWidget{
@@ -33,8 +31,8 @@ class PreviewJobApplocation extends StatefulWidget{
 class _PreviewJobApplocationState extends State<PreviewJobApplocation>
     with SingleTickerProviderStateMixin {
   List gridItems = [];
-  String uid="";
-  bool isDataLoading=true;
+  String uid=LoginData().getUserId();
+  // bool isDataLoading=true;
   bool isLoading=false;
 
   void bottomSheet(BuildContext context) {
@@ -112,27 +110,28 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
 
   @override
   void initState() {
-    fetchId().then((value) {
-      setState(() {
-        isDataLoading = false;
-        uid = value;
-      });
-    });
-    gridItems = GridItemData.generateItems();
+    // fetchId().then((value) {
+    //   setState(() {
+    //     isDataLoading = false;
+    //     uid = value;
+    //   });
+    // });
+    // gridItems = GridItemData.generateItems();
     super.initState();
   }
 
-  Future<String> fetchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
-  }
+  // Future<String> fetchId() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final userId = prefs.getString('userId');
+  //   return userId!;
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return isDataLoading? Scaffold(body: Center(child: CircularProgressIndicator(),),) : StreamBuilder<DocumentSnapshot>(
+    return
+    StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('Profiles')
+            .collection('studentProfiles')
             .doc(uid)
             .snapshots(),
         builder: (context, snapshot) {
