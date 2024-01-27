@@ -11,7 +11,7 @@ class OptionsInScreen extends StatefulWidget {
 
 class _OptionsInScreenState extends State<OptionsInScreen> {
   bool isCompany=false;
-  bool isPerson=true;
+  bool isPerson=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,11 +147,15 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                         //     .then((value) {
                         //
                         // });
-                        LoginData().writeOptionSelectedVal(true);
-                        LoginData().writeUserType(isCompany?"Company" : "Person");
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                          return const PhoneNumber_Screen();
-                        }));
+                        // LoginData().writeOptionSelectedVal(true);
+
+                        if(isCompany || isPerson){
+                          LoginData().writeUserType(isCompany?"Company" : "Person");
+                          LoginData().writeIsUserTypeSelected(true);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                            return const PhoneNumber_Screen();
+                          }));
+                        }
                       },
                       child: Container(
                         height: 50,

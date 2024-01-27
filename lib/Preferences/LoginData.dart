@@ -31,6 +31,10 @@ class LoginData{
     return loginData.read("userType") ?? "Unknown";
   }
 
+  String getUserProfilePicture(){
+    return loginData.read("userProfilePicture") ?? "";
+  }
+
   List<String> getUserInterests(){
     List<dynamic> dynamicList = loginData.read("userInterests");
     List<String> stringList = dynamicList.map((item) => item.toString()).toList();
@@ -42,6 +46,90 @@ class LoginData{
     List<String> stringList = dynamicList.map((item) => item.toString()).toList();
     return stringList;
   }
+
+  String getUserAccessToken(){
+     return loginData.read("userAccessToken") ?? "No token";
+  }
+
+  String getUserInstaId(){
+     return loginData.read("instaUserId") ?? "No insta id";
+  }
+
+  // String getIsHomePage(){
+  //   return loginData.read("isHomePage") ?? "false";
+  // }
+  //
+  // bool isOptionSelected(){
+  //    return loginData.read<bool>("optionSelected") ?? false;
+  // }
+  //
+  // bool isHomePage(){
+  //   return loginData.read<bool>("isHomePage") ?? false;
+  // }
+  //
+  // bool isPhoneVerified(){
+  //   return loginData.read<bool>("isPhoneVerified") ?? false;
+  // }
+  //
+  // bool isLoggedIn(){
+  //   return loginData.read<bool>("isLoggedIn") ?? false;
+  // }
+
+  //---------------------------------------------Login Prefs--------------------------------------------------------
+
+//-------------------/---------------------------------------------Red-------------------------------------------------------------
+
+  bool getIsLoginOptionDone(){
+   return loginData.read<bool>("isLoginOptionDone") ?? false;
+  }
+
+  bool getIsUserTypeSelected(){
+    return loginData.read<bool>("isUserTypeSelected") ?? false;
+  }
+
+  bool getIsPhoneNumberVerified(){
+    return loginData.read<bool>("isPhoneNumberVerified") ?? false;
+  }
+
+  bool getIsJobProfileSelected(){
+    return loginData.read<bool>("isJobProfileSelected") ?? false;
+  }
+
+  bool getIsInterestsSelected(){
+    return loginData.read<bool>("isInterestsSelected") ?? false;
+  }
+
+  bool getIsLoggedIn(){
+    return loginData.read<bool>("isLoggedIn") ?? false;
+  }
+
+//-------------------/---------------------------------------------Write-------------------------------------------------------------
+
+  void writeIsLoginOptionDone(bool value){
+    loginData.write("isLoginOptionDone",value);
+  }
+
+  void writeIsUserTypeSelected(bool value){
+    loginData.write("isUserTypeSelected",value);
+  }
+
+  void writeIsPhoneNumberVerified(bool value){
+     loginData.write("isPhoneNumberVerified", value);
+   }
+
+   void writeIsJobProfileSelected(bool value){
+     loginData.write("isJobProfileSelected", value);
+   }
+
+   void writeIsInterestsSelected(bool value){
+     loginData.write("isInterestsSelected", value);
+   }
+
+   void writeIsLoggedIn(bool value){
+     loginData.write("isLoggedIn", value);
+   }
+
+  //---------------------------------------------Write-------------------------------------------------------------
 
   void writeUserName(String userName){
      loginData.write("userName",userName);
@@ -71,13 +159,6 @@ class LoginData{
     loginData.write("userPhoneNumber",userPhoneNumber);
   }
 
-  void writeOptionSelectedVal(bool value){
-    loginData.write("optionSelected", value);
-  }
-
-  void writePhoneVerifiedStatus(bool value){
-    loginData.write("isPhoneVerified", value);
-  }
 
   void writeUserInterests(List<String> interests){
      loginData.write("userInterests", interests);
@@ -86,5 +167,19 @@ class LoginData{
   void writeUserJobProfile(List<String>jobProfile){
      loginData.write("userJobProfile",jobProfile);
   }
+
+  void writeUserAccessToken(String token){
+     print("I was called : ${token}");
+    loginData.write("userAccessToken",token);
+  }
+
+  void writeInstaUserId(String instaUserId){
+     loginData.write("instaUserId",instaUserId);
+  }
+
+  void writeUserProfilePicture(String imgUrl){
+     loginData.write("userProfilePicture",imgUrl);
+  }
+
 
 }

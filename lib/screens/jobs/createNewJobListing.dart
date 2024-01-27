@@ -31,7 +31,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   String stipendValue="/month";
   bool isLoading=true;
   final _formKey = GlobalKey<FormState>();
-  final String userName="${LoginData().getUserFirstName()} ${LoginData().getUserLastName()}";
+  final String userName=LoginData().getUserFirstName();
   final String userId=LoginData().getUserId();
   String stateValue="";
   String cityValue="";
@@ -232,6 +232,32 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
    getStatesOfIndia();
   }
 
+  Future<void> jobListingsData() async{
+    CollectionReference brandProfiles = FirebaseFirestore.instance.collection('brandProfiles');
+
+    // Get the document with the matching userId
+    DocumentSnapshot brandProfileDoc = await brandProfiles.doc(userId).get();
+
+    if (brandProfileDoc.exists) {
+      // Update numberOfApplications
+      int numberOfApplications = brandProfileDoc.get('numberOfApplications') ?? 0;
+      await brandProfiles.doc(userId).update({'numberOfApplications': numberOfApplications + 1});
+
+      // Update location field
+      String currentLocations = brandProfileDoc.get('locations') ?? '';
+      if (!currentLocations.contains(stateValue)) {
+        String updatedLocations = currentLocations.isEmpty ? stateValue : "$currentLocations, $stateValue";
+        await brandProfiles.doc(userId).update({'location': updatedLocations});
+      }
+    } else {
+      // If the document doesn't exist, create it with initial values
+      await brandProfiles.doc(userId).set({
+        'numberOfApplications': 1,
+        'location': stateValue
+      });
+    }
+  }
+
   // Future<void> getData()async{
   //
   //   final country = await getCountryFromCode('IN');
@@ -382,6 +408,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     }
                     return null;
                   },
+                  keyboardType: TextInputType.multiline,
                 ),
               ),
               const SizedBox(height: 22,),
@@ -984,6 +1011,8 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                               docId: "",
                               applicationsIDS: [],
                               interests: selectedOpportunitiesList,
+                              brandPfp: LoginData().getUserProfilePicture(),
+                                phoneNumber: LoginData().getUserPhoneNumber()
                             );
                             Navigator.of(context).push(MaterialPageRoute(builder: (_){
                               return PreviewJobListing(newJobModel: newJobModel,);
@@ -1063,11 +1092,21 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                             "clicked": false,
                             "applicationCount": 0,
                             "interests": selectedOpportunitiesList,
+                            "brandPfp":LoginData().getUserProfilePicture(),
+                            "phoneNumber":LoginData().getUserPhoneNumber()
                           }).then((value) {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                              return const ConfirmJobListingScreen();
-                            }));
+                            jobListingsData()
+                            .then((value){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                return const ConfirmJobListingScreen();
+                              }));
+                            });
                           });
+
+
+    // .then((value) {
+
+                          // });
                         }
                         },
                         child: Container(

@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import '../Login/final_screen.dart';
 import '../screens/home/home_screen.dart';
-import 'insta_test.dart';
 import 'instagram_constant.dart';
 import 'instagram_model.dart';
 
@@ -36,7 +35,7 @@ class InstagramView extends StatelessWidget {
   }
 
   Future<void> addUser(BuildContext context,String instaUserName) async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
   try {
     if(label=="Login"){
       Navigator.pushAndRemoveUntil(
@@ -46,28 +45,41 @@ class InstagramView extends StatelessWidget {
       );
     }
     else{
-      final firstName = prefs.getString('firstName');
-      final lastName = prefs.getString('lastName');
-      final phoneNumber = prefs.getString('phoneNumber');
-      final userEmail = prefs.getString('userEmail');
-      final userType = prefs.getString('userType');
-      final userId = prefs.getString('userId');
-      await usersCollection.doc("$userId").set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'phoneNumber': phoneNumber!.replaceAll(" ", ""),
-        'userEmail': userEmail,
-        'preferences': map,
-        'userType': userType,
-        'instaUserName':instaUserName,
-      }).then((value) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return ConfirmedLoginScreen();
-        }));
+
+      // final firstName = prefs.getString('firstName');
+      // final lastName = prefs.getString('lastName');
+      // final phoneNumber = prefs.getString('phoneNumber');
+      // final userEmail = prefs.getString('userEmail');
+      // final userType = prefs.getString('userType');
+      // final userId = prefs.getString('userId');
+
+      final firstName = LoginData().getUserFirstName();
+      final lastName = LoginData().getUserLastName();
+      final phoneNumber = LoginData().getUserPhoneNumber();
+      final userEmail = LoginData().getUserEmail();
+      final userType = LoginData().getUserType();
+      final userId = LoginData().getUserId();
+
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        return const ConfirmedLoginScreen();
+      }));
+
+      // await usersCollection.doc(userId).set({
+      //   'firstName': firstName,
+      //   'lastName': lastName,
+      //   'phoneNumber': phoneNumber!.replaceAll(" ", ""),
+      //   'userEmail': userEmail,
+      //   'preferences': map,
+      //   'userType': userType,
+      //   'instaUserName':instaUserName,
+      // }).then((value) {
+      //   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      //     return const ConfirmedLoginScreen();
+      //   }));
         // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
         //   return InstagramMediaWidget();
         // }));
-      });
+      // });
       print('User added to Firestore');
     }
 

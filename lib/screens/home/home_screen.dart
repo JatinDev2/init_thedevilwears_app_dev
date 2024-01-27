@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/homeScreen.dart';
 import 'package:lookbook/screens/brandProfile/brandProfileScreen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_screen.dart';
 import 'package:lookbook/widgets/custom_icon.dart';
 import 'package:lookbook/widgets/status_bar_app_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../jobs/jobListingScreen.dart';
 import '../profile/StudentProfileScreen.dart';
 import '../search/JobSearchScreen.dart';
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   void initState() {
-    setSharedPrefrence();
+    LoginData().writeIsLoggedIn(true);
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() => _select(_tabController.index));
     if(widget.tabVal!=null){
@@ -51,12 +51,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
     super.initState();
   }
-
-  void setSharedPrefrence()async{
-    final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-    await prefs.setBool('isHomePage', true);
-  }
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -141,7 +135,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final List<Widget> _tabItems = [
-      LookbookScreen(),
+      // LookbookScreen(),
+      NewHomeScreen(),
       // SearchScreen(
       //   height: MediaQuery.of(context).viewInsets.bottom > 0 ? MediaQuery.of(context).size.height : 0,
       // ),

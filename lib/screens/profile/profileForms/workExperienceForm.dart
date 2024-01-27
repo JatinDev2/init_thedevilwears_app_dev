@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city/utils/city_utils.dart';
 import 'package:country_state_city/utils/country_utils.dart';
-import 'package:country_state_city/utils/state_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,6 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../profileModels/workModel.dart';
 
 class AddNewWorkExperience extends StatefulWidget {
@@ -97,7 +94,7 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
         'Work Experience': FieldValue.arrayUnion([workData])
       }, SetOptions(merge: true));
       if(isChecked==true){
-       await sendRequestForVerification(companyName.text);
+       await sendRequestForVerification(companyName.text,dropdownValue);
       }
       print('Work added successfully');
       return true;
@@ -141,16 +138,13 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
   //   }
   // }
 
-  Future<void> sendRequestForVerification(String brandName) async {
+  Future<void> sendRequestForVerification(String brandName, String jobProfile) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    FirebaseAuth auth = FirebaseAuth.instance;
-    String currentUserId = auth.currentUser!.uid; // Get the current user's ID
 
-    // Retrieve requester's name from shared preferences
-    final prefs = await SharedPreferences.getInstance();
-    final firstName = prefs.getString('firstName') ?? 'Unknown'; // Default to 'Unknown' if not set
-    final lastName = prefs.getString('lastName') ?? 'Unknown'; // Default to 'Unknown' if not set
-final requesterName="${firstName} ${lastName}";
+    final firstName = LoginData().getUserFirstName() ?? 'Unknown';
+    final lastName = LoginData().getUserLastName() ?? 'Unknown';
+
+    final requesterName="${firstName} ${lastName}";
 
     try {
       CollectionReference brands = firestore.collection('brandProfiles');
@@ -168,9 +162,10 @@ final requesterName="${firstName} ${lastName}";
 
         // Create a new request map
         Map<String, String> newRequest = {
-          'userId': currentUserId,
+          'userId': LoginData().getUserId(),
           'status': 'pending',
           'requesterName': requesterName,
+          'jobProfile':jobProfile
         };
 
         // Add the new request map to the 'Requests' list

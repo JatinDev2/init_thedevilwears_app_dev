@@ -1,7 +1,11 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lookbook/HomeScreen/studentModel.dart';
+import 'package:lookbook/ProfileViews/brandProfileView/brandProfileView.dart';
+import 'package:lookbook/ProfileViews/studentProfileView/studentProfileView.dart';
 
+import '../profile/profileModels/workModel.dart';
 import 'JobSearchScreen.dart';
 
 class _AZItem extends ISuspensionBean {
@@ -10,6 +14,7 @@ class _AZItem extends ISuspensionBean {
   String role;
   String companiesWorkedIn;
   String imgUrl;
+  final StudentProfile studentProfile;
 
   _AZItem({
     required this.title,
@@ -17,6 +22,7 @@ class _AZItem extends ISuspensionBean {
     required this.role,
     required this.imgUrl,
     required this.companiesWorkedIn,
+    required this.studentProfile,
   });
   @override
   String getSuspensionTag() => tag;
@@ -26,7 +32,7 @@ class AlphaBetScrollPagePeople extends StatefulWidget {
   double height;
   String query_check;
   // final List<String> items;
-  final List<PeopleClass> peopleList;
+  final List<StudentProfile> peopleList;
   final ValueChanged<String> onClickedItem;
   final List selectedItems;
   final Map<String,dynamic> selectedOptionsMap;
@@ -53,24 +59,47 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
     super.initState();
   }
 
-  String formatSubCategories(String subCategories) {
-    var subCategoryList = subCategories.split(', ');
-    // If there are more than three subcategories, take only the first three
-    if (subCategoryList.length > 3) {
-      subCategoryList = subCategoryList.take(3).toList();
+  String formatSubCategories(List<String> subCategoryList) {
+    // Check if there are more than three subcategories
+    if (subCategoryList.length >2) {
+      // Take only the first three subcategories
+      List<String> displayedSubCategories = subCategoryList.take(2).toList();
+      int remainingCount = subCategoryList.length - 2;
+      // Join the first three subcategories and append the count of additional subcategories
+      return '${displayedSubCategories.join(' • ')}, +${remainingCount} more';
     }
-    // Join the list back into a string separated by commas
+
+    // If three or less, just join the list back into a string separated by commas
     return subCategoryList.join(', ');
   }
 
 
-  void initList(List<PeopleClass> items) {
+
+  String formatCompanyNames(List<WorkModel>? workExperience, {int maxDisplay = 1}) {
+    if (workExperience == null || workExperience.isEmpty) {
+      return 'No Companies';
+    }
+    String allCompanies = workExperience.map((e) => e.companyName).join(', ');
+    List<String> companyList = allCompanies.split(' • ');
+    if (companyList.length <= maxDisplay) {
+      return allCompanies;
+    } else {
+      String displayedCompanies = companyList.take(maxDisplay).join(', ');
+      int remainingCount = companyList.length - maxDisplay;
+      return '$displayedCompanies, ...+${remainingCount}';
+    }
+  }
+
+
+  void initList(List<StudentProfile> items) {
     this.items = items.map((item) => _AZItem(
-      title: item.name,
-      tag: item.name[0].toUpperCase(),
-      imgUrl: item.imgUrl,
-      role: item.role,
-      companiesWorkedIn: item.companiesWorkedIn,
+      title: "${item.firstName} ${item.lastName}",
+      tag: item.firstName![0].toUpperCase(),
+      imgUrl: "https://t4.ftcdn.net/jpg/04/24/15/27/360_F_424152729_5jNBK6XVjsoWvTtGEljfSCOWv4Taqivl.jpg",
+      role: formatSubCategories(item.userDescription!),
+      // item.userDescription?.join(" • ") ?? 'No description',
+      companiesWorkedIn: formatCompanyNames(item.workExperience),
+      studentProfile: item
     )).toList();
 
     SuspensionUtil.sortListBySuspensionTag(this.items);
@@ -161,9 +190,12 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Offstage(offstage: offStage, child: buildHeader(tag)),
-        GestureDetector(
+        InkWell(
           onTap: (){
             widget.onClickedItem(item.title);
+            Navigator.of(context).push(MaterialPageRoute(builder: (_){
+              return StudentProfileView(studentProfile: item.studentProfile);
+            }));
           },
           child: Container(
             margin: const EdgeInsets.symmetric(
@@ -206,6 +238,8 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
                         height: 21/13,
                       ),
                       textAlign: TextAlign.left,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
 
                     Text(

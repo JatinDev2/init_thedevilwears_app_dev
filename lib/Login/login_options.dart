@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Login/phoneNumber_screen.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/Services/autheticationAPIs.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../Provider/google_auth_provider.dart';
 import '../screens/home/home_screen.dart';
 import 'options_screen.dart';
@@ -105,17 +104,18 @@ class _LoginOptionsState extends State<LoginOptions> {
               GestureDetector(
                 onTap: (){
                   final provider= Provider.of<GoogleSignInProvider>(context, listen: false);
+                  setState(() {
+                    isLoading=true;
+                  });
                   provider.googleLogIn().then((value){
                     if(value==true){
-                      setState(() {
-                        isLoading=true;
-                      });
                      FirebaseAuthAPIs().checkStudentEmailInFireStore().then((value) {
-                        print("TTTTHHHHHHHEEEEEEEEEEE    VVVVVVVVVVVAAAALLLLLUEEEEEEEEEEEEEE ::: ${value}");
+                        print("TTTTHHHHHHHEEEEEEEEEEE VVVVVVVVVVVAAAALLLLLUEEEEEEEEEEEEEE ::: ${value}");
                         if(value){
                           setState(() {
                             isLoading=false;
                           });
+                          LoginData().writeIsLoggedIn(true);
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (_){
                                 return HomeScreen();
@@ -125,6 +125,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                           setState(() {
                             isLoading=false;
                           });
+                          LoginData().writeIsLoginOptionDone(true);
                           Navigator.of(context).push(MaterialPageRoute(builder: (_){
                             return OptionsInScreen();
                           }));
@@ -209,36 +210,68 @@ class _LoginOptionsState extends State<LoginOptions> {
                   ],
                 ),
                 SizedBox(height: 45,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "1",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        height: 24/16,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "/5",
-                      style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          height: 24/16,
-                          color: Colors.grey
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
+                // const Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       "1",
+                //       style: TextStyle(
+                //         fontFamily: "Poppins",
+                //         fontSize: 16,
+                //         fontWeight: FontWeight.w400,
+                //         height: 24/16,
+                //       ),
+                //       textAlign: TextAlign.left,
+                //     ),
+                //     Text(
+                //       "/5",
+                //       style: TextStyle(
+                //           fontFamily: "Poppins",
+                //           fontSize: 16,
+                //           fontWeight: FontWeight.w400,
+                //           height: 24/16,
+                //           color: Colors.grey
+                //       ),
+                //       textAlign: TextAlign.left,
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 49,),
               ],
             ),
-          )
+          ),
+          if (isLoading)
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                height: MediaQuery.of(context).size.height * 0.5, // 50% of screen height
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5), // Semi-transparent background
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Loading",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
         ],
       ),
     );

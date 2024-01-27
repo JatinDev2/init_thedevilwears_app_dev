@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import '../common_widgets.dart';
 import 'confirmJobListing.dart';
 import 'job_model.dart';
@@ -211,10 +211,15 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                       if(!isLoading)
                         GestureDetector(
                           onTap: ()async{
-                              final prefs = await SharedPreferences.getInstance();
-                              final userId = prefs.getString('userId');
-                              final firstName = prefs.getString('firstName');
-                              final lastName = prefs.getString('lastName');
+                              // final prefs = await SharedPreferences.getInstance();
+                              // final userId = prefs.getString('userId');
+                              // final firstName = prefs.getString('firstName');
+                              // final lastName = prefs.getString('lastName');
+
+                              final userId = LoginData().getUserId();
+                              final firstName = LoginData().getUserFirstName();
+                              final lastName = LoginData().getUserLastName();
+
                               listCollection.add({
                                 "jobType": widget.newJobModel.jobType,
                                 "jobProfile": widget.newJobModel.jobProfile,

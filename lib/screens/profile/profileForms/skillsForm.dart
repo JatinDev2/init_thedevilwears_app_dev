@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../Preferences/LoginData.dart';
 
 class SkillsSelectionScreen extends StatefulWidget {
 
@@ -35,8 +36,11 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
     }
   }
   Future<bool> addSoftSkillsToUserProfile(List<String> selectedSkillsList) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+
+    final userId = LoginData().getUserId();
+
     if (userId!.isEmpty) {
       print('User ID is null or empty');
       return false;
@@ -46,7 +50,7 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
     });
 
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
     try {
       await userDoc.set({
         'Soft Skills': selectedSkillsList
@@ -60,8 +64,10 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
   }
 
   Future<bool> addSkillsToUserProfile(List<String> selectedSkillsList) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+    final userId = LoginData().getUserId();
+
     if (userId!.isEmpty) {
       print('User ID is null or empty');
       return false;
@@ -71,7 +77,7 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
     });
 
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
     try {
       await userDoc.set({
         'Hard Skills': selectedSkillsList

@@ -50,6 +50,9 @@ class _BrandListingsTabState extends State<BrandListingsTab> {
             docId: data["docId"] ?? "",
             applicationsIDS: data["applicationsIDS"] ?? [],
             interests: data["interests"] ?? [],
+            brandPfp: data['brandPfp'] ?? '',
+              phoneNumber: data["phoneNumber"] ?? ""
+
           );
         }).toList();
       });

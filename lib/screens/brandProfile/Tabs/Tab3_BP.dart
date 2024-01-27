@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 
 import '../models/requestModel.dart';
 
@@ -144,7 +145,7 @@ class _RequestsTabState extends State<RequestsTab> {
               return RequestModel.fromMap(request);
             } else {
               return RequestModel(
-                  userId: '', status: 'pending', requesterName: 'Unknown');
+                  userId: '', status: 'pending', requesterName: 'Unknown' , jobProfile: '');
             }
           }).toList();
         }
@@ -159,7 +160,7 @@ class _RequestsTabState extends State<RequestsTab> {
       color: Colors.white,
 
       child: StreamBuilder<List<RequestModel>>(
-        stream: streamRequestsForBrand("5owbHr4JniYiRFTBzKRU"),
+        stream: streamRequestsForBrand(LoginData().getUserId()),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -210,7 +211,7 @@ class _RequestsTabState extends State<RequestsTab> {
                                 ),
                               ),
                               TextSpan(
-                                text: ' wants to be approved as a ${request.status}',
+                                text: ' wants to be approved as a ${request.jobProfile}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 14.0,

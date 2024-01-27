@@ -7,6 +7,9 @@ class applicationModel{
   final String statusOfApplication;
   final String userId;
   final String workedAt;
+  final String userPfp;
+  final String userPhoneNumber;
+  final String userGmail;
 
   applicationModel({
    required this.education,
@@ -17,6 +20,9 @@ class applicationModel{
    required this.appliedBy,
    required this.statusOfApplication,
    required this.workedAt,
+    required this.userPfp,
+    required this.userGmail,
+    required this.userPhoneNumber,
 });
 
   factory applicationModel.fromMap(Map<String, dynamic> map) {
@@ -29,6 +35,9 @@ class applicationModel{
       statusOfApplication: map['statusOfApplication'] ?? '',
       userId: map['userId'] ?? '',
       workedAt: map['workedAt'] ?? '',
+      userPfp: map['userPfp'] ?? '',
+      userGmail: map['userGmail'] ?? '',
+      userPhoneNumber: map['userPhoneNumber'] ?? ''
     );
   }
 }

@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:lookbook/Preferences/LoginData.dart';
 import '../profileModels/projectModel.dart';
 
 class AddNewProjectForm extends StatefulWidget {
@@ -277,8 +275,10 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          final userId = prefs.getString('userId');
+                          // final prefs = await SharedPreferences.getInstance();
+                          // final userId = prefs.getString('userId');
+                          final userId = LoginData().getUserId();
+
                           final projectData = ProjectModel(
                               projectHeading: projectHeading.text,
                               projectType: projectType.text,

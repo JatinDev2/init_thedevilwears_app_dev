@@ -12,9 +12,10 @@ import 'package:lookbook/screens/lookbook/lookbook_images_slider_screen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_image_details.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'Login/first_screen.dart';
+import 'homeScreen.dart';
+import 'instaLogin/instagram_model.dart';
+import 'splashScreen.dart';
 import 'Login/options_screen.dart';
 import 'Login/phoneNumber_screen.dart';
 
@@ -25,6 +26,7 @@ void main() async{
   // await FirebaseApi().initNotification();
   // initUniLinks(); // Initialize uni_links package
   runApp(const MyApp());
+  await InstagramModel().exchangeForLongLivedToken();
 }
 
 Future<void> initUniLinks() async {
@@ -104,7 +106,9 @@ class _MyAppState extends State<MyApp> {
             ),
             // home: HomeScreen(),
             // home: FirstPage(),
-          home:
+          // home:
+          // NewHomeScreen(),
+          home: SplashScreen(),
           // const FirstPage()
           // PhoneNumber_Screen()
           // HomeScreen(),
@@ -120,48 +124,48 @@ class _MyAppState extends State<MyApp> {
           // InterestScreen(),
           // OppurtunitiesScreen(),
           // PhoneNumber_Screen(),
-          StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Scaffold(
-                  body: Center(
-                    child: Text("Something went wrong"),
-                  ),
-                );
-              } else if (snapshot.hasData) {
-                return FutureBuilder(
-                  future: SharedPreferences.getInstance(),
-                  builder: (context, prefsSnapshot) {
-                    if (prefsSnapshot.connectionState == ConnectionState.waiting) {
-                      return FirstPage();
-                    } else if (prefsSnapshot.hasData) {
-                      final prefs = prefsSnapshot.data as SharedPreferences;
-                      final phoneVerified = prefs.getBool('phoneVerified') ?? false;
-                      final optionSelected = prefs.getBool('optionSelected') ?? false;
-                      final isHomePage= prefs.getBool('isHomePage') ?? false;
-                      if(isHomePage){
-                        return HomeScreen();
-                      }
-                    else if (phoneVerified && optionSelected){
-                        return HomeScreen();
-                      }
-                        else if(phoneVerified && !optionSelected){
-                          return OptionsInScreen();
-                      }
-                      else if(!phoneVerified && !optionSelected) {
-                        return PhoneNumber_Screen();
-                      }
-                      else{
-                        return FirstPage();
-                      }
-                    } else{
-                      // Handle the case when SharedPreferences loading failed
-                      return Scaffold(
-                        body: Center(
-                          child: Text("Failed to load SharedPreferences"),
-                        ),
-                      );// StreamBuilder(
+          // StreamBuilder(
+          //   stream: FirebaseAuth.instance.authStateChanges(),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.hasError) {
+          //       return Scaffold(
+          //         body: Center(
+          //           child: Text("Something went wrong"),
+          //         ),
+          //       );
+          //     } else if (snapshot.hasData) {
+          //       return FutureBuilder(
+          //         future: SharedPreferences.getInstance(),
+          //         builder: (context, prefsSnapshot) {
+          //           if (prefsSnapshot.connectionState == ConnectionState.waiting) {
+          //             return SplashScreen();
+          //           } else if (prefsSnapshot.hasData) {
+          //             final prefs = prefsSnapshot.data as SharedPreferences;
+          //             final phoneVerified = prefs.getBool('phoneVerified') ?? false;
+          //             final optionSelected = prefs.getBool('optionSelected') ?? false;
+          //             final isHomePage= prefs.getBool('isHomePage') ?? false;
+          //             if(isHomePage){
+          //               return HomeScreen();
+          //             }
+          //           else if (phoneVerified && optionSelected){
+          //               return HomeScreen();
+          //             }
+          //               else if(phoneVerified && !optionSelected){
+          //                 return OptionsInScreen();
+          //             }
+          //             else if(!phoneVerified && !optionSelected) {
+          //               return PhoneNumber_Screen();
+          //             }
+          //             else{
+          //               return SplashScreen();
+          //             }
+          //           } else{
+          //             // Handle the case when SharedPreferences loading failed
+          //             return Scaffold(
+          //               body: Center(
+          //                 child: Text("Failed to load SharedPreferences"),
+          //               ),
+          //             );// StreamBuilder(
           // //   stream: FirebaseAuth.instance.authStateChanges(),
           // //   builder: (context, snapshot) {
           // //     if (snapshot.hasError) {
@@ -198,14 +202,14 @@ class _MyAppState extends State<MyApp> {
           // //       return FirstPage();
           // //     }
           // //   },
-                    }
-                  },
-                );
-              } else {
-                return FirstPage();
-              }
-            },
-          ),
+          //           }
+          //         },
+          //       );
+          //     } else {
+          //       return SplashScreen();
+          //     }
+          //   },
+          // ),
 
               onGenerateRoute: (settings) {
               // if (settings.name == '/listingFilterScreen') {

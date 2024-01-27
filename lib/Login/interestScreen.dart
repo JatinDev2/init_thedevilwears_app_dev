@@ -157,16 +157,20 @@ class _InterestScreenState extends State<InterestScreen> {
                         SizedBox(height: 16,),
                         GestureDetector(
                           onTap: (){
+
                             List <String> selectedSkillsList=[];
                             selectedSkills.forEach((key, value) {
                               if(value==true && !selectedSkillsList.contains(key)){
                                 selectedSkillsList.add(key);
                               }
                             });
-                            LoginData().writeUserJobProfile(selectedSkillsList);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                             return OppurtunitiesScreen(userDescription: selectedSkillsList,);
-                           }));
+                            if(selectedSkillsList.isNotEmpty){
+                              LoginData().writeUserJobProfile(selectedSkillsList);
+                              LoginData().writeIsJobProfileSelected(true);
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                return OppurtunitiesScreen(userDescription: selectedSkillsList,);
+                              }));
+                            }
                           },
                           child: Container(
                             height: 50.h,

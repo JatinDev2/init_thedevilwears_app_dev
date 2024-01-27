@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lookbook/HomeScreen/studentModel.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/colorManager.dart';
+import '../../launchingFunctions.dart';
 import 'StudentTabs/tab1_st.dart';
 import 'StudentTabs/tab2_st.dart';
+import 'edit_profile.dart';
 
 class StudentProfileScreen extends StatefulWidget{
   const StudentProfileScreen({Key? key}) : super(key: key);
@@ -21,80 +24,8 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
   late TabController _tabController;
   List<bool> _tabSelectedState = [true, false, false];// Initially, the first tab is selected
   late Stream<DocumentSnapshot> profileInfoStream;
+  late StudentProfile studentProfile;
 
-
-  void bottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 26),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Call",
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff0f1015),
-                    height: 24 / 16,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(width: 13),
-                SvgPicture.asset("assets/phone.svg"),
-              ],
-            ),
-            SizedBox(height: 25),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Message",
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff0f1015),
-                    height: 24 / 16,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(width: 13),
-                SvgPicture.asset("assets/whatsapp.svg"),
-              ],
-            ),
-            SizedBox(height: 25),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset("assets/facebook.svg"),
-                SizedBox(width: 24),
-                SvgPicture.asset("assets/twitter.svg"),
-                SizedBox(width: 24),
-                SvgPicture.asset("assets/instagram.svg"),
-                SizedBox(width: 24),
-                SvgPicture.asset("assets/linkedin.svg"),
-                SizedBox(width: 24),
-                SvgPicture.asset("assets/google.svg"),
-              ],
-            ),
-            SizedBox(height: 26),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -152,25 +83,27 @@ else{
           var userDescriptionList=<dynamic>[];
           String userName="";
           String descriptionsWithBullets="";
+          String userProfilePic="";
+          String userBio="";
 
           // Check if the snapshot has data and is not null.
           if (snapshot.hasData && snapshot.data!.data() != null) {
             var data = snapshot.data!.data() as Map<String, dynamic>;
+            studentProfile = StudentProfile.fromMap(data);
             projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
             workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
             // userDescriptionList=(data['userDescription'] is List<dynamic>) ? List<dynamic>.from(data['userDescription']) : [];
             List<String> userDescriptionList = (data['userDescription'] is List<dynamic>)
                 ? List<String>.from(data['userDescription'].map((item) => item.toString()))
                 : [];
+            userProfilePic= data["userProfilePicture"];
 
              descriptionsWithBullets = userDescriptionList.join('  •  ');
 
             userName="${data["firstName"]} ${data["lastName"]}";
+            userBio=data["userBio"];
 
           }
-          // var data = snapshot.data!.data() as Map<String, dynamic> ?? {};
-          // var projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
-          // var workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
 
           return Scaffold(
             body: Material(
@@ -207,14 +140,28 @@ else{
                                         children: [
                                           CircleAvatar(
                                             radius: 40,
-                                            backgroundImage: NetworkImage(
-                                                "https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w"),
+                                            backgroundColor: Colors.transparent,
+                                            child: (userProfilePic != null && userProfilePic.isNotEmpty)
+                                                ? ClipOval(
+                                              child: Image.network(
+                                                userProfilePic,
+                                                fit: BoxFit.cover,
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                            )
+                                                : SvgPicture.asset(
+                                              "assets/devil.svg",
+                                              width: 80,
+                                              height: 80,
+                                            ),
                                           ),
+
                                           GestureDetector(
                                             onTap: (){
-                                              // Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                              //   return EditProfileScreen();
-                                              // }));
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                                return EditProfile(studentProfile: studentProfile,);
+                                              }));
                                             },
                                             child: Material(
                                               elevation: 4,
@@ -309,7 +256,15 @@ else{
                                         ),
                                         GestureDetector(
                                           onTap: (){
-                                            bottomSheet(context);
+                                           LaunchingFunction().bottomSheet(
+                                               context: context,
+                                               userPhoneNumber: studentProfile.phoneNumber!,
+                                               userFaceBook: studentProfile.userFacebook!,
+                                               userTwitter: studentProfile.userTwitter!,
+                                               userInsta: studentProfile.userInsta!,
+                                               userLinkedIn: studentProfile.userLinkedin!,
+                                               userGmail: studentProfile.userEmail!
+                                           );
                                           },
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -360,35 +315,80 @@ else{
                                     ],
                                   )
                               ),
-                              Container(
-                                margin: EdgeInsets.only(top: 5, left: 11),
-                                child: Text(
-                                  descriptionsWithBullets,
-                                  style: const TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff000000),
-                                    height: 20/16,
+                              SizedBox(height: 8,),
+
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Description'),
+                                        content: SingleChildScrollView(
+                                          child: Text(
+                                            descriptionsWithBullets,
+                                            style: const TextStyle(
+                                              fontFamily: "Poppins",
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Close'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(); // Close the dialog
+                                            },
+                                          ),
+                                        ],
+                                        shape: RoundedRectangleBorder( // Add this line
+                                          borderRadius: BorderRadius.circular(10), // Adjust the radius
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 5, left: 11),
+                                  child: Text(
+                                    descriptionsWithBullets,
+                                    style: const TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  textAlign: TextAlign.left,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
 
-                              Container(
-                                  margin: const EdgeInsets.only(top: 5, left: 11),
-                                  child: const Text(
-                                    "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff5a5a5a),
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  )),
+
+                              SizedBox(height: 8,),
+
+                              InkWell(
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                    return EditProfile(studentProfile: studentProfile,);
+                                  }));
+                                },
+                                child: Container(
+                                    margin: const EdgeInsets.only(top: 5, left: 11),
+                                    child:  Text(
+                                        (userBio!=null && userBio.isNotEmpty) ? userBio : "How would you like to describe yourself?",
+                                      style: const TextStyle(
+                                        fontFamily: "Poppins",
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xff5a5a5a),
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    )),
+                              ),
                             ],
                           ),
                         ),

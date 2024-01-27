@@ -52,7 +52,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         // await prefs.setString('lastName', widget.lastName);
         // await prefs.setString('phoneNumber', "${widget.dialCode}${widget.phoneNumber}");
         // await prefs.setString('email', userEmail!);
-        LoginData().writePhoneVerifiedStatus(true);
+        LoginData().writeIsPhoneNumberVerified(true);
         LoginData().writeUserFirstName(widget.firstName);
         LoginData().writeUserLastName(widget.lastName);
         LoginData().writeUserPhoneNumber("${widget.dialCode}${widget.phoneNumber}");

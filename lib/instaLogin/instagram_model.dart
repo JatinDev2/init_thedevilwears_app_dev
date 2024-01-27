@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'insta_test.dart';
 import 'instagram_constant.dart';
 
@@ -20,6 +18,26 @@ class InstagramModel {
         .replaceAll('#_', '');
   }
 
+  Future<void> exchangeForLongLivedToken() async {
+    print("I was called");
+    var url = Uri.parse('https://graph.instagram.com/access_token'
+        '?grant_type=ig_exchange_token'
+        '&client_secret=${InstagramConstant.appSecret}'
+        '&access_token=${LoginData().getUserAccessToken()}');
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print(response.body);
+      var responseData = json.decode(response.body);
+      accessToken = responseData['access_token'];
+      LoginData().writeUserAccessToken(accessToken!);
+    } else {
+      print(response.statusCode);
+      print(response.body);
+    }
+  }
+
   Future<bool> getTokenAndUserID() async {
     var url = Uri.parse('https://api.instagram.com/oauth/access_token');
     final response = await http.post(url, body: {
@@ -31,11 +49,13 @@ class InstagramModel {
     });
     accessToken = json.decode(response.body)['access_token'];
     print(accessToken);
-    var prefs= await SharedPreferences.getInstance();
-    prefs.setString('accessToken', accessToken.toString());
+    // var prefs= await SharedPreferences.getInstance();
+    LoginData().writeUserAccessToken(accessToken.toString());
+    // prefs.setString('accessToken', accessToken.toString());
 
     userID = json.decode(response.body)['user_id'].toString();
-    prefs.setString('userIdInsta', userID.toString());
+    // prefs.setString('userIdInsta', userID.toString());
+    LoginData().writeInstaUserId(userID.toString());
 
     return (accessToken != null && userID != null) ? true : false;
   }
@@ -55,9 +75,12 @@ class InstagramModel {
 
   Future<List<String>> getUserMedia() async {
 
-    final prefs = await SharedPreferences.getInstance();
-    final accessTokenFromStorage = prefs.getString('accessToken');
-    final userIdFromStorage = prefs.getString('userIdInsta');
+    // final prefs = await SharedPreferences.getInstance();
+    // final accessTokenFromStorage = prefs.getString('accessToken');
+    // final userIdFromStorage = prefs.getString('userIdInsta');
+
+    final accessTokenFromStorage = LoginData().getUserAccessToken();
+    final userIdFromStorage = LoginData().getUserInstaId();
 
     print("The access token is : ${accessTokenFromStorage}");
     print("The user id is : ${userIdFromStorage}");
@@ -85,8 +108,9 @@ class InstagramModel {
 
 
   Future<Map<String, dynamic>> getMediaDetails(String mediaId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final accessTokenFromStorage = prefs.getString('accessToken');
+    // final prefs = await SharedPreferences.getInstance();
+    // final accessTokenFromStorage = prefs.getString('accessToken');
+    final accessTokenFromStorage = LoginData().getUserAccessToken();
     if (accessTokenFromStorage == null) {
       // Handle the error: accessToken is null
       return {};

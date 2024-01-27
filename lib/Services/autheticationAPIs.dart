@@ -21,6 +21,13 @@ class FirebaseAuthAPIs{
         'userDescription':userDescription,
         'interestedOpportunities':interestedOpportunities,
         'userType': userType,
+        'userBio':'',
+        'userFacebook':'',
+        'userGmail':'',
+        'userInsta':'',
+        'userLinkedin':'',
+        'userTwitter':'',
+        'userProfilePicture':'',
       });
       return true;
     }catch(e){
@@ -33,19 +40,38 @@ class FirebaseAuthAPIs{
     try {
       final userCollection = FirebaseFirestore.instance.collection('studentProfiles');
       final userDocument = await userCollection.doc(userId).get();
-      if (userDocument.exists) {
+
+      final brandCollection=FirebaseFirestore.instance.collection('brandProfiles');
+
+      final brandDoc=await brandCollection.doc(userId).get();
+
+      if (userDocument.exists){
         var userData = userDocument.data();
         LoginData().writeUserFirstName(userData!["firstName"].toString());
         LoginData().writeUserLastName(userData["lastName"].toString());
         List<dynamic> dynamicList = userData["interestedOpportunities"];
         List<String> stringList = dynamicList.map((item) => item.toString()).toList();
         LoginData().writeUserInterests(stringList);
-
         List<dynamic> jPList = userData["userDescription"];
         List<String> jPstringList = jPList.map((item) => item.toString()).toList();
         LoginData().writeUserJobProfile(jPstringList);
-
         LoginData().writeUserType(userData["userType"]);
+        LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
+        return true;
+      }
+      else if(brandDoc.exists){
+        var userData = brandDoc.data();
+        LoginData().writeUserFirstName(userData!["brandName"].toString());
+        LoginData().writeUserLastName(userData["companyName"].toString());
+        List<dynamic> dynamicList = userData["interestedProfiles"];
+        List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+        LoginData().writeUserInterests(stringList);
+
+        List<dynamic> jPList = userData["brandDescription"];
+        List<String> jPstringList = jPList.map((item) => item.toString()).toList();
+        LoginData().writeUserJobProfile(jPstringList);
+        LoginData().writeUserType(userData["userType"]);
+        LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
         return true;
       }
       else {
@@ -67,6 +93,18 @@ class FirebaseAuthAPIs{
         'brandDescription':userDescription,
         'interestedProfiles':interestedOpportunities,
         'userType': userType,
+        'brandBio':'',
+        'brandInsta':'',
+        'brandLinkedIn':'',
+        'brandTwitter':'',
+        'brandProfilePicture':'',
+        'companySize':'',
+        'foundedIn':'',
+        'industry':'',
+        'numberOfApplications':0,
+        'userId':userId,
+        'location':'',
+        'brandFacebook':''
       });
       return true;
     }catch(e){

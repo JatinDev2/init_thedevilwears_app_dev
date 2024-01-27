@@ -1,87 +1,19 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:lookbook/HomeScreen/brandModel.dart';
+import 'package:lookbook/HomeScreen/studentModel.dart';
 import 'package:lookbook/screens/search/filterScreenJob.dart';
 import 'AlphaBetScrollJob.dart';
 import 'AlphaBetScrollPeople.dart';
 
-class JobOpening {
-  String imageUrl;
-  String brandName;
-  String category;
-  String subCategory;
-  int numberOfJobOpenings;
-  String location;
-
-  JobOpening({
-    required this.imageUrl,
-    required this.brandName,
-    required this.category,
-    required this.subCategory,
-    required this.numberOfJobOpenings,
-    required this.location,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'imageUrl': imageUrl,
-        'brandName': brandName,
-        'category': category,
-        'subCategory': subCategory,
-        'numberOfJobOpenings': numberOfJobOpenings,
-        'location': location,
-      };
-
-  factory JobOpening.fromFirestore(Map<String, dynamic> firestoreDoc) {
-    return JobOpening(
-      imageUrl: firestoreDoc['imageUrl'],
-      brandName: firestoreDoc['brandName'],
-      category: firestoreDoc['category'],
-      subCategory: firestoreDoc['subCategory'],
-      numberOfJobOpenings: firestoreDoc['numberOfJobOpenings'],
-      location: firestoreDoc['location'],
-    );
-  }
-}
-
-class PeopleClass{
-  String name;
-  String role;
-  String companiesWorkedIn;
-  String imgUrl;
-
-  PeopleClass({
-required this.companiesWorkedIn,
-    required this.imgUrl,
-    required this.name,
-    required this.role,
-  });
-
-  Map<String, dynamic> toJson() => {
-  "name": name,
-  "role": role,
-  "companiesWorkedIn": companiesWorkedIn,
-  "imgUrl": imgUrl,
-  };
-
-  factory PeopleClass.fromFirestore(Map<String, dynamic> firestoreDoc) {
-    return PeopleClass(
-    name: firestoreDoc['name'],
-companiesWorkedIn: firestoreDoc['companiesWorkedIn'],
-role: firestoreDoc['role'],
-imgUrl: firestoreDoc['imgUrl'],
-    );
-  }
-}
-
 class JobAndPeopleData {
-  final List<JobOpening> jobOpenings;
-  final List<PeopleClass> people;
+  final List<BrandProfile> jobOpenings;
+  final List<StudentProfile> people;
 
   JobAndPeopleData({required this.jobOpenings, required this.people});
 }
-
 
 class JobSearchScreen extends StatefulWidget {
   double height;
@@ -98,10 +30,10 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   String query_check = "";
 
   late Future<JobAndPeopleData?> _data;
-  List<JobOpening> filteredJobOpenings=[];
-  List<JobOpening> realData=[];
-  List<PeopleClass> realPeopleData=[];
-  List<PeopleClass> filteredPeopleList=[];
+  List<BrandProfile> filteredJobOpenings=[];
+  List<BrandProfile> realData=[];
+  List<StudentProfile> realPeopleData=[];
+  List<StudentProfile> filteredPeopleList=[];
   int _selectedTab = 0;
   final faker = Faker.instance;
    List selectedOptions=[];
@@ -162,7 +94,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   }
 
   void _applyFilters() {
-    Set<JobOpening> tempFiltered = {};
+    Set<BrandProfile> tempFiltered = {};
     if (query_check.isNotEmpty) {
       for (int i = 0; i < realData.length; i++) {
         if (realData[i].brandName.toLowerCase().contains(query_check.toLowerCase())) {
@@ -176,18 +108,22 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
         _selectedChipIndex >= 0 &&
         filterList[_selectedChipIndex] != "All") {
       filteredJobOpenings = tempFiltered
-          .where((job) => job.category.contains(filterList[_selectedChipIndex]))
+          .where((job) => job.brandDescription.join(",").contains(filterList[_selectedChipIndex]))
           .toList();
-    } else {
+    }
+    else {
       filteredJobOpenings = tempFiltered.toList();
     }
+    print("Length is:");
+    print(filteredJobOpenings.length);
   }
 
+
   void _applyFiltersPeoople() {
-    Set<PeopleClass> tempFiltered = {};
+    Set<StudentProfile> tempFiltered = {};
     if (query_check.isNotEmpty) {
       for (int i = 0; i < realPeopleData.length; i++) {
-        if (realPeopleData[i].name.toLowerCase().contains(query_check.toLowerCase())) {
+        if ("${realPeopleData[i].firstName}${realPeopleData[i].lastName}".toLowerCase().contains(query_check.toLowerCase())) {
           tempFiltered.add(realPeopleData[i]);
         }
       }
@@ -199,64 +135,79 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
         _selectedIndexPeople >= 0 &&
         roles[_selectedIndexPeople] != "All") {
       filteredPeopleList = tempFiltered
-          .where((job) => job.role.contains(roles[_selectedIndexPeople]))
+          .where((job) => job.userDescription!.join(",").contains(roles[_selectedIndexPeople]))
           .toList();
     } else {
       filteredPeopleList = tempFiltered.toList();
     }
   }
 
-  Future<List<JobOpening>?> fetchJobOpeningsData() async {
-    final firestore = FirebaseFirestore.instance;
-    final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
-    List<JobOpening> jobOpeningsList = [];
+  // void _applyFiltersPeoople() {
+  //   Set<StudentProfile> tempFiltered = {};
+  //
+  //   // Filter by the name query if it exists.
+  //   if (query_check.isNotEmpty) {
+  //     for (var person in realPeopleData) {
+  //       String fullName = "${person.firstName} ${person.lastName}".toLowerCase();
+  //       if (fullName.contains(query_check.toLowerCase())) {
+  //         tempFiltered.add(person);
+  //       }
+  //     }
+  //   } else {
+  //     tempFiltered.addAll(realPeopleData);
+  //   }
+  //
+  //   print('After name filter: ${tempFiltered.length}');
+  //
+  //   // Filter by the selected role if it is not "All".
+  //   if (_selectedIndexPeople != null &&
+  //       _selectedIndexPeople >= 0 &&
+  //       roles[_selectedIndexPeople] != "All") {
+  //     String selectedRole = roles[_selectedIndexPeople].toLowerCase();
+  //
+  //     // Using a set to store the filtered results.
+  //     Set<StudentProfile> roleFiltered = {};
+  //
+  //     for (var person in tempFiltered) {
+  //       if (person.userDescription != null) {
+  //         // Check if the userDescription list contains the selected role as a whole element.
+  //         bool hasRole = person.userDescription!
+  //             .map((desc) => desc.toLowerCase().trim()) // Trimming whitespace and converting to lowercase
+  //             .contains(selectedRole);
+  //         if (hasRole) {
+  //           roleFiltered.add(person);
+  //         }
+  //       }
+  //     }
+  //
+  //     tempFiltered = roleFiltered;
+  //     print('After role filter: ${tempFiltered.length}');
+  //   }
+  //
+  //   // Assign the filtered set to the list.
+  //   filteredPeopleList = tempFiltered.toList();
+  //   print('Final filtered list size: ${filteredPeopleList.length}');
+  // }
 
-    try {
-      final companiesDocSnapshot = await jobOpeningsCollectionRef.doc('companies').get();
 
-      if (companiesDocSnapshot.exists) {
-        List<dynamic> jobOpeningsMapList = companiesDocSnapshot.data()?['openings'];
-        jobOpeningsList = jobOpeningsMapList.map((jobOpeningMap) => JobOpening.fromFirestore(jobOpeningMap as Map<String, dynamic>)).toList();
-      } else {
-        print('The "companies" document does not exist.');
-      }
-      return jobOpeningsList;
-    } catch (error) {
-      print('Error fetching job openings data: $error');
-      return [];
-    }
-  }
+
+
+
 
   Future<JobAndPeopleData?> fetchJobOpeningsAndPeopleData() async {
     final firestore = FirebaseFirestore.instance;
     final jobOpeningsCollectionRef = firestore.collection('jobOpenings');
 
-    List<JobOpening> jobOpeningsList = [];
-    List<PeopleClass> peopleList = [];
+    List<BrandProfile> jobOpeningsList = [];
+    List<StudentProfile> peopleList = [];
 
     try {
-      // Fetch job openings
-      final companiesDocSnapshot = await jobOpeningsCollectionRef.doc('companies').get();
-      if (companiesDocSnapshot.exists) {
-        List<dynamic> jobOpeningsMapList = companiesDocSnapshot.data()?['openings'];
-        jobOpeningsList = jobOpeningsMapList.map((jobOpeningMap) => JobOpening.fromFirestore(jobOpeningMap as Map<String, dynamic>)).toList();
-      } else {
-        print('The "companies" document does not exist.');
-      }
-
-      // Fetch people
-      final peopleDocSnapshot = await jobOpeningsCollectionRef.doc('people').get();
-      if (peopleDocSnapshot.exists) {
-        List<dynamic> peopleMapList = peopleDocSnapshot.data()?['openings'];
-        peopleList = peopleMapList.map((peopleMap) => PeopleClass.fromFirestore(peopleMap as Map<String, dynamic>)).toList();
-      } else {
-        print('The "peopleData" document does not exist.');
-      }
-
+        jobOpeningsList= await fetchBrandProfiles();
+        peopleList = await fetchStudentProfiles();
       return JobAndPeopleData(jobOpenings: jobOpeningsList, people: peopleList);
     } catch (error) {
       print('Error fetching data: $error');
-      return JobAndPeopleData(jobOpenings: [], people: []); // Return empty lists in case of error
+      return JobAndPeopleData(jobOpenings: [], people: []);
     }
   }
 
@@ -415,8 +366,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                   return const Text('No data available');
                                 }
                                 else{
-                                  List<JobOpening> data = snapshot.data!.jobOpenings;
-                                  List<PeopleClass> dataPeople = snapshot.data!.people;
+                                  List<BrandProfile> data = snapshot.data!.jobOpenings;
+                                  List<StudentProfile> dataPeople = snapshot.data!.people;
                                   realData=data;
                                   realPeopleData=dataPeople;
                                   return Expanded(
@@ -427,8 +378,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                           children: [
                                             Container(
                                               margin: const EdgeInsets.all(8.0),
-                                              child: query_check.isNotEmpty &&
-                                                  filteredJobOpenings.isEmpty
+                                              child: (query_check.isNotEmpty &&
+                                                  filteredJobOpenings.isEmpty) || (filteredJobOpenings.isEmpty && filterList[_selectedChipIndex]!="All")
                                                   ? Container(
                                                 margin: const EdgeInsets.all(16.0),
                                                 child: const Column(
@@ -477,7 +428,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                     .height),
                                                 query_check: query_check,
                                                 onClickedItem: (item) {},
-                                                jobList:  filteredJobOpenings.isNotEmpty
+                                                jobList: filterList[_selectedChipIndex]!="All" ||  filteredJobOpenings.isNotEmpty
                                                     ? filteredJobOpenings
                                                     : data, selectedOptionsMap: tabSelectedInFilterScreen=="Companies"? _selectedOptionMap : {},
                                               ),
@@ -486,8 +437,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                         ),
                                         Container(
                                           margin: EdgeInsets.all(8.0),
-                                          child: query_check.isNotEmpty &&
-                                              filteredPeopleList.isEmpty
+                                          child: (query_check.isNotEmpty &&
+                                filteredPeopleList.isEmpty) || (filteredPeopleList.isEmpty && roles[_selectedIndexPeople]!="All")
                                               ? Container(
                                             margin: EdgeInsets.all(16.0),
                                             child: const Column(
@@ -533,7 +484,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                 .height),
                                             query_check: query_check,
                                             onClickedItem: (item) {},
-                                             peopleList: filteredPeopleList.isNotEmpty? filteredPeopleList: dataPeople,
+                                             peopleList: roles[_selectedIndexPeople]!="All" ||  filteredPeopleList.isNotEmpty? filteredPeopleList: dataPeople,
                                             selectedItems: tabSelectedInFilterScreen=="People"? selectedOptions : [],
                                           ),
                                         ),

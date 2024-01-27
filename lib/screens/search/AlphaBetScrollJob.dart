@@ -1,7 +1,8 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'JobSearchScreen.dart';
+import 'package:lookbook/HomeScreen/brandModel.dart';
+import 'package:lookbook/ProfileViews/brandProfileView/brandProfileView.dart';
 
 class _AZItem extends ISuspensionBean{
   final String title;
@@ -11,6 +12,7 @@ class _AZItem extends ISuspensionBean{
   String subCategory;
   int numberOfJobOpenings;
   String location;
+  BrandProfile brandProfile;
 
   _AZItem({
     required this.title,
@@ -20,6 +22,7 @@ class _AZItem extends ISuspensionBean{
     required this.location,
     required this.numberOfJobOpenings,
     required this.subCategory,
+    required this.brandProfile,
   });
   @override
   String getSuspensionTag() => tag;
@@ -29,7 +32,7 @@ class AlphaBetScrollPageJob extends StatefulWidget{
   double height;
   String query_check;
   // final List<String> items;
-  final List<JobOpening> jobList;
+  final List<BrandProfile> jobList;
   final ValueChanged<String> onClickedItem;
   final List selectedItems;
   final Map<String,dynamic> selectedOptionsMap;
@@ -57,26 +60,33 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
     super.initState();
   }
 
-  String formatSubCategories(String subCategories) {
-    var subCategoryList = subCategories.split(', ');
-    // If there are more than three subcategories, take only the first three
-    if (subCategoryList.length > 3) {
-      subCategoryList = subCategoryList.take(3).toList();
+  String formatSubCategories(List<String> subCategoryList) {
+    // Check if there are more than three subcategories
+    if (subCategoryList.length >2) {
+      // Take only the first three subcategories
+      List<String> displayedSubCategories = subCategoryList.take(2).toList();
+      int remainingCount = subCategoryList.length - 2;
+      // Join the first three subcategories and append the count of additional subcategories
+      return '${displayedSubCategories.join(' • ')}, +${remainingCount} more';
     }
-    // Join the list back into a string separated by commas
+
+    // If three or less, just join the list back into a string separated by commas
     return subCategoryList.join(', ');
   }
 
 
-  void initList(List<JobOpening> items) {
+
+
+  void initList(List<BrandProfile> items) {
     this.items = items.map((item) => _AZItem(
       title: item.brandName,
       tag: item.brandName[0].toUpperCase(),
-      imageUrl: item.imageUrl,
-      category: item.category,
+      imageUrl: "https://t4.ftcdn.net/jpg/04/24/15/27/360_F_424152729_5jNBK6XVjsoWvTtGEljfSCOWv4Taqivl.jpg",
+      category: formatSubCategories(item.brandDescription) ?? 'No description',
       location: item.location,
-      numberOfJobOpenings: item.numberOfJobOpenings,
-      subCategory:item.subCategory,
+      numberOfJobOpenings: item.numberOfApplications,
+      subCategory:"item.subCategory",
+      brandProfile: item,
     )).toList();
 
     SuspensionUtil.sortListBySuspensionTag(this.items);
@@ -169,9 +179,12 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Offstage(offstage: offStage, child: buildHeader(tag)),
-        GestureDetector(
+        InkWell(
           onTap: (){
             widget.onClickedItem(item.title);
+            Navigator.of(context).push(MaterialPageRoute(builder: (_){
+              return BrandProfileView(brandProfile: item.brandProfile);
+            }));
           },
           child: Container(
             margin: const EdgeInsets.symmetric(
@@ -205,7 +218,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       textAlign: TextAlign.left,
                     ),
                     Text(
-                      "${item.category} • ${formatSubCategories(item.subCategory)}",
+                      "${item.category}",
                       style: const TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 13,

@@ -14,8 +14,8 @@ class Tab2St extends StatefulWidget {
 
 class _Tab2StState extends State<Tab2St> {
 
-  late final Stream<List<jobModel>>_listingsStream;
-  List<jobModel> _listings = [];
+  late final Stream<List<ApplicationJobPair>>_listingsStream;
+  List<ApplicationJobPair> _listings = [];
 
   void initState() {
     // TODO: implement initState
@@ -29,7 +29,7 @@ class _Tab2StState extends State<Tab2St> {
       color: const Color(0xffF7F7F7),
       child: Stack(
           children: [
-            StreamBuilder<List<jobModel>>(
+            StreamBuilder<List<ApplicationJobPair>>(
               stream: _listingsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -46,16 +46,18 @@ class _Tab2StState extends State<Tab2St> {
                   );
                 } else {
                   final data = snapshot.data!;
-                  data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  // data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
                   _listings=data;
+
                   return Column(
                     children: [
                       Expanded(
                         child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
                           itemCount:  _listings.length,
                           itemBuilder: (context, index){
                             final listing =_listings[index];
-                            return BuildCustomBrandJobListingCard(listing: listing);
+                            return BuildJobCardForStudent(listing: listing.job, applicationData: listing.application,);
                           },
                         ),
                       ),

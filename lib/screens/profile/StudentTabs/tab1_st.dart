@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/colorManager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../profileForms/educationForm.dart';
 import '../profileForms/projectForm.dart';
 import '../profileForms/skillsForm.dart';
@@ -923,21 +920,32 @@ class TagChips extends StatefulWidget {
 class _TagChipsState extends State<TagChips> {
 
   Future<bool> updateSkills(String tag) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+    final userId = LoginData().getUserId();
+
     if (userId!.isEmpty) {
       print('User ID is null or empty');
       return false;
     }
 
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
 
     try {
-      await userDoc.set({
-        'Hard Skills': FieldValue.arrayRemove([tag])
-      },SetOptions(merge: true));
-      print('Skill removed successfully');
+      if(widget.label=="Hard skills"){
+        await userDoc.set({
+          'Hard Skills': FieldValue.arrayRemove([tag])
+        },SetOptions(merge: true));
+        print('Skill removed successfully');
+      }
+      else{
+        await userDoc.set({
+          'Soft Skills': FieldValue.arrayRemove([tag])
+        },SetOptions(merge: true));
+        print('Skill removed successfully');
+      }
+
       return true;
     } catch (error) {
       print('Error removing skill: $error');

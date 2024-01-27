@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../instaLogin/instagram_view.dart';
-import 'final_screen.dart';
 
 class InstaVerification extends StatefulWidget {
   final Map<String, List<String>> map;

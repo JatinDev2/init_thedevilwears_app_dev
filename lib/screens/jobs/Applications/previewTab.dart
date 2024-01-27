@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import '../../../colorManager.dart';
 import '../../profile/profileForms/skillsForm.dart';
 import '../../profile/profileModels/educationModel.dart';
 import '../../profile/profileModels/projectModel.dart';
@@ -17,33 +17,21 @@ class previewApplicationTabBody extends StatefulWidget {
 
   // const previewApplicationTabBody({super.key});
   previewApplicationTabBody({
-   required this.additionalInfo,
-});
+    required this.additionalInfo,
+  });
 
   @override
-  State<previewApplicationTabBody> createState() => _previewApplicationTabBodyState();
+  State<previewApplicationTabBody> createState() =>
+      _previewApplicationTabBodyState();
 }
 
 class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
-  String uid = "";
-  bool isDataLoading = true;
+  String uid = LoginData().getUserId();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchId().then((value) {
-      setState(() {
-        isDataLoading = false;
-        uid = value;
-      });
-    });
-  }
-
-
-  Future<String> fetchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    return userId!;
   }
 
   DateTime _getStartDate(String dateRange) {
@@ -61,19 +49,13 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: isDataLoading
-          ? Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
-          : StreamBuilder<DocumentSnapshot>(
+      child: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('Profiles')
+            .collection('studentProfiles')
             .doc(uid)
             .snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot<DocumentSnapshot> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Text("Something went wrong");
           }
@@ -86,85 +68,113 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
           // Extracting data from the snapshot
           var projectsList = <dynamic>[];
           var workList = <dynamic>[];
-          var educationList=<dynamic>[];
-          var hardSkills=<dynamic>[];
-          var softSkills=<dynamic>[];
+          var educationList = <dynamic>[];
+          var hardSkills = <dynamic>[];
+          var softSkills = <dynamic>[];
           List<String> hardSkillsStringList = [];
           List<String> softSkillsStringList = [];
-          List<ProjectModel> projects=[];
-          List<WorkModel> workExperiences=[];
-          List<EducationModel> educationEntries=[];
+          List<ProjectModel> projects = [];
+          List<WorkModel> workExperiences = [];
+          List<EducationModel> educationEntries = [];
 
           // Check if the snapshot has data and is not null.
           if (snapshot.hasData && snapshot.data!.data() != null) {
             var data = snapshot.data!.data() as Map<String, dynamic>;
-            projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
-            workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
-            educationList = (data['Education'] is List<dynamic>) ? List<dynamic>.from(data['Education']) : [];
-            hardSkills = (data['Hard Skills'] is List<dynamic>) ? List<dynamic>.from(data['Hard Skills']) : [];
-            hardSkillsStringList = hardSkills.map((skill) => skill.toString()).toList();
+            projectsList = (data['projects'] is List<dynamic>)
+                ? List<dynamic>.from(data['projects'])
+                : [];
+            workList = (data['Work Experience'] is List<dynamic>)
+                ? List<dynamic>.from(data['Work Experience'])
+                : [];
+            educationList = (data['Education'] is List<dynamic>)
+                ? List<dynamic>.from(data['Education'])
+                : [];
+            hardSkills = (data['Hard Skills'] is List<dynamic>)
+                ? List<dynamic>.from(data['Hard Skills'])
+                : [];
+            hardSkillsStringList =
+                hardSkills.map((skill) => skill.toString()).toList();
 
-            softSkills = (data['Soft Skills'] is List<dynamic>) ? List<dynamic>.from(data['Soft Skills']) : [];
-            softSkillsStringList = softSkills.map((skill) => skill.toString()).toList();
+            softSkills = (data['Soft Skills'] is List<dynamic>)
+                ? List<dynamic>.from(data['Soft Skills'])
+                : [];
+            softSkillsStringList =
+                softSkills.map((skill) => skill.toString()).toList();
             projects = projectsList
                 .map((projectData) => ProjectModel.fromMap(projectData))
                 .toList();
-            workExperiences = workList.map((workData) => WorkModel.fromMap(workData)).toList();
+            workExperiences = workList
+                .map((workData) => WorkModel.fromMap(workData))
+                .toList();
             workExperiences.sort((a, b) {
-              return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
+              return _getStartDate(b.timePeriod)
+                  .compareTo(_getStartDate(a.timePeriod));
             });
 
-            educationEntries = educationList.map((educationData) => EducationModel.fromMap(educationData)).toList();
+            educationEntries = educationList
+                .map((educationData) => EducationModel.fromMap(educationData))
+                .toList();
             educationEntries.sort((a, b) {
-              return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
+              return _getStartDate(b.timePeriod)
+                  .compareTo(_getStartDate(a.timePeriod));
             });
           }
-
-          // var data = snapshot.data?.data() as Map<String, dynamic>;
-          // var projectsList = data['projects'] as List<dynamic> ?? [];
-          // var workList = data['Work Experience'] as List<dynamic> ?? [];
-          // var educationList = data['Education'] as List<dynamic> ?? [];
-
-          // educationList.sort((a, b) {
-          //   return _getStartDate(b.timePeriod).compareTo(_getStartDate(a.timePeriod));
-          // });
-
-          // Converting data into model instances
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 24.h),
-                decoration: BoxDecoration(
-                    color: Color(0xffF9F9F9),
-                    borderRadius: BorderRadius.circular(12.0.r)
-                ),
-                child:  Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Additional Info",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff1a1a1a),
-                        height: 19/16,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 24.h),
+                      decoration: BoxDecoration(
+                          color: Color(0xffF9F9F9),
+                          borderRadius: BorderRadius.circular(12.0.r)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding:
+                                  EdgeInsets.only(top: 0, bottom: 6, left: 8),
+                              child: Text(
+                                "Additional Info",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff1a1a1a),
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                widget.additionalInfo,
+                                style: const TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff000000),
+                                  height: 16 / 14,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      textAlign: TextAlign.left,
                     ),
-                    Text(widget.additionalInfo, style: const TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff000000),
-                      height: 16/14,
-                    ),)
-                  ],
-                ),
+                  ),
+                ],
               ),
-
+              SizedBox(
+                height: 30.h,
+              ),
 
               // Projects
               Header(
@@ -174,13 +184,40 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                 height: 20,
               ),
               if (projects.isEmpty)
-                const Center(child: Text("Nothing to show in Projects")),
+                Center(
+                    child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ColorsManager.lightPink,
+                      ),
+                      child: SvgPicture.asset("assets/project.svg"),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text(
+                      "No projects added yet",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff000000),
+                        height: 19 / 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    )
+                  ],
+                )),
               ...projects.map((project) => ProjectCard(
-                title: project.projectHeading,
-                subtitle: project.projectType,
-                description: project.description,
-                link: project.projectLink,
-              )),
+                    title: project.projectHeading,
+                    subtitle: project.projectType,
+                    description: project.description,
+                    link: project.projectLink,
+                  )),
               // Work Experience
               SizedBox(
                 height: 30.h,
@@ -192,19 +229,46 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                 height: 20,
               ),
               if (workExperiences.isEmpty)
-                Center(child: const Text("Nothing to show in Work Experience")),
+                Center(
+                    child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ColorsManager.lightPink,
+                      ),
+                      child: SvgPicture.asset("assets/work.svg"),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text(
+                      "No work experiences yet",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff000000),
+                        height: 19 / 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    )
+                  ],
+                )),
 
               ...workExperiences.map((work) => WorkCard(
-                // Map WorkModel properties to WorkCard widget
-                description: work.description,
-                companyName: work.companyName,
-                projectLink: work.projectLink,
-                roleInCompany: work.roleInCompany,
-                timePeriod: work.timePeriod,
-                workType: work.workType,
-                location: work.location,
-                link: work.projectLink,
-              )),
+                    // Map WorkModel properties to WorkCard widget
+                    description: work.description,
+                    companyName: work.companyName,
+                    projectLink: work.projectLink,
+                    roleInCompany: work.roleInCompany,
+                    timePeriod: work.timePeriod,
+                    workType: work.workType,
+                    location: work.location,
+                    link: work.projectLink,
+                  )),
               // Education
               SizedBox(
                 height: 30.h,
@@ -216,15 +280,42 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                 height: 20,
               ),
               if (educationEntries.isEmpty)
-                Center(child: const Text("Nothing to show in Education")),
+                Center(
+                    child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ColorsManager.lightPink,
+                      ),
+                      child: SvgPicture.asset("assets/education.svg"),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text(
+                      "No education yet",
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff000000),
+                        height: 19 / 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    )
+                  ],
+                )),
               ...educationEntries.map((education) => EducationCard(
-                // Map EducationModel properties to EducationCard widget
-                description: education.description,
-                timePeriod: education.timePeriod,
-                location: education.location,
-                degreeName: education.degreeName,
-                instituteName: education.instituteName,
-              )),
+                    // Map EducationModel properties to EducationCard widget
+                    description: education.description,
+                    timePeriod: education.timePeriod,
+                    location: education.location,
+                    degreeName: education.degreeName,
+                    instituteName: education.instituteName,
+                  )),
               // Rest of your widgets...
               // SizedBox(
               //   height: 30.h,
@@ -291,7 +382,7 @@ class Header extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poppins",
               fontSize:
-              (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
+                  (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
               fontWeight: (label == "Hard skills" || label == "Soft skills")
                   ? FontWeight.w500
                   : FontWeight.bold,
@@ -302,7 +393,6 @@ class Header extends StatelessWidget {
           ),
           // IconButton(
           //   icon:
-
         ],
       ),
     );
@@ -362,8 +452,8 @@ class ProjectCard extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
                 InkWell(
-                  onTap: () async{
-                    String url=link;
+                  onTap: () async {
+                    String url = link;
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(Uri.parse(url));
                     } else {
@@ -407,7 +497,8 @@ class ProjectCard extends StatelessWidget {
                       color: Colors.black,
                     ),
                     animation: true,
-                    animationDuration: Duration(milliseconds: 500), // Custom animation duration
+                    animationDuration: Duration(
+                        milliseconds: 500), // Custom animation duration
                     animationCurve: Curves.easeInOut, // Custom animation curve
                     collapseOnTextTap: true,
                   ),
@@ -472,7 +563,6 @@ class WorkCard extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -530,10 +620,10 @@ class WorkCard extends StatelessWidget {
                   ),
                   textAlign: TextAlign.left,
                 ),
-                if(link.isNotEmpty)
+                if (link.isNotEmpty)
                   InkWell(
-                    onTap: () async{
-                      String url=link;
+                    onTap: () async {
+                      String url = link;
                       if (await canLaunchUrl(Uri.parse(url))) {
                         await launchUrl(Uri.parse(url));
                       } else {
@@ -577,7 +667,8 @@ class WorkCard extends StatelessWidget {
                       color: Colors.black,
                     ),
                     animation: true,
-                    animationDuration: Duration(milliseconds: 500), // Custom animation duration
+                    animationDuration: Duration(
+                        milliseconds: 500), // Custom animation duration
                     animationCurve: Curves.easeInOut, // Custom animation curve
                     collapseOnTextTap: true,
                   ),
@@ -637,7 +728,6 @@ class EducationCard extends StatelessWidget {
       return timePeriod; // Return the original string if parsing fails
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -721,8 +811,10 @@ class EducationCard extends StatelessWidget {
                       ),
                       animation: true,
                       linkEllipsis: true,
-                      animationDuration: Duration(milliseconds: 500), // Custom animation duration
-                      animationCurve: Curves.easeInOut, // Custom animation curve
+                      animationDuration: Duration(
+                          milliseconds: 500), // Custom animation duration
+                      animationCurve:
+                          Curves.easeInOut, // Custom animation curve
                       collapseOnTextTap: true,
                     ),
                 ]),
@@ -748,22 +840,24 @@ class TagChips extends StatefulWidget {
 }
 
 class _TagChipsState extends State<TagChips> {
-
   Future<bool> updateSkills(String tag) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+
+    final userId = LoginData().getUserId();
+
     if (userId!.isEmpty) {
       print('User ID is null or empty');
       return false;
     }
 
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('Profiles').doc(userId);
+        FirebaseFirestore.instance.collection('Profiles').doc(userId);
 
     try {
       await userDoc.set({
         'Hard Skills': FieldValue.arrayRemove([tag])
-      },SetOptions(merge: true));
+      }, SetOptions(merge: true));
       print('Skill removed successfully');
       return true;
     } catch (error) {
@@ -788,28 +882,32 @@ class _TagChipsState extends State<TagChips> {
     );
   }
 
-  Widget _buildAddChip(BuildContext context){
+  Widget _buildAddChip(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 2.0, right: 7.0, bottom: 7.0),
       child: GestureDetector(
         onTap: () {
           print("ADD CHIP CLICKED WITH LABEL ${widget.label}");
 
-          Map<String,bool> selectedOptions={};
-          for(int i=0; i< widget.tags.length ; i++){
-            selectedOptions[widget.tags[i]]=true;
+          Map<String, bool> selectedOptions = {};
+          for (int i = 0; i < widget.tags.length; i++) {
+            selectedOptions[widget.tags[i]] = true;
           }
-          if(widget.label=="Hard skills"){
-            Navigator.of(context).push(MaterialPageRoute(builder: (_){
-              return SkillsSelectionScreen(label: "Hard Skills", selectedoptions: selectedOptions,);
+          if (widget.label == "Hard skills") {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+              return SkillsSelectionScreen(
+                label: "Hard Skills",
+                selectedoptions: selectedOptions,
+              );
+            }));
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+              return SkillsSelectionScreen(
+                label: "Soft Skills",
+                selectedoptions: selectedOptions,
+              );
             }));
           }
-          else{
-            Navigator.of(context).push(MaterialPageRoute(builder: (_){
-              return SkillsSelectionScreen(label: "Soft Skills", selectedoptions: selectedOptions,);
-            }));
-          }
-
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -872,7 +970,6 @@ class _TagChipsState extends State<TagChips> {
                   //   // widget.tags.remove(tag);
                   // });
                   updateSkills(tag);
-
                 },
                 child: Icon(
                   Icons.close,

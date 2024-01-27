@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../instaLogin/insta_test.dart';
 import '../../../instaLogin/instagram_model.dart';
 import '../../../instaLogin/instagram_view.dart';
+import '../editBrandDetails.dart';
 
 class Tab1_BP extends StatefulWidget {
   const Tab1_BP({super.key});
@@ -22,8 +23,8 @@ class _Tab1_BPState extends State<Tab1_BP> {
 
     return SingleChildScrollView(
       child: Container(
-        color: Colors.white,
-        margin: EdgeInsets.all(16.0),
+        // color: Colors.white,
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -41,10 +42,12 @@ class _Tab1_BPState extends State<Tab1_BP> {
                   ),
                   textAlign: TextAlign.left,
                 ),
-                Spacer(),
-                GestureDetector(
+                const Spacer(),
+                InkWell(
                   onTap: (){
-
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                      return EditBrandProfilePage();
+                    }));
                   },
                     child: Icon(Icons.edit, size: 18, color: Colors.black,))
               ],

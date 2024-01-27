@@ -22,6 +22,8 @@ class jobModel{
   final String docId;
   final List applicationsIDS;
   final List interests;
+  final String brandPfp;
+  final String phoneNumber;
 
   jobModel({
     required this.jobType,
@@ -47,6 +49,8 @@ class jobModel{
     required this.docId,
     required this.applicationsIDS,
     required this.interests,
+    required this.brandPfp,
+    required this.phoneNumber,
 });
 
 }

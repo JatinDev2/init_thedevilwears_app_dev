@@ -1,7 +1,10 @@
 import 'package:azlistview/azlistview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lookbook/colorManager.dart';
+import 'package:lookbook/launchingFunctions.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../Services/profiles.dart';
 import 'applicationModel.dart';
 
@@ -12,8 +15,6 @@ class AllAplicationsScreen extends StatefulWidget {
   AllAplicationsScreen({
    required this.jobId,
 });
-
-  // const AllAplicationsScreen({super.key});
 
   @override
   State<AllAplicationsScreen> createState() => _AllAplicationsScreenState();
@@ -127,7 +128,8 @@ class _AllAplicationsScreenState extends State<AllAplicationsScreen> {
                           educationString: application.education,
                           userId: application.userId,
                           jobId: widget.jobId,
-                          status: application.statusOfApplication
+                          status: application.statusOfApplication,
+                          application: application,
                         );
                       },
                     );
@@ -154,6 +156,7 @@ class CandidateCard extends StatefulWidget {
   final String userId;
   final String jobId;
   final String status;
+  final applicationModel application;
 
   CandidateCard({
    required this.jobType,
@@ -163,6 +166,7 @@ class CandidateCard extends StatefulWidget {
     required this.jobId,
     required this.userId,
     required this.status,
+    required this.application,
 });
 
   @override
@@ -235,12 +239,41 @@ class _CandidateCardState extends State<CandidateCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  backgroundColor:Theme.of(context).colorScheme.primary,
-                  // radius: 16,
+                Material(
+                  elevation: 4,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.none,
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: widget.application.userPfp!.isNotEmpty? Colors.white : Colors.transparent,
+                    child: widget.application.userPfp != null && widget.application.userPfp.isNotEmpty
+                        ? CachedNetworkImage(
+                      imageUrl: widget.application.userPfp!, // Actual image URL
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        radius: 25,
+                        backgroundImage: imageProvider,
+                      ),
+                    )
+                        : CircleAvatar( // Fallback to asset image
+                      radius: 25,
+                      backgroundColor: Colors.transparent,
+                      child: SvgPicture.asset("assets/devil.svg", fit: BoxFit.cover, height: 80, width: 80,), // Provide the path to your asset image
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10,),
-                Column(children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   Text(
                     widget.name,
                     style: const TextStyle(
@@ -265,9 +298,51 @@ class _CandidateCardState extends State<CandidateCard> {
                   )
                 ],),
                 Spacer(),
-                SvgPicture.asset("assets/Vector.svg", color: Colors.black,),
+                InkWell(
+                  onTap: (){
+                    LaunchingFunction().launchWhatsApp(widget.application.userPhoneNumber);
+                  },
+                    child: SvgPicture.asset("assets/callVector.svg", color: Colors.black,)),
                 SizedBox(width: 5,),
-                Icon(Icons.more_vert)
+                PopupMenuButton<String>(
+                  onSelected: (String value) {
+                    // Handle the action based on the value selected
+                    switch (value) {
+                      case 'Share':
+                      // Code to share
+                        break;
+                      case 'Email':
+                      // Code to send an email
+                        break;
+                      case 'Call':
+                      // Code to make a call
+                        LaunchingFunction().launchPhoneDialer(widget.application.userPhoneNumber);
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'Share',
+                      child: Text('Share'),
+                    ),
+                     PopupMenuItem<String>(
+                      value: 'Email',
+                      child: Text('Email'),
+                      onTap: (){
+                        LaunchingFunction().launchGmail(widget.application.userGmail, "subject", "body");
+                      },
+                    ),
+                     PopupMenuItem<String>(
+                      value: 'Call',
+                      child: Text('Call'),
+                      onTap: (){
+                        LaunchingFunction().launchPhoneDialer(widget.application.userPhoneNumber);
+                      },
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert),
+                )
+
               ],
             ),
             SizedBox(height: 16,),
@@ -397,7 +472,7 @@ class _CandidateCardState extends State<CandidateCard> {
             else{
               status="Pending";
             }
-            await ProfileServices().updateApplicationStatus(widget.jobId, widget.userId, status);
+            await ProfileServices().updateApplicationStatus(widget.jobId, widget.userId, status,widget.application.userId);
 
           },
           style: ElevatedButton.styleFrom(

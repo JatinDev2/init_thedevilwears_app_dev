@@ -2,11 +2,13 @@ class RequestModel {
   final String userId;
   final String status;
   final String requesterName;
+  final String jobProfile;
 
   RequestModel({
     required this.userId,
     required this.status,
     required this.requesterName,
+    required this.jobProfile,
   });
 
   // Convert a RequestModel instance to a map
@@ -15,6 +17,7 @@ class RequestModel {
       'userId': userId,
       'status': status,
       'requesterName': requesterName,
+      'jobProfile':jobProfile,
     };
   }
 
@@ -24,6 +27,7 @@ class RequestModel {
       userId: map['userId'] ?? '',
       status: map['status'] ?? '',
       requesterName: map['requesterName'] ?? '',
+        jobProfile:map['jobProfile'] ?? ''
     );
   }
 }

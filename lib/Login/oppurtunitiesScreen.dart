@@ -186,40 +186,49 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                     SizedBox(height: 16,),
                     GestureDetector(
                       onTap: (){
-                        setState(() {
-                          isLoading=true;
-                        });
+
                         List <String> selectedOpportunitiesList=[];
                         selectedSkills.forEach((key, value) {
                           if(value==true && !selectedOpportunitiesList.contains(key)){
                             selectedOpportunitiesList.add(key);
                           }
                         });
-                        if( LoginData().getUserType()=="Person"){
-                          LoginData().writeUserInterests(selectedOpportunitiesList);
-                          FirebaseAuthAPIs().addStudentToDatabase(widget.userDescription, selectedOpportunitiesList).then((value) {
-                            setState(() {
-                              isLoading=true;
-                            });
-                            if(value==true){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                return ConfirmedLoginScreen();
-                              }));
-                            }
+                        if(selectedOpportunitiesList.isNotEmpty){
+                          setState(() {
+                            isLoading=true;
                           });
-                        }
-                        else{
-                          FirebaseAuthAPIs().addBrandToDatabase(widget.userDescription, selectedOpportunitiesList).then((value) {
-                            setState(() {
-                              isLoading=true;
+                          if( LoginData().getUserType()=="Person"){
+                            LoginData().writeUserInterests(selectedOpportunitiesList);
+                            FirebaseAuthAPIs().addStudentToDatabase(widget.userDescription, selectedOpportunitiesList).then((value) {
+                              setState(() {
+                                isLoading=true;
+                              });
+                              if(value==true){
+                                LoginData().writeIsInterestsSelected(true);
+                                LoginData().writeIsLoggedIn(true);
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return ConfirmedLoginScreen();
+                                }));
+                              }
                             });
-                            if(value==true){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                return ConfirmedLoginScreen();
-                              }));
-                            }
-                          });
+                          }
+                          else{
+                            LoginData().writeUserInterests(selectedOpportunitiesList);
+                            FirebaseAuthAPIs().addBrandToDatabase(widget.userDescription, selectedOpportunitiesList).then((value) {
+                              setState(() {
+                                isLoading=true;
+                              });
+                              if(value==true){
+                                LoginData().writeIsInterestsSelected(true);
+                                LoginData().writeIsLoggedIn(true);
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return ConfirmedLoginScreen();
+                                }));
+                              }
+                            });
+                          }
                         }
+
                       },
                       child: Container(
                         height: 50.h,

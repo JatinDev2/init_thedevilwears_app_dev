@@ -1,10 +1,22 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:rxdart/rxdart.dart';
+import '../Preferences/LoginData.dart';
 import '../screens/jobs/Applications/applicationModel.dart';
 import '../screens/jobs/job_model.dart';
 import '../screens/profile/profileModels/educationModel.dart';
 import '../screens/profile/profileModels/projectModel.dart';
 import '../screens/profile/profileModels/workModel.dart';
+
+class ApplicationJobPair {
+  final Map<String, dynamic> application;
+  final jobModel job;
+
+  ApplicationJobPair({required this.application, required this.job});
+}
 
 class ProfileServices {
 
@@ -100,7 +112,7 @@ class ProfileServices {
   }
 
   //-----------------------------------------------Fetch Most Recent Education---------------------------------------------------------
-  Future<String?> fetchLatestEducation() async {
+  Future<String> fetchLatestEducation() async {
     User? currentUser = _auth.currentUser;
     if (currentUser == null) {
       throw Exception('No user logged in');
@@ -181,10 +193,11 @@ class ProfileServices {
   }
 
   //-----------------------------------------------Stream Fetch Application---------------------------------------------------------
-  Future<void> updateApplicationStatus(String jobListingId,
-      String applicationId, String status) async {
+  Future<void> updateApplicationStatus(
+      String jobListingId, String applicationId, String status, String studentId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+    // Update the application status in the jobListing collection
     DocumentReference applicationDoc = firestore
         .collection('jobListing')
         .doc(jobListingId)
@@ -193,81 +206,435 @@ class ProfileServices {
 
     await applicationDoc.update({'statusOfApplication': status})
         .catchError((error) => print('Error updating status: $error'));
+
+    // Update the application status in the studentProfiles collection
+    DocumentReference studentProfileDoc = firestore
+        .collection('studentProfiles')
+        .doc(studentId);
+
+    await firestore.runTransaction((transaction) async {
+      // Get the student profile document
+      DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileDoc);
+
+      if (!studentProfileSnapshot.exists) {
+        throw Exception("Student profile does not exist");
+      }
+
+      List<dynamic> applicationsApplied = studentProfileSnapshot.get('applicationsApplied');
+      int indexToUpdate = applicationsApplied.indexWhere((application) =>
+      application['jobId'] == jobListingId);
+
+      if (indexToUpdate != -1) {
+        // Update the status in the specific application
+        applicationsApplied[indexToUpdate]['status'] = status;
+
+        // Update the student profile document
+        transaction.update(studentProfileDoc, {'applicationsApplied': applicationsApplied});
+      } else {
+        print("No matching application found in student profile");
+      }
+    }).catchError((error) => print('Error updating student profile: $error'));
   }
 
 
-  Stream<List<jobModel>> streamJobListingsForStudent(String studentId) {
+
+  // Stream<List<jobModel>> streamJobListingsForStudent(String studentId) {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //
+  //   // Stream of the student profile document
+  //   Stream<DocumentSnapshot> studentProfileStream = firestore
+  //       .collection('studentProfiles')
+  //       .doc(studentId)
+  //       .snapshots();
+  //
+  //   return studentProfileStream.asyncMap((studentProfileSnapshot) async {
+  //     // Check if the document exists and has data
+  //     if (!studentProfileSnapshot.exists ||
+  //         studentProfileSnapshot.data() == null) {
+  //       return [
+  //       ]; // Return an empty list if the document doesn't exist or has no data
+  //     }
+  //
+  //     var studentData = studentProfileSnapshot.data() as Map<String, dynamic>;
+  //
+  //     // Check if the 'applicationsApplied' field exists
+  //     if (!studentData.containsKey('applicationsApplied')) {
+  //       return [
+  //       ]; // Return an empty list if the 'applicationsApplied' field is not found
+  //     }
+  //
+  //     // Extract the 'applicationsApplied' map
+  //     Map<String, dynamic> applicationsAppliedDynamic = studentData['applicationsApplied'];
+  //
+  //     // Map<String, String> applicationsApplied = applicationsAppliedDynamic.map((key, value) => MapEntry(key, value.toString()));
+  //
+  //
+  //     // Fetch job listings based on application IDs
+  //     List<jobModel> jobListings = [];
+  //     for (String jobId in applicationsAppliedDynamic.keys) {
+  //       print("Hello check");
+  //       print(jobId);
+  //       DocumentSnapshot data = await firestore
+  //           .collection('jobListing')
+  //           .doc(jobId)
+  //           .get();
+  //       if (data.exists) {
+  //         print("Hello check");
+  //         jobModel job = jobModel(
+  //             jobType : data["jobType"] ?? "",
+  //             jobProfile : data["jobProfile"] ?? "",
+  //             responsibilities : data["responsibilities"] ?? "",
+  //             jobDuration : data["jobDuration"] ?? "",
+  //             jobDurExact : data["jobDurationExact"] ?? "",
+  //             workMode : data["workMode"] ?? "",
+  //             officeLoc : data["officeLoc"] ?? "",
+  //             tentativeStartDate : data["tentativeStartDate"] ?? "",
+  //             stipend : data["stipend"] ?? "",
+  //             stipendAmount : data["stipendAmount"] ?? "",
+  //             numberOfOpenings : data["numberOfOpenings"] ?? "",
+  //             perks : data["perks"] ?? [],
+  //             createdBy : data["createdBy"] ?? "",
+  //             createdAt : data["createdAt"] ?? "",
+  //             userId : data["userId"] ?? "",
+  //             jobDurVal : data["jobDurVal"] ?? "",
+  //             stipendVal : data["stipendVal"] ?? "",
+  //             tags : data["tags"] ?? [],
+  //             applicationCount: data["applicationCount"] ?? 0,
+  //             clicked: data["clicked"] ?? false,
+  //             docId: data["docId"] ?? "",
+  //             applicationsIDS: data["applicationsIDS"] ?? [],
+  //           interests: data["interests"] ?? [],
+  //           brandPfp: data["brandPfp"] ?? ""
+  //         );
+  //         jobListings.add(job);
+  //       }
+  //     }
+  //
+  //     return jobListings;
+  //   });
+  // }
+
+  // Stream<List<ApplicationJobPair>> streamJobListingsForStudent(String studentId) {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //
+  //   return firestore.collection('studentProfiles').doc(studentId).snapshots().asyncMap((studentProfileSnapshot) async {
+  //     List<ApplicationJobPair> pairs = [];
+  //
+  //     if (!studentProfileSnapshot.exists || studentProfileSnapshot.data() == null) {
+  //       return pairs;
+  //     }
+  //
+  //     var studentData = studentProfileSnapshot.data() as Map<String, dynamic>;
+  //     if (!studentData.containsKey('applicationsApplied')) {
+  //       return pairs;
+  //     }
+  //
+  //     List<Map<String, dynamic>> applicationsApplied = studentData['applicationsApplied'] is List
+  //         ? List<Map<String, dynamic>>.from(studentData['applicationsApplied'])
+  //         : [];
+  //
+  //     for (Map<String, dynamic> application in applicationsApplied) {
+  //       String jobId = application['jobId'];
+  //       DocumentSnapshot data = await firestore.collection('jobListing').doc(jobId).get();
+  //
+  //       if (data.exists) {
+  //         jobModel job = jobModel(
+  //             jobType : data["jobType"] ?? "",
+  //             jobProfile : data["jobProfile"] ?? "",
+  //             responsibilities : data["responsibilities"] ?? "",
+  //             jobDuration : data["jobDuration"] ?? "",
+  //             jobDurExact : data["jobDurationExact"] ?? "",
+  //             workMode : data["workMode"] ?? "",
+  //             officeLoc : data["officeLoc"] ?? "",
+  //             tentativeStartDate : data["tentativeStartDate"] ?? "",
+  //             stipend : data["stipend"] ?? "",
+  //             stipendAmount : data["stipendAmount"] ?? "",
+  //             numberOfOpenings : data["numberOfOpenings"] ?? "",
+  //             perks : data["perks"] ?? [],
+  //             createdBy : data["createdBy"] ?? "",
+  //             createdAt : data["createdAt"] ?? "",
+  //             userId : data["userId"] ?? "",
+  //             jobDurVal : data["jobDurVal"] ?? "",
+  //             stipendVal : data["stipendVal"] ?? "",
+  //             tags : data["tags"] ?? [],
+  //             applicationCount: data["applicationCount"] ?? 0,
+  //             clicked: data["clicked"] ?? false,
+  //             docId: data["docId"] ?? "",
+  //             applicationsIDS: data["applicationsIDS"] ?? [],
+  //             interests: data["interests"] ?? [],
+  //             brandPfp: data["brandPfp"] ?? ""
+  //         );
+  //         pairs.add(ApplicationJobPair(application: application, job: job));
+  //       }
+  //     }
+  //
+  //     return pairs;
+  //   });
+  // }
+
+  Stream<List<ApplicationJobPair>> streamJobListingsForStudent(String studentId) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    // Stream of the student profile document
-    Stream<DocumentSnapshot> studentProfileStream = firestore
-        .collection('studentProfiles')
-        .doc(studentId)
-        .snapshots();
+    return firestore.collection('studentProfiles').doc(studentId).snapshots().asyncMap((studentProfileSnapshot) async {
+      List<ApplicationJobPair> pairs = [];
 
-    return studentProfileStream.asyncMap((studentProfileSnapshot) async {
-      // Check if the document exists and has data
-      if (!studentProfileSnapshot.exists ||
-          studentProfileSnapshot.data() == null) {
-        return [
-        ]; // Return an empty list if the document doesn't exist or has no data
+      try {
+        if (!studentProfileSnapshot.exists || studentProfileSnapshot.data() == null) {
+          print("Student profile snapshot does not exist or has no data.");
+          return pairs;
+        }
+
+        var studentData = studentProfileSnapshot.data() as Map<String, dynamic>;
+        if (!studentData.containsKey('applicationsApplied')) {
+          print("'applicationsApplied' field is missing.");
+          return pairs;
+        }
+
+        List<Map<String, dynamic>> applicationsApplied = studentData['applicationsApplied'] is List
+            ? List<Map<String, dynamic>>.from(studentData['applicationsApplied'])
+            : [];
+
+        for (Map<String, dynamic> application in applicationsApplied) {
+          String jobId = application['jobId'];
+          DocumentSnapshot data = await firestore.collection('jobListing').doc(jobId).get();
+
+          if (data.exists && data.data() != null) {
+            var jobData = data.data() as Map<String, dynamic>;
+            jobModel job = jobModel(
+                jobType : data["jobType"] ?? "",
+                jobProfile : data["jobProfile"] ?? "",
+                responsibilities : data["responsibilities"] ?? "",
+                jobDuration : data["jobDuration"] ?? "",
+                jobDurExact : data["jobDurationExact"] ?? "",
+                workMode : data["workMode"] ?? "",
+                officeLoc : data["officeLoc"] ?? "",
+                tentativeStartDate : data["tentativeStartDate"] ?? "",
+                stipend : data["stipend"] ?? "",
+                stipendAmount : data["stipendAmount"] ?? "",
+                numberOfOpenings : data["numberOfOpenings"] ?? "",
+                perks : data["perks"] ?? [],
+                createdBy : data["createdBy"] ?? "",
+                createdAt : data["createdAt"] ?? "",
+                userId : data["userId"] ?? "",
+                jobDurVal : data["jobDurVal"] ?? "",
+                stipendVal : data["stipendVal"] ?? "",
+                tags : data["tags"] ?? [],
+                applicationCount: data["applicationCount"] ?? 0,
+                clicked: data["clicked"] ?? false,
+                docId: data["docId"] ?? "",
+                applicationsIDS: data["applicationsIDS"] ?? [],
+                interests: data["interests"] ?? [],
+                brandPfp: data["brandPfp"] ?? "",
+                phoneNumber: LoginData().getUserPhoneNumber()
+
+            );
+            pairs.add(ApplicationJobPair(application: application, job: job));
+          } else {
+            print("Job listing document (ID: $jobId) does not exist or has no data.");
+          }
+        }
+      } catch (e) {
+        print("An error occurred: $e");
       }
 
-      var studentData = studentProfileSnapshot.data() as Map<String, dynamic>;
-
-      // Check if the 'applicationsApplied' field exists
-      if (!studentData.containsKey('applicationsApplied')) {
-        return [
-        ]; // Return an empty list if the 'applicationsApplied' field is not found
-      }
-
-      // Extract the 'applicationsApplied' map
-      Map<String, dynamic> applicationsAppliedDynamic = studentData['applicationsApplied'];
-
-      // Map<String, String> applicationsApplied = applicationsAppliedDynamic.map((key, value) => MapEntry(key, value.toString()));
+      return pairs;
+    });
+  }
 
 
-      // Fetch job listings based on application IDs
-      List<jobModel> jobListings = [];
-      for (String jobId in applicationsAppliedDynamic.keys) {
-        print("Hello check");
-        print(jobId);
-        DocumentSnapshot data = await firestore
-            .collection('jobListing')
-            .doc(jobId)
-            .get();
-        if (data.exists) {
-          print("Hello check");
-          jobModel job = jobModel(
-              jobType : data["jobType"] ?? "",
-              jobProfile : data["jobProfile"] ?? "",
-              responsibilities : data["responsibilities"] ?? "",
-              jobDuration : data["jobDuration"] ?? "",
-              jobDurExact : data["jobDurationExact"] ?? "",
-              workMode : data["workMode"] ?? "",
-              officeLoc : data["officeLoc"] ?? "",
-              tentativeStartDate : data["tentativeStartDate"] ?? "",
-              stipend : data["stipend"] ?? "",
-              stipendAmount : data["stipendAmount"] ?? "",
-              numberOfOpenings : data["numberOfOpenings"] ?? "",
-              perks : data["perks"] ?? [],
-              createdBy : data["createdBy"] ?? "",
-              createdAt : data["createdAt"] ?? "",
-              userId : data["userId"] ?? "",
-              jobDurVal : data["jobDurVal"] ?? "",
-              stipendVal : data["stipendVal"] ?? "",
-              tags : data["tags"] ?? [],
-              applicationCount: data["applicationCount"] ?? 0,
-              clicked: data["clicked"] ?? false,
-              docId: data["docId"] ?? "",
-              applicationsIDS: data["applicationsIDS"] ?? [],
-            interests: data["interests"] ?? [],
-          );
-          jobListings.add(job);
+  //-----------------------------------------------Update Student Profile---------------------------------------------------------
+
+
+  Future<void> updateUserProfile(
+      {required String userDescription,
+        required String userBio,
+        required String userInsta,
+        required String userLinkedin,
+        required String userTwitter,
+        required File imageFile,
+        required bool isUpdated,
+        required String imgUrl,
+        required String firstName,
+        required String lastName,
+      }) async {
+    // Ensure Firebase is initialized
+    await Firebase.initializeApp();
+
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('No user is currently logged in.');
+    }
+
+    String userId = currentUser.uid;
+
+    if(isUpdated){
+      String imagePath = 'userImages/$userId';
+
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref = storage.ref().child(imagePath);
+      await ref.putFile(imageFile);
+
+       imgUrl = await ref.getDownloadURL();
+    }
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference profileRef = firestore.collection('studentProfiles').doc(userId);
+
+    // Convert userDescription from a comma-separated string to a list
+    List<String> userDescriptionList = userDescription.split(',');
+
+    // Trim whitespace from each element in the list
+    userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
+
+
+    return profileRef.update({
+      'userDescription': userDescriptionList,
+      'userBio': userBio,
+      'userInsta': userInsta,
+      'userLinkedin': userLinkedin,
+      'userTwitter': userTwitter,
+      'userProfilePicture': imgUrl,
+      'firstName':firstName,
+      'lastName':lastName,
+    });
+  }
+
+
+
+  Future<void> updateBrandProfile(
+      {required String userDescription,
+        required String userBio,
+        required String userInsta,
+        required String userLinkedin,
+        required String userTwitter,
+        required File imageFile,
+        required bool isUpdated,
+        required String imgUrl,
+        required String firstName,
+        required String lastName,
+      }) async {
+    // Ensure Firebase is initialized
+    await Firebase.initializeApp();
+
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('No user is currently logged in.');
+    }
+
+    String userId = currentUser.uid;
+
+    if(isUpdated){
+      String imagePath = 'brandImages/$userId';
+
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref = storage.ref().child(imagePath);
+      await ref.putFile(imageFile);
+
+      imgUrl = await ref.getDownloadURL();
+    }
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
+
+    // Convert userDescription from a comma-separated string to a list
+    List<String> userDescriptionList = userDescription.split(',');
+
+    // Trim whitespace from each element in the list
+    userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
+
+    return profileRef.update({
+      'brandDescription': userDescriptionList,
+      'brandBio': userBio,
+      'brandInsta': userInsta,
+      'brandLinkedin': userLinkedin,
+      'brandTwitter': userTwitter,
+      'brandProfilePicture': imgUrl,
+      'brandtName':firstName,
+    });
+  }
+
+
+  Future<void> updateBrandProfileDetails(
+      {required String month,
+        required String year,
+        required String companySize,
+        required String industry,
+        required String location,
+        required String additionalInfo,
+      }) async {
+    // Ensure Firebase is initialized
+    await Firebase.initializeApp();
+
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('No user is currently logged in.');
+    }
+
+    String userId = currentUser.uid;
+
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
+
+    return profileRef.update({
+      'foundedIn': "${month}, ${year}",
+      'companySize': companySize.toString(),
+      'industry': industry,
+      'companyLocation': location,
+      'additionalInfo': additionalInfo,
+    });
+  }
+
+
+  Future<void> deleteApplicationStatus(String docId) async {
+    String currentUserId = LoginData().getUserId();
+    if (currentUserId.isEmpty) {
+      print('User ID is not available. Make sure the user is logged in.');
+      return;
+    }
+
+    final jobListingRef = FirebaseFirestore.instance.collection('jobListing').doc(docId);
+    final studentProfileRef = FirebaseFirestore.instance.collection('studentProfiles').doc(currentUserId);
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      // First, perform all the read operations.
+      DocumentSnapshot jobListingSnapshot = await transaction.get(jobListingRef);
+      DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileRef);
+
+      // Then, after all the reads are done, perform the write operations.
+      if (jobListingSnapshot.exists && jobListingSnapshot.data() is Map<String, dynamic>) {
+        final jobListingData = jobListingSnapshot.data() as Map<String, dynamic>;
+        if (jobListingData.containsKey('applicationCount')) {
+          final applicationCount = jobListingData['applicationCount'] as int;
+          transaction.update(jobListingRef, {'applicationCount': applicationCount - 1});
+        }
+
+        if (jobListingData.containsKey('applicationsIDS')) {
+          final applicationIds = List.from(jobListingData['applicationsIDS']);
+          applicationIds.remove(currentUserId);
+          transaction.update(jobListingRef, {'applicationsIDS': applicationIds});
         }
       }
 
-      return jobListings;
+      // Delete the application document from the Applications subcollection
+      DocumentReference applicationRef = jobListingRef.collection('Applications').doc(currentUserId);
+      transaction.delete(applicationRef);
+
+      // Remove the application entry from applicationsApplied in studentProfiles
+      if (studentProfileSnapshot.exists && studentProfileSnapshot.data() is Map<String, dynamic>) {
+        final studentProfileData = studentProfileSnapshot.data() as Map<String, dynamic>;
+        if (studentProfileData.containsKey('applicationsApplied')) {
+          final applicationsApplied = List<Map<String, dynamic>>.from(studentProfileData['applicationsApplied']);
+          applicationsApplied.removeWhere((application) => application['jobId'] == docId);
+          transaction.update(studentProfileRef, {'applicationsApplied': applicationsApplied});
+        }
+      }
     });
   }
 }

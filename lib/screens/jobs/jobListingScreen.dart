@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import '../common_widgets.dart';
 import 'createNewJobListing.dart';
-import 'filterScreen.dart';
 import 'job_model.dart';
 
 class JobListScreen extends StatefulWidget {
@@ -66,6 +65,8 @@ class _JobListScreenState extends State<JobListScreen> {
             docId: data["docId"] ?? "",
             applicationsIDS: data["applicationsIDS"] ?? [],
             interests: data["interests"] ?? [],
+              brandPfp:data["brandPfp"] ?? "",
+              phoneNumber: data["phoneNumber"] ?? ""
           );
           listings.add(listModel);
         }
@@ -147,7 +148,7 @@ class _JobListScreenState extends State<JobListScreen> {
       listing.tags.contains(option) ||
           listing.createdBy == option ||
           listing.stipendAmount == option ||
-          listing.stipend == option ||
+          // listing.stipend == option ||
           listing.officeLoc == option ||
           listing.workMode == option ||
           listing.jobProfile == option ||
@@ -311,6 +312,7 @@ class _JobListScreenState extends State<JobListScreen> {
                     SizedBox(height: 8,),
                     Expanded(
                       child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemCount: selectedOptions.isNotEmpty? filteredListings.length:  _listings.length,
                         itemBuilder: (context, index){
                           final listing = selectedOptions.isNotEmpty? filteredListings[index]: _listings[index];

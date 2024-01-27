@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/profile/profileModels/educationModel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AddNewEducationForm extends StatefulWidget {
   const AddNewEducationForm({super.key});

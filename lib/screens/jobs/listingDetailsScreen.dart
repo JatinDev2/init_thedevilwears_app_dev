@@ -1,18 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/colorManager.dart';
-import 'package:lookbook/screens/profile/profileModels/workModel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lookbook/launchingFunctions.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../Services/profiles.dart';
+import '../../pfpClass.dart';
 import '../common_widgets.dart';
 import 'Applications/previewApplication.dart';
-import 'Applications/previewTab.dart';
-import 'confirmJobListing.dart';
 import 'job_model.dart';
 
 class JobListingDetailsScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
   bool isSubmitLoading=false;
  
 
-  void _showDialog(BuildContext context, String workString, String education, String name, String jobType) {
+  void _showDialog(BuildContext context, String workString, String education, String name, String jobType, String imgUrl, String completeJobType) {
     setState(() {
       isLoading=false;
     });
@@ -78,9 +79,36 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        // backgroundImage: NetworkImage("image_url"),
-                        radius: 30.0.r,
+                      Material(
+                        elevation: 4,
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.none,
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: imgUrl!.isNotEmpty? Colors.white : Colors.transparent,
+                          child: imgUrl != null && imgUrl.isNotEmpty
+                              ? CachedNetworkImage(
+                            imageUrl: imgUrl!, // Actual image URL
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: CircleAvatar(
+                                radius: 25,
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                            imageBuilder: (context, imageProvider) => CircleAvatar(
+                              radius: 25,
+                              backgroundImage: imageProvider,
+                            ),
+                          )
+                              : CircleAvatar( // Fallback to asset image
+                            radius: 25,
+                            backgroundColor: Colors.transparent,
+                            child: SvgPicture.asset("assets/devil.svg", fit: BoxFit.cover, height: 80, width: 80,), // Provide the path to your asset image
+                          ),
+                        ),
                       ),
                       SizedBox(width: 11.w),
                        Column(
@@ -97,17 +125,57 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                            ),
                            textAlign: TextAlign.left,
                          ),
-                         Text(
-                           jobType,
-                           style: const TextStyle(
-                             fontFamily: "Poppins",
-                             fontSize: 14,
-                             fontWeight: FontWeight.w400,
-                             color: Color(0xff616161),
-                             height: 19/14,
+                         InkWell(
+                           onTap: () {
+                             showDialog(
+                               context: context,
+                               builder: (BuildContext context) {
+                                 return AlertDialog(
+                                   title: const Text('Description'),
+                                   content: SingleChildScrollView(
+                                     child: Text(
+                                       completeJobType,
+                                       style: const TextStyle(
+                                         fontFamily: "Poppins",
+                                         fontSize: 16,
+                                         fontWeight: FontWeight.w400,
+                                         color: Colors.black,
+                                       ),
+                                     ),
+                                   ),
+                                   actions: <Widget>[
+                                     TextButton(
+                                       child: const Text('Close'),
+                                       onPressed: () {
+                                         Navigator.of(context).pop(); // Close the dialog
+                                       },
+                                     ),
+                                   ],
+                                   shape: RoundedRectangleBorder( // Add this line
+                                     borderRadius: BorderRadius.circular(10), // Adjust the radius
+                                   ),
+                                 );
+                               },
+                             );
+                           },
+                           child: Container(
+                             margin: const EdgeInsets.only(top: 2),
+                             child: Text(
+                               jobType,
+                               style: const TextStyle(
+                                 fontFamily: "Poppins",
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.w400,
+                                 color: Color(0xff616161),
+                                 height: 19/14,
+                               ),
+                               textAlign: TextAlign.left,
+                               maxLines: 1,
+                               overflow: TextOverflow.ellipsis,
+                             ),
                            ),
-                           textAlign: TextAlign.left,
                          ),
+
                        ],
                       ),
                     ],
@@ -204,6 +272,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                 education: education,
                                 name: name,
                                 workString: workString,
+                                pageLabel: "Listing Details",
                               );
                             }));
                           },
@@ -247,6 +316,9 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                 "appliedBy": name,
                                 "createdBy": widget.newJobModel.createdBy,
                                 "jobProfile": jobType,
+                                "userPfp":LoginData().getUserProfilePicture(),
+                                "userGmail":LoginData().getUserEmail(),
+                                "userPhoneNumber":LoginData().getUserPhoneNumber(),
                               };
 
                               // Reference to Firestore
@@ -267,43 +339,33 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                 CollectionReference applicationsRef = jobRef
                                     .collection('Applications');
 
-                                // await firestore.runTransaction((transaction) async {
-                                //   // Check and update applicationsApplied in student profile
-                                //   DocumentSnapshot studentSnapshot = await transaction.get(studentRef);
-                                //
-                                //   Map<String, String> applicationsApplied = studentSnapshot.data().containsKey('applicationsApplied')
-                                //       ? new Map<String, String>.from(studentSnapshot.get('applicationsApplied'))
-                                //       : {};
-                                //   applicationsApplied[widget.newJobModel.docId] = "Pending"; // Update with new application status
-                                //
-                                //   transaction.set(studentRef, {'applicationsApplied': applicationsApplied}, SetOptions(merge: true));
-                                //
-                                //   // Update job listing document
-                                //   transaction.set(applicationsRef.doc(LoginData().getUserId()), applicationData, SetOptions(merge: true));
-                                //   transaction.update(jobRef, {
-                                //     'applicationCount': FieldValue.increment(1),
-                                //     'clicked': false,
-                                //     'applicationsIDS': FieldValue.arrayUnion([LoginData().getUserId()]),
-                                //   });
-                                // });
                                 await firestore.runTransaction((transaction) async {
                                   DocumentSnapshot studentSnapshot = await transaction.get(studentRef);
 
-                                  // Initialize applicationsApplied as an empty map
-                                  Map<String, String> applicationsApplied = {};
+                                  // Initialize applicationsApplied as an empty list
+                                  List<Map<String, dynamic>> applicationsApplied = [];
 
                                   // Get the data from the studentSnapshot
                                   var studentData = studentSnapshot.data() as Map<String, dynamic>?;
 
                                   // Check if studentData is not null and contains 'applicationsApplied'
                                   if (studentData != null && studentData.containsKey('applicationsApplied')) {
-                                    applicationsApplied = Map<String, String>.from(studentData['applicationsApplied']);
+                                    applicationsApplied = List<Map<String, dynamic>>.from(studentData['applicationsApplied']);
                                   }
 
-                                  // Add or update the application status
-                                  applicationsApplied[widget.newJobModel.docId] = "Pending";
+                                  // Prepare the application map to be added
+                                  Map<String, dynamic> applicationMap = {
+                                    'brandName': widget.newJobModel.createdBy,
+                                    'timeStamp': DateTime.now().toString(),
+                                    'status': "Pending",
+                                    'jobId': widget.newJobModel.docId,
+                                    'additional info':additionalInfoController.text
+                                  };
 
-                                  // Set updated applicationsApplied map in student profile
+                                  // Add the new application map to the list
+                                  applicationsApplied.add(applicationMap);
+
+                                  // Set updated applicationsApplied list in student profile
                                   transaction.set(studentRef, {'applicationsApplied': applicationsApplied}, SetOptions(merge: true));
 
                                   // Update job listing document
@@ -314,7 +376,6 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                     'applicationsIDS': FieldValue.arrayUnion([LoginData().getUserId()]),
                                   });
                                 });
-
 
 
                                 print('Application successfully created');
@@ -410,20 +471,23 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
           textAlign: TextAlign.left,
         ),
         actions: [
-          IconButton(
-            icon: SvgPicture.asset("assets/Vector.svg", height: 24, width: 24,),
-            onPressed: () {
-
+          InkWell(
+            child:SvgPicture.asset("assets/Vector.svg", height: 24, width: 24,),
+            onTap: () {
+              LaunchingFunction().launchPhoneDialer(widget.newJobModel.phoneNumber);
             },
           ),
+          SizedBox(width: 18.w,),
+
       const Icon(IconlyLight.send, color: Colors.black, size: 24,),
           SizedBox(width: 18.w,),
           const Icon(IconlyLight.bookmark, color: Colors.black, size: 24,),
           SizedBox(width: 18.w,),
-
         ],
       ),
+
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(bottom: 23.h),
         child: Container(
           child: Column(
@@ -459,9 +523,9 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                          radius: 20.r,
-                          backgroundImage:const NetworkImage("https://images.squarespace-cdn.com/content/v1/5a99d01c5ffd206cdde00bec/7e125d62-e859-41ff-aa04-23e4e0040a33/image-asset.jpeg?format=500w",),
+                        BrandProfilePicClass(imgUrl: widget.newJobModel.brandPfp,),
+                        SizedBox(
+                          width: 10,
                         ),
                         SizedBox(width: 13.w,),
                         Text(widget.newJobModel.createdBy, style: const TextStyle(
@@ -607,10 +671,30 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     String education="";
 
                     ProfileServices().fetchWorkExperienceCompanies().then((value){
-                      workString=value;
+                      if(value.isNotEmpty){
+                        workString=value;
+                      }
+                      else{
+                        workString="No Work experience yet!";
+                      }
                       ProfileServices().fetchLatestEducation().then((educationVal) {
-                        education=educationVal!;
-                        _showDialog(context, workString,education ,"${LoginData().getUserFirstName()} ${LoginData().getUserLastName()}","Fashion Stylist");
+                        if(educationVal.isNotEmpty){
+                          education=educationVal;
+                        }
+                        else{
+                          education="No education added yet!";
+                        }
+                        String formattedJobType = LoginData().getUserJobProfile().join(" • ");
+
+                        List<String> jobTypeValues = formattedJobType.split(" • ");
+
+                        if (jobTypeValues.length > 2) {
+                          formattedJobType = jobTypeValues.take(2).join(" • ");
+                          int remainingCount = jobTypeValues.length - 2;
+                          formattedJobType += " ...+$remainingCount more";
+                        }
+
+                        _showDialog(context, workString,education ,"${LoginData().getUserFirstName()} ${LoginData().getUserLastName()}",formattedJobType, LoginData().getUserProfilePicture(), LoginData().getUserJobProfile().join(" • "));
                       });
                     });
                   }
