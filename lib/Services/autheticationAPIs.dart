@@ -28,7 +28,9 @@ class FirebaseAuthAPIs{
         'userLinkedin':'',
         'userTwitter':'',
         'userProfilePicture':'',
-        'userId':userId
+        'userId':userId,
+        'bookmarkedBrandProfiles':[],
+        'bookmarkedJobListings':[],
       });
       return true;
     }catch(e){
@@ -73,6 +75,8 @@ class FirebaseAuthAPIs{
         LoginData().writeUserJobProfile(jPstringList);
         LoginData().writeUserType(userData["userType"]);
         LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
+        LoginData().writeUserAccessToken(userData["accessToken"]);
+        LoginData().writeInstaUserId(userData["instaUserId"]);
         return true;
       }
       else {

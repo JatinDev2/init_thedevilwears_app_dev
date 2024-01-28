@@ -7,6 +7,7 @@ import 'package:lookbook/colorManager.dart';
 import '../../launchingFunctions.dart';
 import 'StudentTabs/tab1_st.dart';
 import 'StudentTabs/tab2_st.dart';
+import 'StudentTabs/tab3_st.dart';
 import 'edit_profile.dart';
 
 class StudentProfileScreen extends StatefulWidget{
@@ -423,7 +424,7 @@ else{
                       // tabThree(),
                       // tabFour(),
                       Tab2St(),
-                      Container(),
+                      Tab3St(),
                     ],
                   ),
                 ),

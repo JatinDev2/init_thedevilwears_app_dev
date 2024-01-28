@@ -64,25 +64,64 @@ class BuildInfoColumns extends StatelessWidget {
   }
 }
 
-
-class BuildCustomJobCard extends StatelessWidget {
+class BuildCustomJobCard extends StatefulWidget {
   final jobModel listing;
 
-   const BuildCustomJobCard({
+  const BuildCustomJobCard({
     super.key,
     required this.listing,
   });
 
   @override
+  State<BuildCustomJobCard> createState() => _BuildCustomJobCardState();
+}
+
+class _BuildCustomJobCardState extends State<BuildCustomJobCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late bool isBookmarked;
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    // Initialize the isBookmarked state
+    // You will replace this with the actual bookmarked state from user's profile
+    isBookmarked = LoginData().getBookmarkedJobListings().contains(widget.listing.docId);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void toggleBookmark() {
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+    if (isBookmarked) {
+      ProfileServices().bookmarkJobListing(LoginData().getUserId(),widget.listing.docId);
+      _animationController.forward();
+    } else {
+      ProfileServices().removeBookmarkedJobListing(LoginData().getUserId(),widget.listing.docId);
+      _animationController.reverse();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin:  EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       child: InkWell(
         onTap: () {
-          bool status= listing.applicationsIDS.contains(LoginData().getUserId());
-          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-            return JobListingDetailsScreen( newJobModel: listing, hasApplied: status);
+          bool status =
+              widget.listing.applicationsIDS.contains(LoginData().getUserId());
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            return JobListingDetailsScreen(
+                newJobModel: widget.listing, hasApplied: status);
           }));
         },
         child: Column(
@@ -96,7 +135,7 @@ class BuildCustomJobCard extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: listing.tags.map((option){
+                      children: widget.listing.tags.map((option) {
                         return OptionChipDisplay(
                           title: option,
                         );
@@ -111,47 +150,59 @@ class BuildCustomJobCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  BrandProfilePicClass(imgUrl: listing.brandPfp,),
-                   SizedBox(
+                  BrandProfilePicClass(
+                    imgUrl: widget.listing.brandPfp,
+                  ),
+                  SizedBox(
                     width: 10,
                   ),
                   Expanded(
                       child: Text(
-                        listing.createdBy,
-                        style:  TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xff0f1015),
-                          height: (20 / 18).h,
-                        ),
-                        textAlign: TextAlign.left,
-                      )),
+                    widget.listing.createdBy,
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xff0f1015),
+                      height: (20 / 18).h,
+                    ),
+                    textAlign: TextAlign.left,
+                  )),
                 ],
               ),
             ),
             Container(
-              padding:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
-              margin:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
               color: const Color(0xffF9F9F9),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BuildInfoColumns(heading_text: "Work Mode", info_text: listing.workMode),
+                  BuildInfoColumns(
+                      heading_text: "Work Mode",
+                      info_text: widget.listing.workMode),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Location", info_text:listing.officeLoc),
+                  BuildInfoColumns(
+                      heading_text: "Location",
+                      info_text: widget.listing.officeLoc),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Stipend", info_text:listing.stipend!="Unpaid" ? "${listing.stipendAmount}${listing.stipendVal}"  : "${listing.stipend}"),
+                  BuildInfoColumns(
+                      heading_text: "Stipend",
+                      info_text: widget.listing.stipend != "Unpaid"
+                          ? "${widget.listing.stipendAmount}${widget.listing.stipendVal}"
+                          : "${widget.listing.stipend}"),
                 ],
               ),
             ),
@@ -163,7 +214,7 @@ class BuildCustomJobCard extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       text: 'Responsibilities ',
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xff2F2F2F),
@@ -172,8 +223,8 @@ class BuildCustomJobCard extends StatelessWidget {
                         TextSpan(
                           // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
                           // text: "}"
-                          text: listing.responsibilities,
-                          style:  const TextStyle(
+                          text: widget.listing.responsibilities,
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.normal,
                             color: Color(0xff424242),
@@ -184,13 +235,13 @@ class BuildCustomJobCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                   SizedBox(height: 8.h),
+                  SizedBox(height: 8.h),
                   Row(
                     children: [
                       Text(
-                        getTimeAgo(listing.createdAt),
+                        getTimeAgo(widget.listing.createdAt),
                         // "37 Mins ago",
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
@@ -209,15 +260,28 @@ class BuildCustomJobCard extends StatelessWidget {
                             // launch(shareableLink);
 
                             // Create a deep link to the next page in your app
-                            String deepLink = 'myapp://next_page'; // Replace with your actual deep link structure
+                            String deepLink =
+                                'myapp://next_page'; // Replace with your actual deep link structure
 
                             // Share the deep link using the share package
-                            Share.share('Check out this listing: $deepLink', subject: 'Listing Details');
-
-                          }, icon: const Icon(IconlyLight.send)),
+                            Share.share('Check out this listing: $deepLink',
+                                subject: 'Listing Details');
+                          },
+                          icon: const Icon(IconlyLight.send)),
                       IconButton(
-                          onPressed: () {},
-                          icon: const Icon(IconlyLight.bookmark)),
+                        onPressed: toggleBookmark,
+                        icon: AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (_, Widget? child) {
+                            return Icon(
+                              isBookmarked
+                                  ? IconlyBold.bookmark
+                                  : IconlyLight.bookmark,
+                              color: Colors.black,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -228,6 +292,7 @@ class BuildCustomJobCard extends StatelessWidget {
       ),
     );
   }
+
   String getTimeAgo(String timestampString) {
     // Convert the Firestore timestamp string to a DateTime
     DateTime timestamp = DateTime.parse(timestampString);
@@ -254,7 +319,6 @@ class BuildCustomJobCard extends StatelessWidget {
   }
 }
 
-
 class BuildCustomBrandJobListingCard extends StatelessWidget {
   final jobModel listing;
 
@@ -267,11 +331,14 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin:  EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
+      margin: EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-            return JobListingDetailsScreen( newJobModel: listing,hasApplied: false, );
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            return JobListingDetailsScreen(
+              newJobModel: listing,
+              hasApplied: false,
+            );
           }));
         },
         child: Column(
@@ -285,7 +352,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: listing.tags.map((option){
+                      children: listing.tags.map((option) {
                         return OptionChipDisplay(
                           title: option,
                         );
@@ -300,48 +367,57 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  BrandProfilePicClass(imgUrl: listing.brandPfp,),
-
+                  BrandProfilePicClass(
+                    imgUrl: listing.brandPfp,
+                  ),
                   SizedBox(
                     width: 10,
                   ),
                   Expanded(
                       child: Text(
-                        listing.createdBy,
-                        style:  TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xff0f1015),
-                          height: (20 / 18).h,
-                        ),
-                        textAlign: TextAlign.left,
-                      )),
+                    listing.createdBy,
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xff0f1015),
+                      height: (20 / 18).h,
+                    ),
+                    textAlign: TextAlign.left,
+                  )),
                 ],
               ),
             ),
             Container(
-              padding:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
-              margin:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
               color: const Color(0xffF9F9F9),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BuildInfoColumns(heading_text: "Work Mode", info_text: listing.workMode),
+                  BuildInfoColumns(
+                      heading_text: "Work Mode", info_text: listing.workMode),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Location", info_text:listing.officeLoc),
+                  BuildInfoColumns(
+                      heading_text: "Location", info_text: listing.officeLoc),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Stipend", info_text:listing.stipend!="Unpaid" ? "${listing.stipendAmount}${listing.stipendVal}"  : "${listing.stipend}"),
+                  BuildInfoColumns(
+                      heading_text: "Stipend",
+                      info_text: listing.stipend != "Unpaid"
+                          ? "${listing.stipendAmount}${listing.stipendVal}"
+                          : "${listing.stipend}"),
                 ],
               ),
             ),
@@ -353,7 +429,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       text: 'Responsibilities ',
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xff2F2F2F),
@@ -363,7 +439,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                           // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
                           // text: "}"
                           text: listing.responsibilities,
-                          style:  TextStyle(
+                          style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.normal,
                             color: const Color(0xff424242),
@@ -380,7 +456,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                       Text(
                         getTimeAgo(listing.createdAt),
                         // "37 Mins ago",
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
@@ -390,57 +466,66 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                         textAlign: TextAlign.left,
                       ),
                       const Spacer(),
-                      if(!listing.clicked)
-                      Container(
-                        padding:  EdgeInsets.symmetric(vertical: 4.0.h, horizontal: 8.0.w),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(14.0.r),
-                        ),
-                         child:  Text(
-                           "New",
-                           style:  TextStyle(
-                             fontFamily: "Poppins",
-                             fontSize: 15.sp,
-                             fontWeight: FontWeight.w500,
-                             color: Colors.white,
-                             height: (20/13).h,
-                           ),
-                           textAlign: TextAlign.left,
-                         ),
-                      ),
-                      SizedBox(width: 5.w,),
-                      if(LoginData().getUserType()!="Person")
-                      InkWell(
-                        onTap: (){
-                          if(!listing.clicked){
-                            print("Yo i was tapped");
-                            FirebaseFirestore firestore = FirebaseFirestore.instance;
-                            DocumentReference docRef = firestore.collection('jobListing').doc(listing.docId);
-                            // Update the 'clicked' field of this document
-                            docRef.update({'clicked': true}).then((_) {
-                              print('Document successfully updated');
-                            }).catchError((error) {
-                              // Handle any errors here
-                              print('Error updating document: $error');
-                            });
-                          }
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                            return AllAplicationsScreen(jobId:listing.docId,);
-                          }));
-                        },
-                        child: Text(
-                          "${listing.applicationCount} Applications",
-                          style:  TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
+                      if (!listing.clicked)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 4.0.h, horizontal: 8.0.w),
+                          decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
-                            height: (20/13).h,
+                            borderRadius: BorderRadius.circular(14.0.r),
                           ),
-                          textAlign: TextAlign.left,
+                          child: Text(
+                            "New",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              height: (20 / 13).h,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
+                      SizedBox(
+                        width: 5.w,
                       ),
+                      if (LoginData().getUserType() != "Person")
+                        InkWell(
+                          onTap: () {
+                            if (!listing.clicked) {
+                              print("Yo i was tapped");
+                              FirebaseFirestore firestore =
+                                  FirebaseFirestore.instance;
+                              DocumentReference docRef = firestore
+                                  .collection('jobListing')
+                                  .doc(listing.docId);
+                              // Update the 'clicked' field of this document
+                              docRef.update({'clicked': true}).then((_) {
+                                print('Document successfully updated');
+                              }).catchError((error) {
+                                // Handle any errors here
+                                print('Error updating document: $error');
+                              });
+                            }
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (_) {
+                              return AllAplicationsScreen(
+                                jobId: listing.docId,
+                              );
+                            }));
+                          },
+                          child: Text(
+                            "${listing.applicationCount} Applications",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.primary,
+                              height: (20 / 13).h,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
                     ],
                   ),
                 ],
@@ -451,6 +536,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
       ),
     );
   }
+
   String getTimeAgo(String timestampString) {
     // Convert the Firestore timestamp string to a DateTime
     DateTime timestamp = DateTime.parse(timestampString);
@@ -477,8 +563,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
   }
 }
 
-
-class BuildJobCardForStudent extends StatefulWidget{
+class BuildJobCardForStudent extends StatefulWidget {
   final jobModel listing;
   final Map applicationData;
 
@@ -493,7 +578,6 @@ class BuildJobCardForStudent extends StatefulWidget{
 }
 
 class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
-
   TextStyle getStatusTextStyle(String status) {
     Color color;
     switch (status) {
@@ -513,7 +597,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
         color = Colors.red; // Assuming default is 'Under Review - Rejected'
     }
 
-    return  TextStyle(
+    return TextStyle(
       fontFamily: "Poppins",
       fontSize: 12,
       fontWeight: FontWeight.w500,
@@ -526,10 +610,10 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin:  EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
             return PreviewJobApplocation(
               additionalinfo: widget.applicationData['additional info'],
               listing: widget.listing,
@@ -550,69 +634,82 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundColor: widget.listing.brandPfp!.isNotEmpty? Colors.white : Colors.transparent,
-                    child: widget.listing.brandPfp != null && widget.listing.brandPfp.isNotEmpty
+                    backgroundColor: widget.listing.brandPfp!.isNotEmpty
+                        ? Colors.white
+                        : Colors.transparent,
+                    child: widget.listing.brandPfp != null &&
+                            widget.listing.brandPfp.isNotEmpty
                         ? CachedNetworkImage(
-                      imageUrl: widget.listing.brandPfp!, // Actual image URL
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      imageBuilder: (context, imageProvider) => CircleAvatar(
-                        radius: 25,
-                        backgroundImage: imageProvider,
-                      ),
-                    )
+                            imageUrl:
+                                widget.listing.brandPfp!, // Actual image URL
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: CircleAvatar(
+                                radius: 25,
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            imageBuilder: (context, imageProvider) =>
+                                CircleAvatar(
+                              radius: 25,
+                              backgroundImage: imageProvider,
+                            ),
+                          )
                         : CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.transparent,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: Image.asset("assets/brand.png", fit: BoxFit.cover, height: 80, width: 80,)), // Provide the path to your asset image
-                    ),
+                            radius: 25,
+                            backgroundColor: Colors.transparent,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: Image.asset(
+                                  "assets/brand.png",
+                                  fit: BoxFit.cover,
+                                  height: 80,
+                                  width: 80,
+                                )), // Provide the path to your asset image
+                          ),
                   ),
                   SizedBox(
                     width: 6.w,
                   ),
                   Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                           Text(
-                            "Applied to:",
-                            style:  TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color:Colors.grey,
-                              height: 15/10,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          SizedBox(height: 3,),
-                          Text(
-                            widget.listing.createdBy,
-                            style:  TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xff0f1015),
-                              height: (20 / 18).h,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      )),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Applied to:",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey,
+                          height: 15 / 10,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        widget.listing.createdBy,
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xff0f1015),
+                          height: (20 / 18).h,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  )),
                   Spacer(),
                   Text(
                     getTimeAgo(widget.applicationData['timeStamp'].toString()),
                     // "37 Mins ago",
-                    style:  TextStyle(
+                    style: TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
@@ -625,27 +722,35 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
               ),
             ),
             Container(
-              padding:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
-              margin:  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
               color: const Color(0xffF9F9F9),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BuildInfoColumns(heading_text: "Role", info_text: widget.listing.jobProfile),
+                  BuildInfoColumns(
+                      heading_text: "Role",
+                      info_text: widget.listing.jobProfile),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Job Type", info_text:widget.listing.jobType),
+                  BuildInfoColumns(
+                      heading_text: "Job Type",
+                      info_text: widget.listing.jobType),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 2.0.h, horizontal: 2.0.h),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
                     width: 2.w,
                     color: const Color(0xffB7B7B9),
                   ),
-                  BuildInfoColumns(heading_text:"Work Mode", info_text:widget.listing.workMode),
+                  BuildInfoColumns(
+                      heading_text: "Work Mode",
+                      info_text: widget.listing.workMode),
                 ],
               ),
             ),
@@ -657,7 +762,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                   RichText(
                     text: TextSpan(
                       text: 'Responsibilities ',
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xff2F2F2F),
@@ -667,7 +772,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                           // text: ' A mustard yellow traditional outfit is required for Alia Bhatt for her new movie promotions. The fabric...',
                           // text: "}"
                           text: widget.listing.responsibilities,
-                          style:  TextStyle(
+                          style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.normal,
                             color: const Color(0xff424242),
@@ -679,7 +784,11 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 8.h),
-                  Divider(height: 1.h, thickness: 1.h, color: Colors.grey.withOpacity(0.4),),
+                  Divider(
+                    height: 1.h,
+                    thickness: 1.h,
+                    color: Colors.grey.withOpacity(0.4),
+                  ),
                   Row(
                     children: [
                       Row(
@@ -700,113 +809,123 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                           ),
                         ],
                       ),
-                      SizedBox(width: 6,),
+                      SizedBox(
+                        width: 6,
+                      ),
                       Text(
-                      widget.applicationData['status'],
-                      style: getStatusTextStyle(widget.applicationData['status']),
+                        widget.applicationData['status'],
+                        style: getStatusTextStyle(
+                            widget.applicationData['status']),
                       ),
                       Spacer(),
-
-                         TextButton(
-                            onPressed: (){
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
+                      TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  title: const Text(
+                                    'Are you sure you want to delete your application?',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    title: const Text(
-                                      'Are you sure you want to delete your application?',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    actionsPadding: EdgeInsets.symmetric(horizontal: 10),
-                                    actions: <Widget>[
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                            InkWell(
-                                              onTap: (){
-                                                ProfileServices().deleteApplicationStatus(widget.listing.docId).then((value) {
-                                                  Navigator.of(context).pop();
-                                                });
-                                              },
-                                              child: Container(
-                                                height:44.h,
-                                                width: 150.w,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffE6E6E6),
-                                                  borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  actionsPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            ProfileServices()
+                                                .deleteApplicationStatus(
+                                                    widget.listing.docId)
+                                                .then((value) {
+                                              Navigator.of(context).pop();
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 44.h,
+                                            width: 150.w,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: Center(
+                                              child: const Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                  fontFamily: "Poppins",
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xff373737),
+                                                  height: 24 / 16,
                                                 ),
-                                                child: Center(
-                                                  child: const Text(
-                                                    "Yes",
-                                                    style: TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Color(0xff373737),
-                                                      height: 24/16,
-                                                    ),
-                                                    textAlign: TextAlign.left,
-                                                  ),
-                                                ),
+                                                textAlign: TextAlign.left,
                                               ),
                                             ),
-                                            InkWell(
-                                              onTap:(){
-                                                Navigator.of(context).pop();
-
-                                              },
-                                              child: Container(
-                                                height:44.h,
-                                                width: 150.w,
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context).colorScheme.primary,
-                                                  borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Container(
+                                            height: 44.h,
+                                            width: 150.w,
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: Center(
+                                              child: const Text(
+                                                "No",
+                                                style: TextStyle(
+                                                  fontFamily: "Poppins",
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xff373737),
+                                                  height: 24 / 16,
                                                 ),
-                                                child: Center(
-                                                  child: const Text(
-                                                    "No",
-                                                    style: TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Color(0xff373737),
-                                                      height: 24/16,
-                                                    ),
-                                                    textAlign: TextAlign.left,
-                                                  ),
-                                                ),
+                                                textAlign: TextAlign.left,
                                               ),
                                             ),
-                                        ],
-                                      ),
-
-                                      SizedBox(height: 16,),
-                                    ],
-                                  );
-                                },
-                              );
-
-                            },
-                            child: const Text(
-                              "Delete Application",
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xff111111),
-                                height: 19/12,
-                              ),
-                              textAlign: TextAlign.left,
-                            )
-                        ),
-                      ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text(
+                            "Delete Application",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff111111),
+                              height: 19 / 12,
+                            ),
+                            textAlign: TextAlign.left,
+                          )),
+                    ],
                   ),
                 ],
               ),
@@ -843,8 +962,6 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
   }
 }
 
-
-
 class OptionChipDisplay extends StatelessWidget {
   final String title;
 
@@ -855,34 +972,31 @@ class OptionChipDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return title.isNotEmpty? Container(
-      margin:  EdgeInsets.only(
-          top: 4.0,
-          left: 4.0,
-          right: 4.0,
-          bottom: 4.0
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: ColorsManager.greyishColor,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            title,
-            style:  TextStyle(
-              color: Colors.black,
-              fontSize: 13.sp,
+    return title.isNotEmpty
+        ? Container(
+            margin:
+                EdgeInsets.only(top: 4.0, left: 4.0, right: 4.0, bottom: 4.0),
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: ColorsManager.greyishColor,
+              borderRadius: BorderRadius.circular(20.r),
             ),
-          ),
-        ],
-      ),
-    ) : Container();
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 }
-
 
 class FilterOptionChip extends StatelessWidget {
   final String title;
@@ -906,14 +1020,11 @@ class FilterOptionChip extends StatelessWidget {
             right: selected ? 3.0 : 6.0,
             bottom: 9.0),
         padding: selected
-            ?  EdgeInsets.symmetric(
-          horizontal: 8.w,
-          vertical: 2.h,
-        )
-            :  EdgeInsets.symmetric(
-          horizontal: 14.w,
-          vertical: 2.h
-        ),
+            ? EdgeInsets.symmetric(
+                horizontal: 8.w,
+                vertical: 2.h,
+              )
+            : EdgeInsets.symmetric(horizontal: 14.w, vertical: 2.h),
         decoration: BoxDecoration(
           color: selected
               ? Theme.of(context).colorScheme.primary

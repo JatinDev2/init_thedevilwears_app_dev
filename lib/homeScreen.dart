@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lookbook/HomeScreen/brandModel.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/Services/profiles.dart';
 import 'package:lookbook/screens/profile/profileModels/educationModel.dart';
 import 'package:lookbook/screens/profile/profileModels/workModel.dart';
 import 'package:shimmer/shimmer.dart';
@@ -364,6 +365,7 @@ class TalentCard extends StatelessWidget {
   }
 }
 
+
 class OpportunitiesGrid extends StatelessWidget {
   final Future<List<BrandProfile>> futureList;
   OpportunitiesGrid({
@@ -428,7 +430,8 @@ class OpportunitiesGrid extends StatelessWidget {
           companyType: profile.companyName,
             clothingType:profile.companyName,
            jobOpenings:profile.numberOfApplications,
-          location:profile.location
+          location:profile.location,
+                brandId:profile.userId,
               ),
             );
           },
@@ -437,6 +440,155 @@ class OpportunitiesGrid extends StatelessWidget {
     );
   }
 }
+
+
+class CustomCard extends StatefulWidget {
+  final String imageUrl;
+  final String companyName;
+  final String companyType;
+  final String clothingType;
+  final int jobOpenings;
+  final String location;
+  final String brandId;
+
+  const CustomCard({
+    Key? key,
+    required this.imageUrl,
+    required this.companyName,
+    required this.companyType,
+    required this.clothingType,
+    required this.jobOpenings,
+    required this.location,
+    required this.brandId,
+  }) : super(key: key);
+
+  @override
+  _CustomCardState createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> {
+  double cornerRadius = 16; // Adjust as needed
+  late bool isBookmarked;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(LoginData().getBookmarkedBrandProfiles());
+     isBookmarked = LoginData().getBookmarkedBrandProfiles().contains(widget.brandId);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(8.h),
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(cornerRadius),
+            ),
+            elevation: 4,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                      ),
+                      child: Icon(Icons.error, color: Colors.red),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 10.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.companyName,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff0f1015),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        '${widget.companyType} • ${widget.clothingType}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff3f3f3f),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        '${widget.jobOpenings} Job openings, ${widget.location}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff8a8a8a),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.h),
+            child: GestureDetector(
+              onTap: () {
+                setState((){
+                  isBookmarked = !isBookmarked;
+                });
+                if(isBookmarked){
+                  ProfileServices().bookmarkBrandProfile(LoginData().getUserId(),widget.brandId);
+                }
+                else{
+                  ProfileServices().removeBookmarkedBrandProfile(LoginData().getUserId(),widget.brandId);
+                }
+
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Icon(
+                  Icons.bookmark,
+                  color: isBookmarked ? Colors.black : Colors.white,
+                  size: 24.h,
+                ),
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
+  }
+}
+
+
 
 class ShimmerTalentCard extends StatelessWidget {
   final double avatarRadius = 48;
@@ -487,179 +639,6 @@ class ShimmerTalentCard extends StatelessWidget {
     );
   }
 }
-
-
-class CustomCard extends StatelessWidget {
-  final String imageUrl;
-  final String companyName;
-  final String companyType;
-  final String clothingType;
-  final int jobOpenings;
-  final String location;
-
-  const CustomCard({
-    Key? key,
-    required this.imageUrl,
-    required this.companyName,
-    required this.companyType,
-    required this.clothingType,
-    required this.jobOpenings,
-    required this.location,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double cornerRadius = 16; // Adjust as needed
-
-    return Container(
-      margin: EdgeInsets.all(0.0),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(cornerRadius),
-        ),
-        elevation: 4,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CachedNetworkImage(
-              imageUrl: imageUrl,
-              imageBuilder: (context, imageProvider) => Container(
-                height: 115.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(cornerRadius)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  height: 115.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(cornerRadius)),
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                // bottom: 2.h,
-                top: 10.h,
-                left: 8.h
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    companyName,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 13.sp, // Use MediaQuery or a package like 'flutter_screenutil' for responsive sizes
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff0f1015),
-                    ),
-                  ),
-                  SizedBox(height: 4.h), // Adjust spacing as needed
-                  Text(
-                    '$companyType • $clothingType',
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff3f3f3f),
-                    ),
-                  ),
-                  SizedBox(height: 4.h), // Adjust spacing as needed
-                  Text(
-                    '$jobOpenings Job openings, $location',
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff8a8a8a),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// class ResponsiveCard extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     // Initializing ScreenUtil to have responsive sizes
-//     // ScreenUtil.init(context, designSize: Size(360, 690),);
-//
-//     return Padding(
-//       padding: EdgeInsets.all(0), // responsive padding
-//       child: Card(
-//         elevation: 4,
-//         child: Container(
-//           // width: 1.sw, // 100% of screen width
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               ClipRRect(
-//                 borderRadius: BorderRadius.circular(8.r), // responsive radius
-//                 child: Image.network(
-//                   'https://cdn-academyblog.pressidium.com/wp-content/uploads/2020/01/fashion-abby-yang-spring-2020-collections-8.jpg', // replace with your image URL
-//                   fit: BoxFit.cover,
-//                   width: 1.sw, // 100% of screen width
-//                   height: 112.h, // responsive height
-//                 ),
-//               ),
-//               SizedBox(height: 10.h), // responsive space
-//               Padding(
-//                 padding:  EdgeInsets.symmetric(horizontal: 8.w),
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       'Pryka',
-//                       style: TextStyle(
-//                         fontSize: 13.sp, // responsive font size
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     Text(
-//                       'Brand • Luxury Clothing',
-//                       style: TextStyle(
-//                         fontSize: 12.sp, // responsive font size
-//                       ),
-//                     ),
-//                     Text(
-//                       '4 Job openings , Delhi',
-//                       style: TextStyle(
-//                         fontSize: 12.sp, // responsive font size
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ShimmerCustomCard extends StatelessWidget {
   final double cornerRadius;
@@ -740,65 +719,3 @@ class ShimmerCustomCard extends StatelessWidget {
   }
 }
 
-
- class ResponsiveCard extends StatelessWidget {
-   const ResponsiveCard({super.key});
-
-   @override
-   Widget build(BuildContext context) {
-     return Center(
-       child: Card(
-         elevation: 4,
-         child: Column(
-           mainAxisSize: MainAxisSize.min,
-           crossAxisAlignment: CrossAxisAlignment.stretch,
-           children: [
-             Padding(
-               padding: const EdgeInsets.symmetric(
-                   vertical: 8.0),
-               child: ClipRRect(
-                 borderRadius: BorderRadius.circular(8), // responsive radius
-                 child: Image.network(
-                   'https://cdn-academyblog.pressidium.com/wp-content/uploads/2020/01/fashion-abby-yang-spring-2020-collections-8.jpg', // replace with your image URL
-                   fit: BoxFit.fill,
-                   height: MediaQuery.of(context).size.width/2,
-                   width: MediaQuery.of(context).size.width,
-                 ),
-               ),
-             ),
-             SizedBox(height: 10), // responsive space
-             Padding(
-               padding:  EdgeInsets.symmetric(horizontal: 8),
-               child: Column(
-                 mainAxisSize: MainAxisSize.min,
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: [
-                   Text(
-                     'Pryka',
-                     style: TextStyle(
-                       fontSize: 13, // responsive font size
-                       fontWeight: FontWeight.bold,
-                     ),
-                   ),
-                   Text(
-                     'Brand • Luxury Clothing',
-                     style: TextStyle(
-                       fontSize: 12, // responsive font size
-                     ),
-                   ),
-                   Text(
-                     '4 Job openings , Delhi',
-                     style: TextStyle(
-                       fontSize: 12, // responsive font size
-                     ),
-                   ),
-                 ],
-               ),
-             ),
-
-           ],
-         ),
-       ),
-     );
-   }
- }

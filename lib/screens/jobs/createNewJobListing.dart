@@ -244,7 +244,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
       await brandProfiles.doc(userId).update({'numberOfApplications': numberOfApplications + 1});
 
       // Update location field
-      String currentLocations = brandProfileDoc.get('locations') ?? '';
+      String currentLocations = brandProfileDoc.get('location') ?? '';
       if (!currentLocations.contains(stateValue)) {
         String updatedLocations = currentLocations.isEmpty ? stateValue : "$currentLocations, $stateValue";
         await brandProfiles.doc(userId).update({'location': updatedLocations});

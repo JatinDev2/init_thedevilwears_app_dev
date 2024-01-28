@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
+import '../HomeScreen/brandModel.dart';
 import '../Preferences/LoginData.dart';
 import '../screens/jobs/Applications/applicationModel.dart';
 import '../screens/jobs/job_model.dart';
@@ -637,4 +638,159 @@ class ProfileServices {
       }
     });
   }
+
+  Future<void> bookmarkBrandProfile(String userId, String brandProfileId) async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final DocumentReference userDoc = users.doc(userId);
+
+    // Add to Firebase
+    await userDoc.update({
+      'bookmarkedBrandProfiles': FieldValue.arrayUnion([brandProfileId])
+    });
+
+    // Add to local storage
+    List<String> currentBookmarks = LoginData().getBookmarkedBrandProfiles();
+    currentBookmarks.add(brandProfileId);
+     LoginData().writeBookmarkedBrandProfiles(currentBookmarks);
+  }
+
+  Future<void> removeBookmarkedBrandProfile(String userId, String brandProfileId) async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final DocumentReference userDoc = users.doc(userId);
+
+    // Remove from Firebase
+    await userDoc.update({
+      'bookmarkedBrandProfiles': FieldValue.arrayRemove([brandProfileId])
+    }).catchError((error) {
+      throw Exception("Failed to remove bookmark in Firestore: $error");
+    });
+
+    // Remove from local storage
+    List<String> currentBookmarks = LoginData().getBookmarkedBrandProfiles();
+    if (currentBookmarks != null && currentBookmarks.contains(brandProfileId)) {
+      currentBookmarks.remove(brandProfileId);
+      LoginData().writeBookmarkedBrandProfiles(currentBookmarks);
+    }
+  }
+
+
+  Stream<List<BrandProfile>> fetchBookmarkedBrandProfilesStream() {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    Stream<DocumentSnapshot> userBookmarksStream = firestore
+        .collection('studentProfiles')
+        .doc(LoginData().getUserId())
+        .snapshots();
+
+    return userBookmarksStream.asyncMap((userSnapshot) async {
+      final List<dynamic> bookmarkedIds = (userSnapshot.data() as Map<String, dynamic>?)?['bookmarkedBrandProfiles']?.cast<String>() ?? [];
+
+      List<Future<BrandProfile>> futureProfiles = bookmarkedIds.map((brandId) async {
+        DocumentSnapshot brandSnapshot = await firestore.collection('brandProfiles').doc(brandId).get();
+        return BrandProfile.fromDocument(brandSnapshot);
+      }).toList();
+
+      List<BrandProfile> profiles = await Future.wait(futureProfiles);
+      return profiles;
+    });
+  }
+
+  Future<void> bookmarkJobListing(String userId, String jobListingId) async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final DocumentReference userDoc = users.doc(userId);
+
+    // Add to Firebase
+    await userDoc.update({
+      'bookmarkedJobListings': FieldValue.arrayUnion([jobListingId])
+    });
+
+    // Add to local storage
+    List<String> currentBookmarks = LoginData().getBookmarkedJobListings();
+    currentBookmarks.add(jobListingId);
+    LoginData().writeBookmarkedJobListings(currentBookmarks);
+  }
+
+  Future<void> removeBookmarkedJobListing(String userId, String jobListingId) async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final DocumentReference userDoc = users.doc(userId);
+
+    // Remove from Firebase
+    await userDoc.update({
+      'bookmarkedJobListings': FieldValue.arrayRemove([jobListingId])
+    }).catchError((error) {
+      throw Exception("Failed to remove bookmark in Firestore: $error");
+    });
+
+    // Remove from local storage
+    List<String> currentBookmarks = LoginData().getBookmarkedJobListings();
+    if (currentBookmarks != null && currentBookmarks.contains(jobListingId)) {
+      currentBookmarks.remove(jobListingId);
+      LoginData().writeBookmarkedJobListings(currentBookmarks);
+    }
+  }
+
+
+  Stream<List<jobModel>> streamBookMarkedJobListings() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    return firestore.collection('studentProfiles').doc(LoginData().getUserId()).snapshots().asyncMap((studentProfileSnapshot) async {
+      List<jobModel> pairs = [];
+
+      try {
+        if (!studentProfileSnapshot.exists || studentProfileSnapshot.data() == null) {
+          print("Student profile snapshot does not exist or has no data.");
+          return pairs;
+        }
+
+        final List<dynamic> bookmarkedIds = (studentProfileSnapshot.data())?['bookmarkedJobListings']?.cast<String>() ?? [];
+        print("The list is  : ${bookmarkedIds}");
+        for (String value in bookmarkedIds) {
+          String jobId = value;
+          DocumentSnapshot data = await firestore.collection('jobListing').doc(jobId).get();
+
+          if (data.exists && data.data() != null) {
+            var jobData = data.data() as Map<String, dynamic>;
+            jobModel job = jobModel(
+                jobType : jobData["jobType"] ?? "",
+                jobProfile : jobData["jobProfile"] ?? "",
+                responsibilities : jobData["responsibilities"] ?? "",
+                jobDuration : jobData["jobDuration"] ?? "",
+                jobDurExact : jobData["jobDurationExact"] ?? "",
+                workMode : jobData["workMode"] ?? "",
+                officeLoc : jobData["officeLoc"] ?? "",
+                tentativeStartDate : jobData["tentativeStartDate"] ?? "",
+                stipend : jobData["stipend"] ?? "",
+                stipendAmount : jobData["stipendAmount"] ?? "",
+                numberOfOpenings : jobData["numberOfOpenings"] ?? "",
+                perks : jobData["perks"] ?? [],
+                createdBy : jobData["createdBy"] ?? "",
+                createdAt : jobData["createdAt"] ?? "",
+                userId : jobData["userId"] ?? "",
+                jobDurVal : jobData["jobDurVal"] ?? "",
+                stipendVal : jobData["stipendVal"] ?? "",
+                tags : jobData["tags"] ?? [],
+                applicationCount: jobData["applicationCount"] ?? 0,
+                clicked: jobData["clicked"] ?? false,
+                docId: jobData["docId"] ?? "",
+                applicationsIDS: jobData["applicationsIDS"] ?? [],
+                interests: jobData["interests"] ?? [],
+                brandPfp: jobData["brandPfp"] ?? "",
+                phoneNumber:jobData["phoneNumber"] ?? ""
+
+            );
+            pairs.add(job);
+          } else {
+            print("Job listing document (ID: $jobId) does not exist or has no data.");
+          }
+        }
+      } catch (e) {
+        print("An error occurred: $e");
+      }
+
+      return pairs;
+    });
+  }
+
+
+
 }

@@ -36,13 +36,25 @@ class LoginData{
   }
 
   List<String> getUserInterests(){
-    List<dynamic> dynamicList = loginData.read("userInterests");
+    List<dynamic> dynamicList = loginData.read("userInterests") ?? [];
     List<String> stringList = dynamicList.map((item) => item.toString()).toList();
     return stringList;
   }
 
   List<String>getUserJobProfile(){
     List<dynamic> dynamicList = loginData.read("userJobProfile");
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
+  }
+
+  List<String>getBookmarkedBrandProfiles(){
+    List<dynamic> dynamicList = loginData.read("bookmarkedBrandProfiles") ?? [];
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
+  }
+
+  List<String>getBookmarkedJobListings(){
+    List<dynamic> dynamicList = loginData.read("bookmarkedJobListings") ?? [];
     List<String> stringList = dynamicList.map((item) => item.toString()).toList();
     return stringList;
   }
@@ -181,5 +193,12 @@ class LoginData{
      loginData.write("userProfilePicture",imgUrl);
   }
 
+  void writeBookmarkedBrandProfiles(List<String> profiles){
+    loginData.write("bookmarkedBrandProfiles", profiles);
+  }
+
+  void writeBookmarkedJobListings(List<String> profiles){
+    loginData.write("bookmarkedJobListings", profiles);
+  }
 
 }
