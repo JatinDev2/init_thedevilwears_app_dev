@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/Provider/google_auth_provider.dart';
+import 'package:lookbook/Services/autheticationAPIs.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
 import 'package:lookbook/screens/jobs/filterScreen.dart';
 import 'package:lookbook/screens/lookbook/lookbook_details_screen.dart';
@@ -13,11 +15,8 @@ import 'package:lookbook/screens/lookbook/lookbook_image_details.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
-import 'homeScreen.dart';
 import 'instaLogin/instagram_model.dart';
 import 'splashScreen.dart';
-import 'Login/options_screen.dart';
-import 'Login/phoneNumber_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +25,14 @@ void main() async{
   // await FirebaseApi().initNotification();
   // initUniLinks(); // Initialize uni_links package
   runApp(const MyApp());
-  await InstagramModel().exchangeForLongLivedToken();
+  print("Aceess token is : ${LoginData().getUserAccessToken()}");
+  print("user id is : ${LoginData().getUserId()}");
+
+  if(LoginData().getIsLoggedIn()==true && LoginData().getUserType()=="Company" ){
+    await InstagramModel().refreshLongLivedToken(LoginData().getUserAccessToken()).then((value) {
+      FirebaseAuthAPIs().updateOrCreateAccessToken(LoginData().getUserId(), LoginData().getUserAccessToken());
+    });
+  }
 }
 
 Future<void> initUniLinks() async {

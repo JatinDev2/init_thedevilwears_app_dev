@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../instaLogin/insta_test.dart';
@@ -129,7 +130,7 @@ class _Tab1_BPState extends State<Tab1_BP> {
             ),
             SizedBox(height: 14.h,),
       FutureBuilder<List<InstagramMedia>>(
-        future: InstagramModel.fetchMedia(),
+        future: InstagramModel.fetchMedia(LoginData().getUserAccessToken(),LoginData().getUserInstaId()),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Display a loading indicator or shimmer effect

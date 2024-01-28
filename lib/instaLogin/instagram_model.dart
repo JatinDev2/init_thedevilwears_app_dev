@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/Services/autheticationAPIs.dart';
 import 'insta_test.dart';
 import 'instagram_constant.dart';
 
@@ -38,6 +39,28 @@ class InstagramModel {
     }
   }
 
+  Future<String?> refreshLongLivedToken(String currentLongLivedToken) async {
+    var url = Uri.parse('https://graph.instagram.com/refresh_access_token'
+        '?grant_type=ig_refresh_token'
+        '&access_token=$currentLongLivedToken');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        String newLongLivedToken = responseData['access_token'];
+        // Here you can also extract the new token's expiration time if needed
+        return newLongLivedToken;
+      } else {
+        print('Failed to refresh token. Status code: ${response.statusCode}. Response: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error occurred while refreshing token: $e');
+      return null;
+    }
+  }
+
   Future<bool> getTokenAndUserID() async {
     var url = Uri.parse('https://api.instagram.com/oauth/access_token');
     final response = await http.post(url, body: {
@@ -55,7 +78,9 @@ class InstagramModel {
 
     userID = json.decode(response.body)['user_id'].toString();
     // prefs.setString('userIdInsta', userID.toString());
+
     LoginData().writeInstaUserId(userID.toString());
+    FirebaseAuthAPIs().updateOrCreateInstaUserId(LoginData().getUserInstaId(), userID.toString());
 
     return (accessToken != null && userID != null) ? true : false;
   }
@@ -73,14 +98,14 @@ class InstagramModel {
     return instaProfile != null ? true : false;
   }
 
-  Future<List<String>> getUserMedia() async {
+  Future<List<String>> getUserMedia(String accessToken, String instaUserID) async {
 
     // final prefs = await SharedPreferences.getInstance();
     // final accessTokenFromStorage = prefs.getString('accessToken');
     // final userIdFromStorage = prefs.getString('userIdInsta');
 
-    final accessTokenFromStorage = LoginData().getUserAccessToken();
-    final userIdFromStorage = LoginData().getUserInstaId();
+    final accessTokenFromStorage = accessToken;
+    final userIdFromStorage = instaUserID;
 
     print("The access token is : ${accessTokenFromStorage}");
     print("The user id is : ${userIdFromStorage}");
@@ -104,8 +129,6 @@ class InstagramModel {
       return [];
     }
   }
-
-
 
   Future<Map<String, dynamic>> getMediaDetails(String mediaId) async {
     // final prefs = await SharedPreferences.getInstance();
@@ -131,9 +154,9 @@ class InstagramModel {
     }
   }
 
- static Future<List<InstagramMedia>> fetchMedia() async {
+ static Future<List<InstagramMedia>> fetchMedia(String accessToken, String instaUserID) async {
     final InstagramModel instagramModel = InstagramModel(); // Your InstagramModel instance
-    List<String> mediaIds = await instagramModel.getUserMedia();
+    List<String> mediaIds = await instagramModel.getUserMedia(accessToken,instaUserID);
     print("The list is : ");
     print(mediaIds);
     List<InstagramMedia> tempList = [];
@@ -143,6 +166,5 @@ class InstagramModel {
     }
     return tempList;
   }
-
 
 }

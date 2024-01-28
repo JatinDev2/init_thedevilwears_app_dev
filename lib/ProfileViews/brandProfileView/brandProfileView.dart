@@ -403,6 +403,7 @@ class _BrandProfileViewState extends State<BrandProfileView>
                       _tabController.index=1;
                     });
                   },
+                   brandProfile: widget.brandProfile,
                 ),
                 // tabThree(),
                 // tabFour(),

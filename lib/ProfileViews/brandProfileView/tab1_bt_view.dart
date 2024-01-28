@@ -1,15 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lookbook/HomeScreen/brandModel.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../instaLogin/insta_test.dart';
 import '../../../instaLogin/instagram_model.dart';
 
 class Tab1_BP_View extends StatefulWidget {
   final VoidCallback onTap;
+  final BrandProfile brandProfile;
 
   const Tab1_BP_View({
     required this.onTap,
+    required this.brandProfile,
     super.key,
   });
 
@@ -123,7 +126,7 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
             ),
             SizedBox(height: 14.h,),
             FutureBuilder<List<InstagramMedia>>(
-              future: InstagramModel.fetchMedia(),
+              future: InstagramModel.fetchMedia(widget.brandProfile.accessToken, widget.brandProfile.instaUserId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // Display a loading indicator or shimmer effect

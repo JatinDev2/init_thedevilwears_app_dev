@@ -20,6 +20,8 @@ class BrandProfile {
   final String brandTwitter;
   final String brandFacebook;
   final String brandLinkedIn;
+  final String instaUserId;
+  final String accessToken;
 
   BrandProfile({
     required this.brandName,
@@ -41,6 +43,8 @@ class BrandProfile {
     required this.brandInsta,
     required this.brandTwitter,
     required this.brandLinkedIn,
+    required this.accessToken,
+    required this.instaUserId,
   });
   // locations,
 
@@ -65,6 +69,9 @@ class BrandProfile {
       brandInsta: doc['brandInsta'] ?? '',
       brandTwitter: doc['brandTwitter'] ?? '',
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
+      accessToken: doc['accessToken'] ?? '',
+      instaUserId: doc['instaUserId'] ?? '',
+
 
     );
   }
@@ -90,7 +97,8 @@ class BrandProfile {
       brandInsta: doc['brandInsta'] ?? '',
       brandTwitter: doc['brandTwitter'] ?? '',
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
-
+      accessToken: doc['accessToken'] ?? '',
+      instaUserId: doc['instaUserId'] ?? '',
     );
   }
 

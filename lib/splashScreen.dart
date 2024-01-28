@@ -7,6 +7,7 @@ import 'package:lookbook/homeScreen.dart';
 import 'package:lookbook/screens/brandProfile/editBrandDetails.dart';
 import 'package:lookbook/screens/home/home_screen.dart';
 import 'Login/login_options.dart';
+import 'instaLogin/instagram_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -34,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       else if(!isLoginOptionsDone){
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
-          return LoginOptions();
+          return const LoginOptions();
         }));
       }
       else if(isLoginOptionsDone && !isUserType){
@@ -44,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       else if(isUserType && !isPhoneNumberVerified){
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
-          return PhoneNumber_Screen();
+          return const PhoneNumber_Screen();
         }));
       }
       else if(isPhoneNumberVerified && !isJobProfile){
@@ -54,12 +56,12 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       else{
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
-          return LoginOptions();
+          return const LoginOptions();
         }));
       }
-
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

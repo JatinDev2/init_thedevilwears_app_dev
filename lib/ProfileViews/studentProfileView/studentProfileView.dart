@@ -32,7 +32,16 @@ class _StyudentProfileViewState extends State<StudentProfileView>
   void initState() {
     List<String> userDescriptionList = widget.studentProfile.userDescription!;
     descriptionsWithBullets = userDescriptionList.join('  •  ');
-    _tabController = TabController(length: 2, vsync: this);
+    print("User id");
+    print(LoginData().getUserId());
+    print("Student id");
+    print(widget.studentProfile.userId);
+    if(widget.studentProfile.userId==LoginData().getUserId()){
+      _tabController = TabController(length: 2, vsync: this);
+    }
+    else{
+      _tabController = TabController(length: 1, vsync: this);
+    }
     _tabController.addListener(_handleTabChange);
     // profileInfoStream=getStudentProfileStream(uid);
     super.initState();
@@ -41,7 +50,13 @@ class _StyudentProfileViewState extends State<StudentProfileView>
   void _handleTabChange() {
     setState(() {
       // Reset all tab selected states to false
-      _tabSelectedState = [false,false];
+      if(widget.studentProfile.userId==LoginData().getUserId()){
+        _tabSelectedState = [false,false];
+      }
+      else{
+        _tabSelectedState = [false];
+      }
+      // _tabSelectedState = [false,false];
       // Set the selected tab's state to true
       _tabSelectedState[_tabController.index] = true;
     });
@@ -54,14 +69,14 @@ class _StyudentProfileViewState extends State<StudentProfileView>
             return Scaffold(
               body: Material(
                 child: DefaultTabController(
-                  length: 2,
+                  length: widget.studentProfile.userId==LoginData().getUserId()? 2 : 1,
                   child: NestedScrollView(
                     headerSliverBuilder: (context, innerBoxIsScrolled) {
                       return [
                         SliverAppBar(
                           leading: Container(),
                           backgroundColor: Colors.white,
-                          expandedHeight: 310,
+                          expandedHeight: 280,
                           floating: true,
                           pinned: false,
                           flexibleSpace: FlexibleSpaceBar(
@@ -312,7 +327,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                 Container(
                                     margin: const EdgeInsets.only(top: 8, left: 11),
                                     child:  Text(
-                      widget.studentProfile.userBio?? "No Description yet!",
+                      widget.studentProfile.userBio!.isNotEmpty? widget.studentProfile.userBio! : "No Description yet!",
                                       style:const TextStyle(
                                         fontFamily: "Poppins",
                                         fontSize: 13,
@@ -320,6 +335,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                         color: Color(0xff5a5a5a),
                                       ),
                                       textAlign: TextAlign.left,
+                                      overflow: TextOverflow.ellipsis,
                                     )),
                               ],
                             ),
@@ -334,6 +350,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                               tabs: [
                                 Tab(
                                     child:  SvgPicture.asset("assets/tab1_st_s.svg",color: _tabSelectedState[0] ?Colors.black : ColorsManager.unSelectedTabColor,)),
+                                if(widget.studentProfile.userId==LoginData().getUserId())
                                 Tab(
                                     child:  SvgPicture.asset("assets/tab4_s.svg",color: _tabSelectedState[0] ?Colors.black : ColorsManager.unSelectedTabColor,)),
 
@@ -351,6 +368,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                         // tabThree(),
                         // tabFour(),
                         // Tab2St(),
+                        if(widget.studentProfile.userId==LoginData().getUserId())
                         Container(),
                       ],
                     ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:lookbook/Services/autheticationAPIs.dart';
 import '../Login/final_screen.dart';
 import '../screens/home/home_screen.dart';
 import 'instagram_constant.dart';
@@ -37,6 +38,9 @@ class InstagramView extends StatelessWidget {
   Future<void> addUser(BuildContext context,String instaUserName) async {
     // final prefs = await SharedPreferences.getInstance();
   try {
+    InstagramModel().exchangeForLongLivedToken().then((value) {
+      FirebaseAuthAPIs().updateOrCreateAccessToken(LoginData().getUserId(),LoginData().getUserAccessToken());
+    });
     if(label=="Login"){
       Navigator.pushAndRemoveUntil(
         context,

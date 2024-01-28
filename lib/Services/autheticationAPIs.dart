@@ -28,6 +28,7 @@ class FirebaseAuthAPIs{
         'userLinkedin':'',
         'userTwitter':'',
         'userProfilePicture':'',
+        'userId':userId
       });
       return true;
     }catch(e){
@@ -111,6 +112,40 @@ class FirebaseAuthAPIs{
       print("Error in addBrandToDatabase : $e");
       return false;
     }
+  }
+
+  Future<void> updateOrCreateAccessToken(String userId, String newAccessToken) async {
+    var studentProfilesRef = FirebaseFirestore.instance.collection('brandProfiles').doc(userId);
+
+    return studentProfilesRef.get().then((doc) {
+      if (doc.exists) {
+        // Document exists, update the accessToken
+        return studentProfilesRef.update({'accessToken': newAccessToken});
+      } else {
+        // Document does not exist, create it with the accessToken
+        return studentProfilesRef.set({'accessToken': newAccessToken});
+      }
+    }).catchError((error) {
+      print('Error updating accessToken: $error');
+      throw error;
+    });
+  }
+
+  Future<void> updateOrCreateInstaUserId(String userId, String instaUserId) async {
+    var studentProfilesRef = FirebaseFirestore.instance.collection('brandProfiles').doc(userId);
+
+    return studentProfilesRef.get().then((doc) {
+      if (doc.exists) {
+        // Document exists, update the accessToken
+        return studentProfilesRef.update({'instaUserId': instaUserId});
+      } else {
+        // Document does not exist, create it with the accessToken
+        return studentProfilesRef.set({'instaUserId': instaUserId});
+      }
+    }).catchError((error) {
+      print('Error updating instaUserId: $error');
+      throw error;
+    });
   }
 
 }
