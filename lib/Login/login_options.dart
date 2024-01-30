@@ -6,7 +6,7 @@ import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/Services/autheticationAPIs.dart';
 import 'package:provider/provider.dart';
 import '../Provider/google_auth_provider.dart';
-import '../screens/home/home_screen.dart';
+import '../screens/home/old_home_screen.dart';
 import 'options_screen.dart';
 
 class LoginOptions extends StatefulWidget {
@@ -210,32 +210,6 @@ class _LoginOptionsState extends State<LoginOptions> {
                   ],
                 ),
                 SizedBox(height: 45,),
-                // const Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Text(
-                //       "1",
-                //       style: TextStyle(
-                //         fontFamily: "Poppins",
-                //         fontSize: 16,
-                //         fontWeight: FontWeight.w400,
-                //         height: 24/16,
-                //       ),
-                //       textAlign: TextAlign.left,
-                //     ),
-                //     Text(
-                //       "/5",
-                //       style: TextStyle(
-                //           fontFamily: "Poppins",
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.w400,
-                //           height: 24/16,
-                //           color: Colors.grey
-                //       ),
-                //       textAlign: TextAlign.left,
-                //     ),
-                //   ],
-                // ),
                 SizedBox(height: 49,),
               ],
             ),

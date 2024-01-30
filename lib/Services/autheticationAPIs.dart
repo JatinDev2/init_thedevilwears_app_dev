@@ -11,6 +11,7 @@ class FirebaseAuthAPIs{
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('studentProfiles');
   final CollectionReference brandsCollection = FirebaseFirestore.instance.collection('brandProfiles');
 
+  //--------------------------------Add Student to Database ---------------------------------------------------------
   Future<bool> addStudentToDatabase(List<String>userDescription, List<String>interestedOpportunities) async{
     try{
       await usersCollection.doc(userId).set({
@@ -38,6 +39,8 @@ class FirebaseAuthAPIs{
       return false;
     }
   }
+
+  //--------------------------------Check if User is already logged in ---------------------------------------------------------
 
   Future<bool> checkStudentEmailInFireStore() async {
     try {
@@ -88,6 +91,7 @@ class FirebaseAuthAPIs{
     }
   }
 
+  //--------------------------------Add Brand to Database ---------------------------------------------------------
   Future<bool> addBrandToDatabase(List<String>userDescription, List<String>interestedOpportunities) async{
     try{
       await brandsCollection.doc(userId).set({
@@ -118,15 +122,15 @@ class FirebaseAuthAPIs{
     }
   }
 
+
+  //--------------------------------Updating Instagram accessToken ---------------------------------------------------------
   Future<void> updateOrCreateAccessToken(String userId, String newAccessToken) async {
     var studentProfilesRef = FirebaseFirestore.instance.collection('brandProfiles').doc(userId);
 
     return studentProfilesRef.get().then((doc) {
       if (doc.exists) {
-        // Document exists, update the accessToken
         return studentProfilesRef.update({'accessToken': newAccessToken});
       } else {
-        // Document does not exist, create it with the accessToken
         return studentProfilesRef.set({'accessToken': newAccessToken});
       }
     }).catchError((error) {
@@ -135,6 +139,7 @@ class FirebaseAuthAPIs{
     });
   }
 
+  //--------------------------------Updating Instagram User id  ---------------------------------------------------------
   Future<void> updateOrCreateInstaUserId(String userId, String instaUserId) async {
     var studentProfilesRef = FirebaseFirestore.instance.collection('brandProfiles').doc(userId);
 

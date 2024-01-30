@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/jobs/Applications/previewTab.dart';
-import '../../../HomeScreen/studentModel.dart';
-import '../../../launchingFunctions.dart';
+import '../../../Models/ProfileModels/studentModel.dart';
+import '../../../App Constants/launchingFunctions.dart';
 import '../job_model.dart';
 
 class PreviewJobApplocation extends StatefulWidget{

@@ -6,11 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../colorManager.dart';
-import '../../profile/profileForms/skillsForm.dart';
-import '../../profile/profileModels/educationModel.dart';
-import '../../profile/profileModels/projectModel.dart';
-import '../../profile/profileModels/workModel.dart';
+import '../../../App Constants/colorManager.dart';
+import '../../../Models/formModels/educationModel.dart';
+import '../../../Models/formModels/projectModel.dart';
+import '../../../Models/formModels/workModel.dart';
+import '../../../profiles/studentProfile/profileForms/skillsForm.dart';
 
 class previewApplicationTabBody extends StatefulWidget {
   final String additionalInfo;

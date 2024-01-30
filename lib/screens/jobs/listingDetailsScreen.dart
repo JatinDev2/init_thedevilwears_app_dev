@@ -7,12 +7,12 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
-import 'package:lookbook/colorManager.dart';
-import 'package:lookbook/launchingFunctions.dart';
+import 'package:lookbook/App%20Constants/colorManager.dart';
+import 'package:lookbook/App%20Constants/launchingFunctions.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../Services/profiles.dart';
-import '../../pfpClass.dart';
-import '../common_widgets.dart';
+import '../../App Constants/pfpClass.dart';
+import '../../Common Widgets/common_widgets.dart';
 import 'Applications/previewApplication.dart';
 import 'job_model.dart';
 
@@ -663,10 +663,6 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                       isLoading=true;
                     });
 
-                    // final prefs = await SharedPreferences.getInstance();
-                    // // final userId = prefs.getString('userId');
-                    // final firstName = prefs.getString('firstName');
-                    // final lastName = prefs.getString('lastName');
                     String workString="";
                     String education="";
 

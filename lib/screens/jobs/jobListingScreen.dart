@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
-import '../common_widgets.dart';
+import '../../Common Widgets/common_widgets.dart';
 import 'createNewJobListing.dart';
 import 'job_model.dart';
 
@@ -41,33 +41,7 @@ class _JobListScreenState extends State<JobListScreen> {
         for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
           Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
-          jobModel listModel = jobModel(
-           jobType : data["jobType"] ?? "",
-           jobProfile : data["jobProfile"] ?? "",
-           responsibilities : data["responsibilities"] ?? "",
-           jobDuration : data["jobDuration"] ?? "",
-           jobDurExact : data["jobDurationExact"] ?? "",
-           workMode : data["workMode"] ?? "",
-           officeLoc : data["officeLoc"] ?? "",
-           tentativeStartDate : data["tentativeStartDate"] ?? "",
-           stipend : data["stipend"] ?? "",
-           stipendAmount : data["stipendAmount"] ?? "",
-           numberOfOpenings : data["numberOfOpenings"] ?? "",
-           perks : data["perks"] ?? [],
-            createdBy : data["createdBy"] ?? "",
-           createdAt : data["createdAt"] ?? "",
-           userId : data["userId"] ?? "",
-           jobDurVal : data["jobDurVal"] ?? "",
-           stipendVal : data["stipendVal"] ?? "",
-           tags : data["tags"] ?? [],
-            applicationCount: data["applicationCount"] ?? 0,
-            clicked: data["clicked"] ?? false,
-            docId: data["docId"] ?? "",
-            applicationsIDS: data["applicationsIDS"] ?? [],
-            interests: data["interests"] ?? [],
-              brandPfp:data["brandPfp"] ?? "",
-              phoneNumber: data["phoneNumber"] ?? ""
-          );
+          jobModel listModel = jobModel.fromMap(data);
           listings.add(listModel);
         }
         return listings;
@@ -200,7 +174,7 @@ class _JobListScreenState extends State<JobListScreen> {
                   children: [
                     Container(
                       // margin: EdgeInsets.only(horizontal: 5.0.w, vertical: 5.0.h),
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
                       width: MediaQuery.of(context).size.width,
                       color: Colors.white,
                       child: Row(

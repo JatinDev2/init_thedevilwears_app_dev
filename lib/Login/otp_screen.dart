@@ -45,13 +45,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     try {
       // Link the phone number credential with the existing Google user
       await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential).then((value){
-        // final prefs = await SharedPreferences.getInstance(); // Obtain SharedPreferences instance
-        // final userEmail= prefs.getString('userEmail');
-        // await prefs.setBool('phoneVerified', true);
-        // await prefs.setString('firstName', widget.firstName);
-        // await prefs.setString('lastName', widget.lastName);
-        // await prefs.setString('phoneNumber', "${widget.dialCode}${widget.phoneNumber}");
-        // await prefs.setString('email', userEmail!);
         LoginData().writeIsPhoneNumberVerified(true);
         LoginData().writeUserFirstName(widget.firstName);
         LoginData().writeUserLastName(widget.lastName);
@@ -74,7 +67,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         ),
       );
       print(e.message);
-      // Handle errors during linking if needed
     }
   }
 
@@ -87,7 +79,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   @override
 
   Widget build(BuildContext context) {
-    // Use flutter_screenutil for responsive design
     ScreenUtil.init(context);
 
     return Scaffold(
@@ -223,7 +214,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       errorAnimationController: errorController,
                       controller: textEditingController,
                       keyboardType: TextInputType.number,
-                      boxShadows: [
+                      boxShadows: const [
                         BoxShadow(
                           offset: Offset(0, 1),
                           color: Colors.black12,

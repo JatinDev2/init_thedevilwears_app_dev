@@ -1,15 +1,12 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:lookbook/widgets/carousel_widget.dart';
-import 'package:lookbook/widgets/status_bar_app_bar.dart';
-import 'package:lookbook/widgets/mini_expandable_text.dart';
-
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../../Common Widgets/widgets/carousel_widget.dart';
+import '../../Common Widgets/widgets/mini_expandable_text.dart';
+import '../../Common Widgets/widgets/status_bar_app_bar.dart';
 
 
 class LookbookImageDetailsScreen extends StatefulWidget {

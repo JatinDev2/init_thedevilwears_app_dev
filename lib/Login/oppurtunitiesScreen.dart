@@ -5,7 +5,7 @@ import 'package:lookbook/Preferences/LoginData.dart';
 
 import '../Services/autheticationAPIs.dart';
 import 'final_screen.dart';
-import 'insta_verification_screen.dart';
+import 'instaLogin/insta_verification_screen.dart';
 
 class OppurtunitiesScreen extends StatefulWidget {
  final List<String> userDescription;
@@ -208,7 +208,7 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                                 LoginData().writeIsInterestsSelected(true);
                                 LoginData().writeIsLoggedIn(true);
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                  return ConfirmedLoginScreen();
+                                  return const ConfirmedLoginScreen();
                                 }));
                               }
                             });
@@ -223,7 +223,7 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                                 LoginData().writeIsInterestsSelected(true);
                                 LoginData().writeIsLoggedIn(true);
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                  return InstaVerification(map: {},);
+                                  return const InstaVerification(map: {},);
                                 }));
                               }
                             });

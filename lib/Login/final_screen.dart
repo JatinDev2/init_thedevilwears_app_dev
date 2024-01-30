@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lookbook/colorManager.dart';
-import '../screens/home/home_screen.dart';
+import 'package:lookbook/App%20Constants/colorManager.dart';
+import '../screens/home/old_home_screen.dart';
 import 'options_screen.dart';
 
 class ConfirmedLoginScreen extends StatelessWidget {
@@ -10,11 +10,6 @@ class ConfirmedLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        // onTap: (){
-        //   Navigator.of(context).push(MaterialPageRoute(builder: (_){
-        //     return HomeScreen();
-        //   }));
-        // },
       child: Scaffold(
         body: Stack(
           children: [

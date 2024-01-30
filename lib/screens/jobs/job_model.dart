@@ -53,4 +53,35 @@ class jobModel{
     required this.phoneNumber,
 });
 
+  factory jobModel.fromMap(Map<String, dynamic> data) {
+    return jobModel(
+      jobType: data['jobType'] ?? '',
+      jobProfile: data['jobProfile'] ?? '',
+      responsibilities: data['responsibilities'] ?? '',
+      jobDuration: data['jobDuration'] ?? '',
+      jobDurExact: data['jobDurExact'] ?? '',
+      workMode: data['workMode'] ?? '',
+      officeLoc: data['officeLoc'] ?? '',
+      tentativeStartDate: data['tentativeStartDate'] ?? '',
+      stipend: data['stipend'] ?? '',
+      stipendAmount: data['stipendAmount'] ?? '',
+      numberOfOpenings: data['numberOfOpenings'] ?? '',
+      perks: data['perks'] != null ? List.from(data['perks']) : [],
+      createdBy: data['createdBy'] ?? '',
+      createdAt: data['createdAt'] ?? '',
+      userId: data['userId'] ?? '',
+      jobDurVal: data['jobDurVal'] ?? '',
+      stipendVal: data['stipendVal'] ?? '',
+      tags: data['tags'] != null ? List.from(data['tags']) : [],
+      applicationCount: data['applicationCount'] ?? 0,
+      clicked: data['clicked'] ?? false,
+      docId: data['docId'] ?? '',
+      applicationsIDS: data['applicationsIDS'] != null ? List.from(data['applicationsIDS']) : [],
+      interests: data['interests'] != null ? List.from(data['interests']) : [],
+      brandPfp: data['brandPfp'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+    );
+  }
+
+
 }

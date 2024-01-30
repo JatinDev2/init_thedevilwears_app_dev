@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:lookbook/HomeScreen/brandModel.dart';
-import 'package:lookbook/HomeScreen/studentModel.dart';
+import 'package:lookbook/Models/ProfileModels/brandModel.dart';
 import 'package:lookbook/screens/search/filterScreenJob.dart';
+import '../../Models/ProfileModels/studentModel.dart';
 import 'AlphaBetScrollJob.dart';
 import 'AlphaBetScrollPeople.dart';
 
@@ -16,7 +16,7 @@ class JobAndPeopleData {
 }
 
 class JobSearchScreen extends StatefulWidget {
-  double height;
+  final double height;
 
   JobSearchScreen({
     required this.height,
@@ -28,16 +28,15 @@ class JobSearchScreen extends StatefulWidget {
 
 class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderStateMixin{
   String query_check = "";
-
   late Future<JobAndPeopleData?> _data;
   List<BrandProfile> filteredJobOpenings=[];
   List<BrandProfile> realData=[];
   List<StudentProfile> realPeopleData=[];
   List<StudentProfile> filteredPeopleList=[];
   int _selectedTab = 0;
-  final faker = Faker.instance;
    List selectedOptions=[];
    String tabSelectedInFilterScreen="";
+
   Map<String, dynamic> _selectedOptionMap = {
     "Type":[],
     "Category":{
@@ -82,7 +81,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
     _data=fetchJobOpeningsAndPeopleData();
     _tabController.addListener(() {
       if (_tabController.index != _selectedTab) {
@@ -141,58 +139,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
       filteredPeopleList = tempFiltered.toList();
     }
   }
-
-  // void _applyFiltersPeoople() {
-  //   Set<StudentProfile> tempFiltered = {};
-  //
-  //   // Filter by the name query if it exists.
-  //   if (query_check.isNotEmpty) {
-  //     for (var person in realPeopleData) {
-  //       String fullName = "${person.firstName} ${person.lastName}".toLowerCase();
-  //       if (fullName.contains(query_check.toLowerCase())) {
-  //         tempFiltered.add(person);
-  //       }
-  //     }
-  //   } else {
-  //     tempFiltered.addAll(realPeopleData);
-  //   }
-  //
-  //   print('After name filter: ${tempFiltered.length}');
-  //
-  //   // Filter by the selected role if it is not "All".
-  //   if (_selectedIndexPeople != null &&
-  //       _selectedIndexPeople >= 0 &&
-  //       roles[_selectedIndexPeople] != "All") {
-  //     String selectedRole = roles[_selectedIndexPeople].toLowerCase();
-  //
-  //     // Using a set to store the filtered results.
-  //     Set<StudentProfile> roleFiltered = {};
-  //
-  //     for (var person in tempFiltered) {
-  //       if (person.userDescription != null) {
-  //         // Check if the userDescription list contains the selected role as a whole element.
-  //         bool hasRole = person.userDescription!
-  //             .map((desc) => desc.toLowerCase().trim()) // Trimming whitespace and converting to lowercase
-  //             .contains(selectedRole);
-  //         if (hasRole) {
-  //           roleFiltered.add(person);
-  //         }
-  //       }
-  //     }
-  //
-  //     tempFiltered = roleFiltered;
-  //     print('After role filter: ${tempFiltered.length}');
-  //   }
-  //
-  //   // Assign the filtered set to the list.
-  //   filteredPeopleList = tempFiltered.toList();
-  //   print('Final filtered list size: ${filteredPeopleList.length}');
-  // }
-
-
-
-
-
 
   Future<JobAndPeopleData?> fetchJobOpeningsAndPeopleData() async {
     final firestore = FirebaseFirestore.instance;
@@ -404,9 +350,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                               )
                                                   : AlphaBetScrollPageJob(
                                                 selectedItems: tabSelectedInFilterScreen=="Companies"? selectedOptions : [],
-                                                // onListUpdated: (){
-                                                //
-                                                // },
                                                 height: query_check.isEmpty
                                                     ? (widget.height ==
                                                     MediaQuery.of(context)
@@ -596,7 +539,7 @@ class OptionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
         side: BorderSide(color: isSelected ? selectedColor : borderColor),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 }

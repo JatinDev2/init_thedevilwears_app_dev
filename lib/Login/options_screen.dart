@@ -180,36 +180,6 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                       ),
                     ),
                      SizedBox(height: 47.h,),
-                    // const Align(
-                    //   alignment: Alignment.bottomCenter,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: [
-                    //       Text(
-                    //         "2",
-                    //         style: TextStyle(
-                    //           fontFamily: "Poppins",
-                    //           fontSize: 16,
-                    //           fontWeight: FontWeight.w400,
-                    //           height: 24/16,
-                    //         ),
-                    //         textAlign: TextAlign.left,
-                    //       ),
-                    //       Text(
-                    //         "/5",
-                    //         style: TextStyle(
-                    //             fontFamily: "Poppins",
-                    //             fontSize: 16,
-                    //             fontWeight: FontWeight.w400,
-                    //             height: 24/16,
-                    //             color: Colors.grey
-                    //         ),
-                    //         textAlign: TextAlign.left,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    // SizedBox(height: 40,),
                   ],
                 ),
               ),

@@ -1,8 +1,9 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lookbook/HomeScreen/brandModel.dart';
-import 'package:lookbook/ProfileViews/brandProfileView/brandProfileView.dart';
+import 'package:lookbook/Models/ProfileModels/brandModel.dart';
+
+import '../../profiles/ProfileViews/brandProfileView/brandProfileView.dart';
 
 class _AZItem extends ISuspensionBean{
   final String title;

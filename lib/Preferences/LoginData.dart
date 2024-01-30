@@ -59,6 +59,12 @@ class LoginData{
     return stringList;
   }
 
+  List<String>getBookmarkedStudentProfiles(){
+    List<dynamic> dynamicList = loginData.read("bookmarkedStudentProfiles") ?? [];
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
+  }
+
   String getUserAccessToken(){
      return loginData.read("userAccessToken") ?? "No token";
   }
@@ -114,6 +120,8 @@ class LoginData{
   bool getIsLoggedIn(){
     return loginData.read<bool>("isLoggedIn") ?? false;
   }
+
+
 
 //-------------------/---------------------------------------------Write-------------------------------------------------------------
 
@@ -199,6 +207,10 @@ class LoginData{
 
   void writeBookmarkedJobListings(List<String> profiles){
     loginData.write("bookmarkedJobListings", profiles);
+  }
+
+  void writeBookmarkedStudentProfiles(List<String> profiles){
+    loginData.write("bookmarkedStudentProfiles", profiles);
   }
 
 }
