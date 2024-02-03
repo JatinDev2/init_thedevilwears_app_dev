@@ -6,7 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/App%20Constants/colorManager.dart';
+import 'package:lookbook/Services/profiles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../Common Widgets/widgets/showDialog.dart';
 import '../../../Models/formModels/educationModel.dart';
 import '../../../Models/formModels/projectModel.dart';
 import '../../../Models/formModels/workModel.dart';
@@ -354,20 +356,21 @@ class _Tab1StState extends State<Tab1St> {
                       SizedBox(
                         height: 30.h,
                       ),
-                      Container(
-                        margin: EdgeInsets.only(left: 4),
-                        child: const Text(
-                          "My Skillset",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff1a1a1a),
-                            height: 19 / 16,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
+                      // Container(
+                      //   margin: EdgeInsets.only(left: 4),
+                      //   child: const Text(
+                      //     "My Skillset",
+                      //     style: TextStyle(
+                      //       fontFamily: "Poppins",
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w600,
+                      //       color: Color(0xff1a1a1a),
+                      //       height: 19 / 16,
+                      //     ),
+                      //     textAlign: TextAlign.left,
+                      //   ),
+                      // ),
+                      Header(label: "My Skillet",),
                       SizedBox(
                         height: 20,
                       ),
@@ -417,7 +420,7 @@ class Header extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poppins",
               fontSize:
-                  (label == "Hard skills" || label == "Soft skills") ? 14 : 24,
+                  (label == "Hard skills" || label == "Soft skills" ) ? 14 : 24,
               fontWeight: (label == "Hard skills" || label == "Soft skills")
                   ? FontWeight.w500
                   : FontWeight.bold,
@@ -429,8 +432,8 @@ class Header extends StatelessWidget {
           // IconButton(
           //   icon:
           if (label != "Hard skills" && label != "Soft skills")
-            GestureDetector(
-                onTap: () {
+            IconButton(
+                onPressed: () {
                   if (label == "My Work Experience") {
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                       return AddNewWorkExperience();
@@ -445,7 +448,7 @@ class Header extends StatelessWidget {
                     }));
                   }
                 },
-                child: const Icon(Icons.add, size: 20.0)),
+                icon: const Icon(Icons.add, size: 20.0)),
 
           if (label == "Hard skills")
             const Text(
@@ -646,7 +649,7 @@ class WorkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 14.0),
+      margin: const EdgeInsets.only(bottom: 14.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -676,10 +679,23 @@ class WorkCard extends StatelessWidget {
                       SizedBox(width: 8,),
                     if(status=="verified")
                       Image.asset("assets/verified.png"),
-                    if(status=="pending")
+                    if(status=="pending" ||  status=="sent")
                     Spacer(),
-                    if(status=="pending")
-                      SvgPicture.asset("assets/security.svg"),
+                    if(status=="pending" ||  status=="sent")
+                      InkWell(
+                        onTap: (){
+                          if(status=="pending"){
+                            ShowDialog().dialogWithButtons(context, "Are you sure you want to send the verification request to ${companyName}?", () {
+                              ProfileServices().sendRequestForVerification(companyName,roleInCompany);
+                              ProfileServices().updateWorkExperienceStatus(companyName, roleInCompany, "sent",LoginData().getUserId());
+                              Navigator.of(context).pop();
+                            });
+                          }
+                          else if(status=="sent"){
+                            ShowDialog().generalMessageDialog(context, "Hang tight", "Your request has already been sent and it’s under review. We will notify you once approved.", () { });
+                          }
+                        },
+                          child: SvgPicture.asset("assets/security.svg")),
                     SizedBox(width: 10,),
                   ],
                 ),
@@ -961,10 +977,29 @@ class _TagChipsState extends State<TagChips> {
   @override
   Widget build(BuildContext context) {
     List<Widget> chipList = [
-      _buildAddChip(context), // Add the static "Add" chip at the beginning
-      ...widget.tags
-          .map((tag) => _buildChip(context, tag))
-          .toList(), // Add the rest of the tag chips
+      if (widget.tags.isEmpty)
+       Row(
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: [
+           _buildAddChip(context),
+           Text(
+             "Start adding your ${widget.label=="Hard skills"? "technical" : "interpersonal"} skillsets",
+             style: const TextStyle(
+               fontFamily: "Poppins",
+               fontSize: 14,
+               fontWeight: FontWeight.w400,
+               color: Color(0xff9e9e9e),
+               height: 19/14,
+             ),
+             textAlign: TextAlign.left,
+           ),
+         ],
+       ),
+      // Spread the rest of the tag chips here
+      if(widget.tags.isNotEmpty)
+      _buildAddChip(context),
+      if(widget.tags.isNotEmpty)
+      ...widget.tags.map((tag) => _buildChip(context, tag)).toList(),
     ];
 
     return Wrap(
@@ -973,6 +1008,7 @@ class _TagChipsState extends State<TagChips> {
       children: chipList,
     );
   }
+
 
   Widget _buildAddChip(BuildContext context){
     return Container(

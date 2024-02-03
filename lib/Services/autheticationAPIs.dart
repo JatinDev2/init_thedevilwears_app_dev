@@ -11,6 +11,8 @@ class FirebaseAuthAPIs{
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('studentProfiles');
   final CollectionReference brandsCollection = FirebaseFirestore.instance.collection('brandProfiles');
 
+
+
   //--------------------------------Add Student to Database ---------------------------------------------------------
   Future<bool> addStudentToDatabase(List<String>userDescription, List<String>interestedOpportunities) async{
     try{
@@ -32,6 +34,10 @@ class FirebaseAuthAPIs{
         'userId':userId,
         'bookmarkedBrandProfiles':[],
         'bookmarkedJobListings':[],
+        'bookmarkedStudentProfiles':[],
+        'Work Experience':[],
+        'Projects':[],
+        'Education':[]
       });
       return true;
     }catch(e){
@@ -60,9 +66,32 @@ class FirebaseAuthAPIs{
         LoginData().writeUserInterests(stringList);
         List<dynamic> jPList = userData["userDescription"];
         List<String> jPstringList = jPList.map((item) => item.toString()).toList();
+
         LoginData().writeUserJobProfile(jPstringList);
         LoginData().writeUserType(userData["userType"]);
         LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
+
+        List<dynamic> bookMarkedStudent = userData["bookmarkedStudentProfiles"] ?? [];
+        if(bookMarkedStudent.isNotEmpty){
+          List<String> bookMarkedStudentProfiles = bookMarkedStudent.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedStudentProfiles(bookMarkedStudentProfiles);
+        }
+
+        List<dynamic> bookMarkedBrands = userData["bookmarkedBrandProfiles"] ?? [];
+        if(bookMarkedStudent.isNotEmpty){
+          List<String> bookMarkedBrandProfiles = bookMarkedBrands.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedBrandProfiles(bookMarkedBrandProfiles);
+        }
+
+        List<dynamic> bookMarkedListing = userData["bookmarkedJobListings"] ?? [];
+        if(bookMarkedListing.isNotEmpty){
+          List<String> bookMarkedListings = bookMarkedListing.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedJobListings(bookMarkedListings);
+        }
+
+        // LoginData().writeCitiesList(countryCitisStringList);
+        // print(LoginData().getListOfAllCities());
+
         return true;
       }
       else if(brandDoc.exists){
@@ -80,6 +109,23 @@ class FirebaseAuthAPIs{
         LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
         LoginData().writeUserAccessToken(userData["accessToken"]);
         LoginData().writeInstaUserId(userData["instaUserId"]);
+        List<dynamic> bookMarkedStudent = userData["bookmarkedStudentProfiles"] ?? [];
+        if(bookMarkedStudent.isNotEmpty){
+          List<String> bookMarkedStudentProfiles = bookMarkedStudent.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedStudentProfiles(bookMarkedStudentProfiles);
+        }
+
+        List<dynamic> bookMarkedBrands = userData["bookmarkedBrandProfiles"] ?? [];
+        if(bookMarkedStudent.isNotEmpty){
+          List<String> bookMarkedBrandProfiles = bookMarkedBrands.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedBrandProfiles(bookMarkedBrandProfiles);
+        }
+
+        List<dynamic> bookMarkedListing = userData["bookmarkedJobListings"] ?? [];
+        if(bookMarkedListing.isNotEmpty){
+          List<String> bookMarkedListings = bookMarkedListing.map((item) => item.toString()).toList();
+          LoginData().writeBookmarkedJobListings(bookMarkedListings);
+        }
         return true;
       }
       else {
@@ -113,7 +159,12 @@ class FirebaseAuthAPIs{
         'numberOfApplications':0,
         'userId':userId,
         'location':'',
-        'brandFacebook':''
+        'brandFacebook':'',
+        'instaUserID':'',
+        'openings':'',
+        'bookmarkedBrandProfiles':[],
+        'bookmarkedJobListings':[],
+        'bookmarkedStudentProfiles':[]
       });
       return true;
     }catch(e){

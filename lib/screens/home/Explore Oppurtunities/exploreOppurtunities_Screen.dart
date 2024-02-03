@@ -63,7 +63,7 @@ class OpportunitiesGrid extends StatelessWidget {
                 imageUrl:"https://cdn-academyblog.pressidium.com/wp-content/uploads/2020/01/fashion-abby-yang-spring-2020-collections-8.jpg",
                 companyName: profile.brandName,
                 companyType: profile.companyName,
-                clothingType:profile.companyName,
+                clothingType:profile.brandDescription.join(' • '),
                 jobOpenings:profile.numberOfApplications,
                 location:profile.location,
                 brandId:profile.userId,

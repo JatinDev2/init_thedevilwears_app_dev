@@ -28,12 +28,12 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
   final _formKey = GlobalKey<FormState>();
   String cityValue = "";
   List countryCitis=[];
-  List<String> countryCitisStringList=[];
+  List<String> countryCitisStringList=LoginData().getListOfAllCities();
 
   String? selectedCityValueDrop;
 
 
-  bool isLoadingData=true;
+  // bool isLoadingData=true;
   TextEditingController textEditingController=TextEditingController();
 
   List<String> items=[
@@ -119,11 +119,11 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
       }
     });
 
-    getData().then((value) {
-      setState(() {
-        isLoadingData=false;
-      });
-    });
+    // getData().then((value) {
+    //   setState(() {
+    //     isLoadingData=false;
+    //   });
+    // });
   }
 
   Future<void> _selectDate(BuildContext context) async{
@@ -140,15 +140,15 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
     }
   }
 
-  Future<void> getData()async{
-    final country = await getCountryFromCode('IN');
-    if (country != null) {
-      countryCitis = await getCountryCities(country.isoCode);
-      for(int i=0; i<countryCitis.length;i++){
-        countryCitisStringList.add(countryCitis[i].name);
-      }
-    }
-  }
+  // Future<void> getData()async{
+  //   final country = await getCountryFromCode('IN');
+  //   if (country != null) {
+  //     countryCitis = await getCountryCities(country.isoCode);
+  //     for(int i=0; i<countryCitis.length;i++){
+  //       countryCitisStringList.add(countryCitis[i].name);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,9 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
             textAlign: TextAlign.left,
           ),
         ),
-        body: isLoadingData? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+        body:
+        // isLoadingData? Center(child: CircularProgressIndicator(),) :
+        SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding:  const EdgeInsets.only(
               left: 22,

@@ -80,7 +80,7 @@ class InstagramModel {
     // prefs.setString('userIdInsta', userID.toString());
 
     LoginData().writeInstaUserId(userID.toString());
-    FirebaseAuthAPIs().updateOrCreateInstaUserId(LoginData().getUserInstaId(), userID.toString());
+    FirebaseAuthAPIs().updateOrCreateInstaUserId(LoginData().getUserId(), userID.toString());
 
     return (accessToken != null && userID != null) ? true : false;
   }

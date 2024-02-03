@@ -3,6 +3,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/screens/jobs/previewListingScreen.dart';
@@ -198,30 +199,35 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   void updateJobType(String type) {
     setState(() {
       jobType = type;
+      LoginData().writeJobType(type);
     });
   }
 
   void updateJobDuration(String duration) {
     setState(() {
       jobDur = duration;
+      LoginData().writeJobDurationType(duration);
     });
   }
 
   void updateJobLoc(String type) {
     setState(() {
       jobLoc = type;
+      LoginData().writeType(type);
     });
   }
 
   void updateStartDate(String type) {
     setState(() {
       startDate = type;
+      LoginData().writeTentativeStartDate(type);
     });
   }
   //stipend
   void updateStipend(String type) {
     setState(() {
       stipend = type;
+      LoginData().writeStipendOptionValue(type);
     });
   }
 
@@ -229,7 +235,36 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   getStatesOfIndia();
+    getStatesOfIndia();
+    setState(() {
+      if (LoginData()
+          .getJobType()
+          .isNotEmpty) {
+        jobType = LoginData().getJobType();
+      }
+      if (LoginData()
+          .getJobProfile()
+          .isNotEmpty) {
+        dropdownValue = LoginData().getJobProfile();
+      }
+      if (LoginData()
+          .getResponsibilities()
+          .isNotEmpty) {
+        responsibilityText.text = LoginData().getResponsibilities();
+      }
+      if (LoginData().getJobDurationType().isNotEmpty) {
+        jobDur=LoginData().getJobDurationType();
+      }
+      if(LoginData().getJobDurationValue().isNotEmpty){
+        jobDurController.text=LoginData().getJobDurationValue();
+      }
+      if(LoginData().getJobDurationValueTime().isNotEmpty){
+        jobDurValue=LoginData().getJobDurationValueTime();
+      }
+      if(LoginData().getType().isNotEmpty){
+        jobLoc=LoginData().getType();
+      }
+    });
   }
 
   Future<void> jobListingsData() async{
@@ -278,23 +313,37 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black,), onPressed: (){
-          Navigator.of(context).pop();
-        },),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black,),
+          onPressed: () {
+            // Logic to save draft goes here
+            Fluttertoast.showToast(
+                msg: "Draft Saved!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+            Navigator.of(context).pop();
+          },
+        ),
         backgroundColor: Colors.white,
         title: const Text(
           "Create a new listing",
-          style:  TextStyle(
+          style: TextStyle(
             fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
-            height: 20/16,
+            height: 20 / 16,
           ),
           textAlign: TextAlign.left,
         ),
       ),
       body: isLoading? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         padding: const EdgeInsets.only(
           left: 22,
           right: 22,
@@ -352,6 +401,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   onChanged: (String? newValue) {
                     setState(() {
                       dropdownValue = newValue!;
+                      LoginData().writeJobProfile(newValue);
                     });
                   },
                   icon: const Icon(IconlyLight.arrowDown2),
@@ -408,6 +458,9 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     }
                     return null;
                   },
+                  onChanged: (value){
+                    LoginData().writeResponsibilities(responsibilityText.text);
+                  },
                   keyboardType: TextInputType.multiline,
                 ),
               ),
@@ -463,6 +516,9 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                         }
                         return null;
                       },
+                      onChanged: (value){
+                        LoginData().writeJobDurationValue(value);
+                      },
                     ),
                   ),
                   SizedBox(width: 9.w,),
@@ -478,6 +534,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                       onChanged: (String? newValue) {
                         setState(() {
                           jobDurValue = newValue!;
+                          LoginData().writeJobDurationValueTime(newValue);
                         });
                       },
                       icon:const Icon(IconlyLight.arrowDown2),
@@ -822,6 +879,9 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                         }
                        return null;
                       },
+                      onChanged: (value){
+                        LoginData().writeStipendAmount(value);
+                      },
                     ),
                   ),
                   SizedBox(width: 9.w,),
@@ -837,6 +897,7 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                       onChanged: (String? newValue) {
                         setState(() {
                           stipendValue = newValue!;
+                          LoginData().writeStipendAmountTime(newValue);
                         });
                       },
                       icon:const Icon(IconlyLight.arrowDown2),
@@ -878,6 +939,9 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     border: InputBorder.none
                 ),
                 keyboardType: TextInputType.number,
+                onChanged: (value){
+                  LoginData().writeNumberOfOpenings(openingsController.text);
+                },
               ),
               SizedBox(height: 15.h,),
               const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
@@ -1102,9 +1166,29 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                               }));
                             });
                           });
+                          DocumentReference brandProfileDoc = FirebaseFirestore.instance.collection('brandProfiles').doc(LoginData().getUserId());
 
+                          return FirebaseFirestore.instance.runTransaction((transaction) async {
+                            // Get the document
+                            DocumentSnapshot snapshot = await transaction.get(brandProfileDoc);
 
-    // .then((value) {
+                            if (!snapshot.exists) {
+                              throw Exception("Brand Profile does not exist!");
+                            }
+
+                            // Get the current openings
+                            String currentOpenings = snapshot.get('openings') as String;
+                            List<String> openingsList = currentOpenings.split(',');
+
+                            // Check if the opening already exists
+                            if (!openingsList.contains(jobType)) {
+                              // Append the new opening
+                              String updatedOpenings = openingsList.isEmpty ? jobType : '$currentOpenings,$jobType';
+                              transaction.update(brandProfileDoc, {'openings': updatedOpenings});
+                            }
+                          });
+
+                          // .then((value) {
 
                           // });
                         }
@@ -1200,6 +1284,7 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
       setState((){
         testDate=picked;
         dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+        LoginData().writeExactDate(dateController.text);
       });
       _handleRadioValueChange(dateController.text);
     }

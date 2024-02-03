@@ -54,7 +54,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
               ),
             ],
           ),
-          bottom:   TabBar(
+          bottom: TabBar(
             unselectedLabelColor: const Color(0xff9D9D9D),
             labelColor: const Color(0xff000000),
             indicatorColor: Colors.black,

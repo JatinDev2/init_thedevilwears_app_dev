@@ -44,7 +44,7 @@ class InstagramView extends StatelessWidget {
     if(label=="Login"){
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()), // Replace HomeScreen with your home screen widget
+        MaterialPageRoute(builder: (context) => HomeScreen(tabVal: 3,)), // Replace HomeScreen with your home screen widget
             (Route<dynamic> route) => false, // Conditions for routes to remove; false removes all
       );
     }

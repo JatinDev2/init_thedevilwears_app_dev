@@ -24,8 +24,6 @@ class _Tab1StViewState extends State<Tab1StView> {
       final dateFormat = DateFormat("MM/dd/yyyy");
       return dateFormat.parse(dateRange.split(" - ").first);
     } catch (e) {
-      // Handle the exception by returning a default date,
-      // such as the current date or DateTime(1970, 1, 1) for an invalid date.
       return DateTime.now();
     }
   }
@@ -198,40 +196,29 @@ class _Tab1StViewState extends State<Tab1StView> {
                 SizedBox(
                   height: 30.h,
                 ),
-                // Container(
-                //   margin: EdgeInsets.only(left: 4),
-                //   child: const Text(
-                //     "My Skillset",
-                //     style: TextStyle(
-                //       fontFamily: "Poppins",
-                //       fontSize: 16,
-                //       fontWeight: FontWeight.w600,
-                //       color: Color(0xff1a1a1a),
-                //       height: 19 / 16,
-                //     ),
-                //     textAlign: TextAlign.left,
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                // Header(
-                //   label: "Hard skills",
-                // ),
-                // TagChips(
-                //   label: "Hard skills",
-                //   tags: hardSkillsStringList,
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                // Header(
-                //   label: "Soft skills",
-                // ),
-                // TagChips(
-                //   label: "Soft skills",
-                //   tags: softSkillsStringList,
-                // ),
+                Header(
+                  label: "My Skillset",
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Header(
+                  label: "Hard skills",
+                ),
+                TagChips(
+                  label: "Hard skills",
+                  tags: widget.studentProfile.hardSkills!,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Header(
+                  label: "Soft skills",
+                ),
+                TagChips(
+                  label: "Soft skills",
+                  tags: widget.studentProfile.softSkills!,
+                ),
               ],
             ),
           ),
@@ -425,6 +412,98 @@ class ProjectCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TagChips extends StatefulWidget {
+  final String label;
+  final List<String> tags;
+
+  TagChips({
+    Key? key,
+    required this.label,
+    required this.tags,
+  }) : super(key: key);
+
+  @override
+  State<TagChips> createState() => _TagChipsState();
+}
+
+class _TagChipsState extends State<TagChips> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> chipList = [
+      if (widget.tags.isEmpty)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // _buildAddChip(context),
+            Text(
+              "No ${widget.label=="Hard skills"? "technical" : "interpersonal"} skills added yet!",
+              style: const TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff9e9e9e),
+                height: 19/14,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
+      // Spread the rest of the tag chips here
+      // if(widget.tags.isNotEmpty)
+      //   _buildAddChip(context),
+      if(widget.tags.isNotEmpty)
+        ...widget.tags.map((tag) => _buildChip(context, tag)).toList(),
+    ];
+
+    return Wrap(
+      spacing: 1.0, // Gap between adjacent chips
+      runSpacing: 0.0, // Gap between lines
+      children: chipList,
+    );
+  }
+
+
+  Widget _buildChip(BuildContext context, String tag) {
+    return Container(
+      margin: const EdgeInsets.only(
+          top: 2.0,
+          right: 7.0,
+          bottom: 7.0), // Adjust the margin for tighter packing
+      child: GestureDetector(
+        onTap: () {
+          // Define the action when the chip is tapped if necessary
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            color: Color(0xffF7F7F7),
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(20.0), // Stadium shape
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize
+                .min, // Use the minimum space that's needed by the child widgets
+            children: [
+              Text(
+                tag,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff303030),
+                ),
+              ),
+
+            ],
+          ),
+        ),
       ),
     );
   }

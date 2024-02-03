@@ -10,6 +10,18 @@ import 'package:lookbook/Services/profiles.dart';
 
 class EditBrandProfilePage extends StatefulWidget {
 
+   String foundedIn;
+   String companySize;
+   String companyLocationSel;
+   String industrySel;
+
+  EditBrandProfilePage({
+   required this.companySize,
+   required this.companyLocationSel,
+   required this.industrySel,
+   required this.foundedIn,
+});
+
   @override
   State<EditBrandProfilePage> createState() => _EditBrandProfilePageState();
 }
@@ -19,15 +31,28 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
   TextEditingController companySizeController=TextEditingController();
   TextEditingController additionalInfoBrandController=TextEditingController();
 
+
+
   String stipendValue="January";
   String industryValue="Fashion Designer";
+  String selectedSize="0-20";
   String? selectedCityValueDrop;
   bool isLoading=false;
   bool isLoadingData=true;
-  String cityValue = "";
+  // String cityValue = "";
   List countryCitis=[];
   List<String> countryCitisStringList=[];
   TextEditingController textEditingController=TextEditingController();
+
+  String cityValue="";
+  String selectedCity = 'Select City';
+  bool isDataLoaded = false;
+  bool isOpen=false;
+
+  late FocusNode myFocusNode;
+  late FocusNode myFocusNode2;
+  late FocusNode myFocusNode3;
+
 
 
   List<String> months = [
@@ -43,6 +68,14 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
     'October',
     'November',
     'December',
+  ];
+
+  List<String> listOfEmployees=[
+    "0-20",
+    "20-40",
+        "40-60",
+        "greater than 60",
+
   ];
 
   List<String> items=[
@@ -69,11 +102,47 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    myFocusNode = FocusNode();
+    myFocusNode2 = FocusNode();
+    myFocusNode3 = FocusNode();
 
-    getData().then((value) {
-      setState(() {
-        isLoadingData=false;
-      });
+    // Listen to focus change events
+    void updateIsOpen() {
+      if (mounted) {
+        setState(() {
+          isOpen = myFocusNode.hasFocus || myFocusNode2.hasFocus || myFocusNode3.hasFocus;
+        });
+      }
+    }
+
+    myFocusNode.addListener(updateIsOpen);
+    myFocusNode2.addListener(updateIsOpen);
+    myFocusNode3.addListener(updateIsOpen);
+
+    getData()
+        .then((value) {
+          if(widget.companyLocationSel.isNotEmpty){
+            List<String> parts = widget.companyLocationSel.split(', ');
+            String city = parts[0];
+            print("HLOo");
+            print(city);
+            String country = parts[1];
+            selectedCity=city;
+            selectedCityValueDrop=city;
+          }
+          if(widget.foundedIn.isNotEmpty){
+            List<String> founded = widget.foundedIn.split(', ');
+            String month = founded[0];
+            String year = founded[1];
+            stipendValue=month;
+            yearController.text=year;
+          }
+          if(widget.companySize.isNotEmpty){
+            selectedSize=widget.companySize;
+          }
+          if(widget.industrySel.isNotEmpty){
+            industryValue=widget.industrySel;
+          }
     });
   }
 
@@ -85,7 +154,19 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
         countryCitisStringList.add(countryCitis[i].name);
       }
     }
+    setState(() {
+      isLoadingData=false;
+    });
   }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    myFocusNode2.dispose();
+    myFocusNode3.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +177,7 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
         },),
         backgroundColor: Colors.white,
         title: const Text(
-          "Add Work Experience",
+          "Edit details of Company",
           style:  TextStyle(
             fontFamily: "Poppins",
             fontSize: 16,
@@ -110,6 +191,7 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
       body: isLoadingData? Center(child: CircularProgressIndicator(),) :Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             SizedBox(height: 25.h,),
             const Text(
@@ -169,6 +251,7 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                       borderRadius: BorderRadius.circular(8.0.r)
                   ),
                   child: TextFormField(
+                    focusNode: myFocusNode,
                     controller: yearController,
                     decoration:const InputDecoration(
                       border: InputBorder.none,
@@ -208,33 +291,36 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             ),
             SizedBox(height: 12,),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
               height: 50.h,
-              width: 163.w,
+              width: 194.w,
+              padding: EdgeInsets.symmetric(horizontal: 10.0.w),
               decoration: BoxDecoration(
                   color: const Color(0xffF8F7F7),
                   borderRadius: BorderRadius.circular(8.0.r)
               ),
-              child: TextFormField(
-                controller: companySizeController,
-                decoration:const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "0 to 20 Employees",
-                  hintStyle: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff919191),
-                    height: 21/14,
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value){
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the year.';
-                  }
-                  return null;
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: selectedSize,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedSize = newValue!;
+                  });
                 },
+                icon:const Icon(IconlyLight.arrowDown2),
+                underline: Container(),
+                items: listOfEmployees
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text("${value} employees",style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff020202),
+                      height: 22/14,
+                    ),),
+                  );
+                }).toList(),
               ),
             ),
 
@@ -305,7 +391,7 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
               child: DropdownButton2<String>(
                 isExpanded: true,
                 hint: Text(
-                  'Select City',
+                  selectedCity,
                   style: TextStyle(
                     fontSize: 14,
                     color: Theme.of(context).hintColor,
@@ -352,6 +438,7 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                       left: 8,
                     ),
                     child: TextFormField(
+                      focusNode: myFocusNode2,
                       expands: true,
                       maxLines: null,
                       controller: textEditingController,
@@ -398,51 +485,50 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             ),
             SizedBox(height: 12,),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              height: 50.h,
-              width: 163.w,
+              padding: EdgeInsets.only(left: 20.w, right: 20.w , bottom: MediaQuery.of(context).viewInsets.bottom),
+              height: 150.h,
               decoration: BoxDecoration(
                   color: const Color(0xffF8F7F7),
-                  borderRadius: BorderRadius.circular(8.0.r)
+                  borderRadius: BorderRadius.circular(14.0.r)
               ),
               child: TextFormField(
+                focusNode: myFocusNode3,
                 controller: additionalInfoBrandController,
-                decoration:const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Additional Info",
-                  hintStyle: TextStyle(
+                  hintText: "Additional Information",
+                  hintStyle:  TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xff919191),
-                    height: 21/14,
+                    color: Colors.grey.shade400,
                   ),
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value){
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the year.';
-                  }
-                  return null;
-                },
+                // onChanged: (value){
+                //   setState(() {
+                //     isOpen=true;
+                //   });
+                // },
+                maxLines: 8,
+
               ),
             ),
 
-            Spacer(),
+            // Spacer(),
             SizedBox(height: 50.h,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: ()async{
-                    if(stipendValue.isNotEmpty && yearController.text.isNotEmpty && companySizeController.text.isNotEmpty && selectedCityValueDrop!.isNotEmpty){
+                    if(stipendValue.isNotEmpty && yearController.text.isNotEmpty  && selectedCityValueDrop!.isNotEmpty){
                       setState(() {
                         isLoading=true;
                       });
                       ProfileServices().updateBrandProfileDetails(
                           month: stipendValue,
                           year: yearController.text,
-                          companySize: companySizeController.text,
+                          companySize: selectedSize,
                           industry: industryValue.toString(),
                           location: selectedCityValueDrop!,
                           additionalInfo: additionalInfoBrandController.text
@@ -481,8 +567,17 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                 ),
               ],
             ),
-
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 0),
+              height: (myFocusNode.hasFocus || myFocusNode2.hasFocus || myFocusNode3.hasFocus) ? 238.0 : 0,
+              // You can also add curve for the animation
+              curve: Curves.bounceInOut,
+              child: Container(
+                // Content of the container, if any
+              ),
+            ),
           ],
+
         ),
       ),
     );

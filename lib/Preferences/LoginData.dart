@@ -73,6 +73,13 @@ class LoginData{
      return loginData.read("instaUserId") ?? "No insta id";
   }
 
+  List<String>getListOfAllCities(){
+    List<dynamic> dynamicList = loginData.read("allCities") ?? [];
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
+  }
+
+
   // String getIsHomePage(){
   //   return loginData.read("isHomePage") ?? "false";
   // }
@@ -211,6 +218,148 @@ class LoginData{
 
   void writeBookmarkedStudentProfiles(List<String> profiles){
     loginData.write("bookmarkedStudentProfiles", profiles);
+  }
+
+  void writeCitiesList(List<String> allCities){
+    loginData.write("allCities", allCities);
+  }
+
+
+
+//---------------------------------------------Write For Jobs-------------------------------------------------------------
+
+  void writeJobType(String jobType){
+     loginData.write("jobType", jobType);
+  }
+
+  void writeJobProfile(String jobProfile){
+    loginData.write("jobProfile", jobProfile);
+  }
+
+  void writeResponsibilities(String responsibilities){
+    loginData.write("responsibilities", responsibilities);
+  }
+
+  void writeJobDurationType(String jobDurationType){
+    loginData.write("jobDurationType", jobDurationType);
+  }
+
+  void writeJobDurationValue(String jobDurValue){
+    loginData.write("jobDurationValue", jobDurValue);
+  }
+
+  void writeJobDurationValueTime(String jobDurationValueTime){
+    loginData.write("jobDurationValueTime", jobDurationValueTime);
+  }
+
+  void writeType(String type){
+    loginData.write("type", type);
+  }
+
+  void writeJobLocationState(String state){
+    loginData.write("jobState", state);
+  }
+
+  void writeJobLocationCity(String city){
+    loginData.write("jobCity", city);
+  }
+
+  void writeTentativeStartDate(String tentativeStartDate){
+    loginData.write("tentativeStartDate", tentativeStartDate);
+  }
+
+  void writeExactDate(String exactDate){
+    loginData.write("exactDate", exactDate);
+  }
+
+  void writeStipendOptionValue(String optionValue){
+    loginData.write("stipendOptionValue", optionValue);
+  }
+
+  void writeStipendAmount(String stipendAmount){
+    loginData.write("stipendAmount", stipendAmount);
+  }
+
+  void writeStipendAmountTime(String optionValue){
+    loginData.write("stipendAmountTime", optionValue);
+  }
+
+  void writeNumberOfOpenings(String numberOfOpenings){
+    loginData.write("numberOfOpenings", numberOfOpenings);
+  }
+
+  void writeSelectedPerks(List<String> selectedPerks){
+    loginData.write("selectedPerks", selectedPerks);
+  }
+
+  void writeEmployeePreference(List<String> selectedPreferences){
+    loginData.write("selectedPreferences", selectedPreferences);
+  }
+
+  //---------------------------------------------Get For Jobs-------------------------------------------------------------
+
+  String getJobType(){
+    return loginData.read("jobType") ?? "";
+  }
+
+  String getJobProfile(){
+    return loginData.read("jobProfile") ?? "";
+  }
+
+  String getResponsibilities(){
+    return loginData.read("responsibilities") ?? "";
+  }
+
+  String getJobDurationType(){
+    return loginData.read("jobDurationType") ?? "";
+  }
+
+  String getJobDurationValue(){
+    return loginData.read("jobDurationValue") ?? "";
+  }
+
+  String getJobDurationValueTime(){
+    return loginData.read("jobDurationValueTime") ?? "";
+  }
+
+  String getType(){
+    return loginData.read("type") ?? "";
+  }
+
+  String getTentativeStartDate(){
+    return loginData.read("tentativeStartDate") ?? "";
+  }
+
+  String getExactDate(){
+    return loginData.read("exactDate") ?? "";
+  }
+
+  String getStipendOptionValue(){
+    return loginData.read("stipendOptionValue") ?? "";
+  }
+
+  String getStipendAmount(){
+    return loginData.read("stipendAmount") ?? "";
+  }
+
+  String getStipendAmountTime(){
+    return loginData.read("stipendAmountTime") ?? "";
+  }
+
+  String getNumberOfOpenings(){
+    return loginData.read("numberOfOpenings") ?? "";
+  }
+
+  List<String>getSelectedPerks(){
+    List<dynamic> dynamicList = loginData.read("selectedPerks") ?? [];
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
+  }
+
+  List<String>getEmployeePreference(){
+    List<dynamic> dynamicList = loginData.read("selectedPreferences") ?? [];
+    List<String> stringList = dynamicList.map((item) => item.toString()).toList();
+    return stringList;
   }
 
 }

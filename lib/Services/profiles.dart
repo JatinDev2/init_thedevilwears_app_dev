@@ -408,10 +408,10 @@ class ProfileServices {
       }
     });
   }
-
+//------------------------------------------------------------------------------------------------------------------------
   //--------------------------------BookMark Brand Profiles ---------------------------------------------------------
   Future<void> bookmarkBrandProfile(String userId, String brandProfileId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedBrandProfiles': FieldValue.arrayUnion([brandProfileId])
@@ -424,7 +424,7 @@ class ProfileServices {
 
   //--------------------------------Remove BookMarked Brand Profiles ---------------------------------------------------------
   Future<void> removeBookmarkedBrandProfile(String userId, String brandProfileId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedBrandProfiles': FieldValue.arrayRemove([brandProfileId])
@@ -444,7 +444,7 @@ class ProfileServices {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     Stream<DocumentSnapshot> userBookmarksStream = firestore
-        .collection('studentProfiles')
+        .collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles')
         .doc(LoginData().getUserId())
         .snapshots();
 
@@ -463,7 +463,7 @@ class ProfileServices {
 
   //--------------------------------BookMark Job Listings ---------------------------------------------------------
   Future<void> bookmarkJobListing(String userId, String jobListingId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedJobListings': FieldValue.arrayUnion([jobListingId])
@@ -476,7 +476,7 @@ class ProfileServices {
 
   //--------------------------------Remove BookMarked Job Listings ---------------------------------------------------------
   Future<void> removeBookmarkedJobListing(String userId, String jobListingId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedJobListings': FieldValue.arrayRemove([jobListingId])
@@ -493,7 +493,7 @@ class ProfileServices {
   //--------------------------------Fetch BookMarked Job Listings ---------------------------------------------------------
   Stream<List<jobModel>> streamBookMarkedJobListings() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    return firestore.collection('studentProfiles').doc(LoginData().getUserId()).snapshots().asyncMap((studentProfileSnapshot) async {
+    return firestore.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles').doc(LoginData().getUserId()).snapshots().asyncMap((studentProfileSnapshot) async {
       List<jobModel> pairs = [];
 
       try {
@@ -524,7 +524,7 @@ class ProfileServices {
 
   //--------------------------------BookMark Student Profiles ---------------------------------------------------------
   Future<void> bookmarkStudentProfile(String userId, String studentProfileId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedStudentProfiles': FieldValue.arrayUnion([studentProfileId])
@@ -537,7 +537,7 @@ class ProfileServices {
 
   //--------------------------------Remove BookMarked Student Profiles ---------------------------------------------------------
   Future<void> removeBookmarkedStudentProfile(String userId, String studentProfileId) async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('studentProfiles');
+    final CollectionReference users = FirebaseFirestore.instance.collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles');
     final DocumentReference userDoc = users.doc(userId);
     await userDoc.update({
       'bookmarkedStudentProfiles': FieldValue.arrayRemove([studentProfileId])
@@ -557,10 +557,10 @@ class ProfileServices {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     Stream<DocumentSnapshot> userBookmarksStream = firestore
-        .collection('studentProfiles')
+        .collection(LoginData().getUserType()=="Person" ? 'studentProfiles' : 'brandProfiles')
         .doc(LoginData().getUserId())
         .snapshots();
-    // print(LoginData().getUserId());
+    print("THE ID FOR CURRENT USER IS : ${LoginData().getUserId()}");
 
     return userBookmarksStream.asyncMap((userSnapshot) async {
       final List<dynamic> bookmarkedIds = (userSnapshot.data() as Map<String, dynamic>?)?['bookmarkedStudentProfiles']?.cast<String>() ?? [];
@@ -579,7 +579,7 @@ class ProfileServices {
 
 
 
-  Future<void> sendRequestForVerification(String brandName, String jobProfile) async {
+  Future<void> sendRequestForVerification(String brandName, String jobProfile,) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     final firstName = LoginData().getUserFirstName() ?? 'Unknown';
@@ -624,6 +624,75 @@ class ProfileServices {
     }
   }
 
+
+  Future<void> updateWorkExperienceStatus(String companyName, String roleInCompany, String newStatus,String userId) async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+
+    if (userId != null) {
+      DocumentReference profileRef = firestore.collection('studentProfiles').doc(userId);
+
+      DocumentSnapshot profileSnapshot = await profileRef.get();
+
+      if (profileSnapshot.exists) {
+        Map<String, dynamic> profileData = profileSnapshot.data() as Map<String, dynamic>;
+        List<dynamic> workExperiences = profileData['Work Experience'] ?? [];
+
+        List<dynamic> updatedWorkExperiences = workExperiences.map((workExperience) {
+          if (workExperience['companyName'] == companyName && workExperience['roleInCompany'] == roleInCompany) {
+            return {...workExperience, 'status': newStatus};
+          }
+          return workExperience;
+        }).toList();
+
+        await profileRef.update({'Work Experience': updatedWorkExperiences});
+      } else {
+        print('Profile not found');
+      }
+    } else {
+      print('No user logged in');
+    }
+  }
+
+
+
+  Future<void> updateRequestStatus(String brandProfileDocId, String studentId, String jobProfile, String newStatus) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final DocumentReference brandProfileRef = firestore.collection('brandProfiles').doc(brandProfileDocId);
+
+    return firestore.runTransaction<void>((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(brandProfileRef);
+
+      if (!snapshot.exists) {
+        throw Exception('Brand Profile Document does not exist.');
+      }
+
+      final data = snapshot.data();
+      if (data is Map<String, dynamic>) {
+        final List<dynamic> requests = data['Requests'] as List<dynamic>? ?? [];
+        bool isUpdated = false;
+
+        // Iterate over the requests to find the matching one and update its status
+        final List<Map<String, dynamic>> updatedRequests = requests.map((request) {
+          if (request is Map<String, dynamic>) {
+            if (request['userId'] == studentId && request['jobProfile'] == jobProfile) {
+              isUpdated = true;
+              return {...request, 'status': newStatus};
+            }
+          }
+          return request as Map<String, dynamic>;
+        }).toList();
+
+        // If an update is made, write back to the Firestore document
+        if (isUpdated) {
+          transaction.update(brandProfileRef, {'Requests': updatedRequests});
+        }
+      } else {
+        throw Exception('Invalid data format');
+      }
+    });
+  }
 
 
 }

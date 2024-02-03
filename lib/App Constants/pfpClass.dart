@@ -131,3 +131,45 @@ class BrandProfilePicRadiusClass extends StatelessWidget {
     );
   }
 }
+
+
+class StudentProfilePicClassRadiusClass extends StatelessWidget {
+  final String imgUrl;
+  final double radius;
+  const StudentProfilePicClassRadiusClass({super.key, required this.imgUrl, required this.radius});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 4,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.none,
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: imgUrl.isNotEmpty? Colors.white : Colors.transparent,
+        child: imgUrl != null && imgUrl.isNotEmpty
+            ? CachedNetworkImage(
+          imageUrl: imgUrl!, // Actual image URL
+          placeholder: (context, url) => Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(
+              radius: radius,
+              backgroundColor: Colors.white,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) => CircleAvatar(
+            radius: radius,
+            backgroundImage: imageProvider,
+          ),
+        )
+            : CircleAvatar( // Fallback to asset image
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          child: SvgPicture.asset("assets/devil.svg", fit: BoxFit.contain,height: 70,),
+        ),
+      ),
+    );
+  }
+}

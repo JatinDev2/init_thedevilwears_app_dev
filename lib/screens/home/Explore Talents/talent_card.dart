@@ -125,7 +125,7 @@ class _TalentCardState extends State<TalentCard> {
             ),
           ),
           // The avatar image
-          // if(LoginData().getUserId()!=widget.uid)
+          if(LoginData().getUserId()!=widget.uid)
           Positioned(
             top: 20.h,
             right: 10.w,

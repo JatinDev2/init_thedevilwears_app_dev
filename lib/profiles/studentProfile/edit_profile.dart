@@ -248,13 +248,22 @@ class _EditProfileState extends State<EditProfile> {
                 height: 50.0,
               ),
 
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildSaveButton(),
                 ],
               ),
+              // AnimatedContainer(
+              //   duration: const Duration(milliseconds: 0),
+              //   height: isOpen ? 238.0 : 0,
+              //   // You can also add curve for the animation
+              //   curve: Curves.bounceInOut,
+              //   child: Container(
+              //     // Content of the container, if any
+              //   ),
+              // ),
+
             ],
           ),
         ),

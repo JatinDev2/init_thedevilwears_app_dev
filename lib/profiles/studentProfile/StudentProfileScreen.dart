@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/App%20Constants/colorManager.dart';
@@ -64,6 +65,172 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
         .snapshots();
   }
 
+  double calculateProfileCompletion(Map<String, dynamic> data) {
+    int totalCriteria = 13; // The number of fields you are checking
+    int completedCriteria = 0;
+
+    // Increment completedCriteria for every non-null and non-empty field.
+    if (data['firstName'] != null && (data['firstName'] as String).isNotEmpty) completedCriteria++;
+    if (data['lastName'] != null && (data['lastName'] as String).isNotEmpty) completedCriteria++;
+    if (data['phoneNumber'] != null && (data['phoneNumber'] as String).isNotEmpty) completedCriteria++;
+    if (data['userBio'] != null && (data['userBio'] as String).isNotEmpty) completedCriteria++;
+    if (data['userEmail'] != null && (data['userEmail'] as String).isNotEmpty) completedCriteria++;
+    if (data['userDescription'] != null && (data['userDescription'] as List).isNotEmpty) completedCriteria++;
+    if (data['userInsta'] != null && (data['userInsta'] as String).isNotEmpty) completedCriteria++;
+    if (data['userTwitter'] != null && (data['userTwitter'] as String).isNotEmpty) completedCriteria++;
+    if (data['userLinkedIn'] != null && (data['userLinkedIn'] as String).isNotEmpty) completedCriteria++;
+    if (data['userFacebook'] != null && (data['userFacebook'] as String).isNotEmpty) completedCriteria++;
+    if (data['projects'] != null && (data['projects'] as List).isNotEmpty) completedCriteria++;
+    if (data['Work Experience'] != null && (data['Work Experience'] as List).isNotEmpty) completedCriteria++;
+    if (data['userGmail'] != null && (data['userGmail'] as String).isNotEmpty) completedCriteria++;
+
+    return completedCriteria / totalCriteria;
+  }
+
+
+  Widget buildProfileCompletionView(Map<String, dynamic> data) {
+    double completionPercentage = calculateProfileCompletion(data);
+    List<String> incompleteItems = [];
+
+    // Check which items are incomplete and add them to the list
+    if (data['firstName'] == null || (data['firstName'] as String).isEmpty) incompleteItems.add('Name');
+    if (data['phoneNumber'] == null || (data['phoneNumber'] as String).isNotEmpty) incompleteItems.add('Phone Number');
+    if (data['userBio'] == null || (data['userBio'] as String).isNotEmpty) incompleteItems.add('Bio');
+    if (data['userEmail'] == null || (data['userEmail'] as String).isNotEmpty) incompleteItems.add('Email');
+    if (data['userDescription'] == null || (data['userDescription'] as List).isNotEmpty) incompleteItems.add('Description');
+    if (data['userInsta'] == null || (data['userInsta'] as String).isNotEmpty) incompleteItems.add('Instagram Handle');
+    if (data['userTwitter'] == null || (data['userTwitter'] as String).isNotEmpty) incompleteItems.add('Twitter Handle');
+    if (data['userLinkedIn'] == null || (data['userLinkedIn'] as String).isNotEmpty) incompleteItems.add('LinkedIn Handle ');
+    if (data['userFacebook'] == null || (data['userFacebook'] as String).isNotEmpty) incompleteItems.add('Facebook Handle');
+    if (data['projects'] == null || (data['projects'] as List).isNotEmpty) incompleteItems.add('Projects');
+    if (data['Work Experience'] == null || (data['Work Experience'] as List).isNotEmpty) incompleteItems.add('Work Experience');
+    if (data['userGmail'] == null || (data['userGmail'] as String).isEmpty) incompleteItems.add('Gmail');
+
+
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                value: completionPercentage,
+                minHeight: 10, // Set the height of the progress bar
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              SizedBox(height: 8), // Spacing between progress bar and text
+              Text(
+                'Profile Completion: ${completionPercentage * 100}%',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        if (incompleteItems.isNotEmpty) ...[
+          SizedBox(height: 8),
+          Text(
+            'Incomplete Items:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          ...incompleteItems.map((item) => Text(item)).toList(),
+        ],
+      ],
+    );
+  }
+
+  Widget buildCustomProgressBar(double completionPercentage) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10), // Curved borders
+      child: LinearProgressIndicator(
+        value: completionPercentage,
+        backgroundColor: Colors.grey[300],
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange), // Specified color
+        minHeight: 10,
+      ),
+    );
+  }
+
+  Widget buildProgressBarWithPercentage(double completionPercentage) {
+    return Row(
+      children: [
+        Expanded(
+          child: buildCustomProgressBar(completionPercentage),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: Text('${(completionPercentage * 100).toStringAsFixed(0)}%'), // Rounded percentage
+        ),
+      ],
+    );
+  }
+
+  GestureDetector buildProfileCompletionIndicator(Map<String, dynamic> data, BuildContext context) {
+    double completionPercentage = calculateProfileCompletion(data);
+
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (_) => buildCompletionDialog(data,context),
+        );
+      },
+      child: buildProgressBarWithPercentage(completionPercentage),
+    );
+  }
+
+  Widget buildCompletionDialog(Map<String, dynamic> data, BuildContext context) {
+    List<Widget> buildListItems() {
+      List<Widget> listItems = [];
+
+      Widget createListItem(String fieldName, String title, dynamic value) {
+        return ListTile(
+          title: Text(title),
+          leading: Icon(
+            value?.isNotEmpty ?? false ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: value?.isNotEmpty ?? false ? Colors.green : Colors.grey,
+          ),
+        );
+      }
+
+      // Add list items for each field
+      listItems.add(createListItem('userProfilePicture', 'Add a Profile Picture', data['userProfilePicture']));
+      listItems.add(createListItem('firstName', 'Add First Name', data['firstName']));
+      listItems.add(createListItem('lastName', 'Add Last Name', data['lastName']));
+      listItems.add(createListItem('phoneNumber', 'Add Phone Number', data['phoneNumber']));
+      listItems.add(createListItem('userBio', 'Add a Bio', data['userBio']));
+      listItems.add(createListItem('userDescription', 'Add User Description', data['userDescription']));
+      listItems.add(createListItem('userEmail', 'Add Email', data['userEmail']));
+      listItems.add(createListItem('userInsta', 'Add Instagram', data['userInsta']));
+      listItems.add(createListItem('userTwitter', 'Add Twitter', data['userTwitter']));
+      listItems.add(createListItem('userLinkedIn', 'Add LinkedIn', data['userLinkedIn']));
+      listItems.add(createListItem('userFacebook', 'Add Facebook', data['userFacebook']));
+      listItems.add(createListItem('projects', 'Add Projects', data['projects']));
+      listItems.add(createListItem('Work Experience', 'Add Work Experience', data['Work Experience']));
+      listItems.add(createListItem('userGmail', 'Add Gmail', data['userGmail']));
+
+      return listItems;
+    }
+
+    return AlertDialog(
+      title: Text('Complete your profile'),
+      content: SingleChildScrollView(
+        child: ListBody(children: buildListItems()),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Complete later'),
+        ),
+      ],
+    );
+  }
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -86,10 +253,11 @@ else{
           String descriptionsWithBullets="";
           String userProfilePic="";
           String userBio="";
+          var data;
 
           // Check if the snapshot has data and is not null.
           if (snapshot.hasData && snapshot.data!.data() != null) {
-            var data = snapshot.data!.data() as Map<String, dynamic>;
+             data = snapshot.data!.data() as Map<String, dynamic>;
             studentProfile = StudentProfile.fromMap(data);
             projectsList = (data['projects'] is List<dynamic>) ? List<dynamic>.from(data['projects']) : [];
             workList = (data['Work Experience'] is List<dynamic>) ? List<dynamic>.from(data['Work Experience']) : [];
@@ -115,7 +283,7 @@ else{
                     return [
                       SliverAppBar(
                         backgroundColor: Colors.white,
-                        expandedHeight: 270,
+                        expandedHeight:280,
                         floating: true,
                         pinned: false,
                         flexibleSpace: FlexibleSpaceBar(
@@ -293,6 +461,7 @@ else{
                                             ],
                                           ),
                                         ),
+                                        SizedBox(width: 10.w,),
                                       ],
                                     ),
                                   ],
@@ -390,6 +559,19 @@ else{
                                       textAlign: TextAlign.left,
                                     )),
                               ),
+                              SizedBox(height: 8,),
+                              // Padding(
+                              //   padding: EdgeInsets.all(8.0),
+                              //   child: LinearProgressIndicator(
+                              //     value: calculateProfileCompletion(data),
+                              //     backgroundColor: Colors.grey[300],
+                              //     valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                              //   ),
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: buildProfileCompletionIndicator(data,context),
+                              ),
                             ],
                           ),
                         ),
@@ -419,8 +601,8 @@ else{
                   },
                   body: TabBarView(
                     controller: _tabController,
-                    children:  [
-                      const Tab1St(),
+                    children:  const [
+                      Tab1St(),
                       // tabThree(),
                       // tabFour(),
                       Tab2St(),

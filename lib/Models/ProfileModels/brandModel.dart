@@ -22,6 +22,7 @@ class BrandProfile {
   final String brandLinkedIn;
   final String instaUserId;
   final String accessToken;
+  final String openings;
 
   BrandProfile({
     required this.brandName,
@@ -45,10 +46,12 @@ class BrandProfile {
     required this.brandLinkedIn,
     required this.accessToken,
     required this.instaUserId,
+    required this.openings,
   });
   // locations,
 
   factory BrandProfile.fromDocument(DocumentSnapshot doc) {
+    print("ID is : ${doc['userId']}");
     return BrandProfile(
       brandName: doc['brandName'] ?? '',
       brandDescription: List<String>.from(doc['brandDescription'] ?? []),
@@ -71,7 +74,7 @@ class BrandProfile {
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
       accessToken: doc['accessToken'] ?? '',
       instaUserId: doc['instaUserId'] ?? '',
-
+      openings: doc['openings'] ?? '',
 
     );
   }
@@ -99,6 +102,7 @@ class BrandProfile {
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
       accessToken: doc['accessToken'] ?? '',
       instaUserId: doc['instaUserId'] ?? '',
+      openings: doc['openings'] ?? '',
     );
   }
 

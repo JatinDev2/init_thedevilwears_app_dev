@@ -21,6 +21,8 @@ class StudentProfile {
   final List<WorkModel>? workExperience;
   final List<EducationModel>? education;
   final List<ProjectModel>? projects;
+  final List<String>? hardSkills;
+  final List<String>? softSkills;
 
   StudentProfile({
     this.firstName,
@@ -40,6 +42,8 @@ class StudentProfile {
     this.userLinkedin,
     this.userProfilePicture,
     this.userTwitter,
+    this.hardSkills,
+    this.softSkills,
   });
 
   factory StudentProfile.fromMap(Map<String, dynamic> data) {
@@ -67,6 +71,8 @@ class StudentProfile {
    userLinkedin:data['userLinkedin'],
    userProfilePicture:data['userProfilePicture'],
    userTwitter:data['userTwitter'],
+      softSkills: List<String>.from(data['Soft Skills'] as List<dynamic>? ?? []),
+      hardSkills: List<String>.from(data['Hard Skills'] as List<dynamic>? ?? [])
     );
   }
 
@@ -95,6 +101,9 @@ class StudentProfile {
       userLinkedin:data['userLinkedin'],
       userProfilePicture:data['userProfilePicture'],
       userTwitter:data['userTwitter'],
+        softSkills: List<String>.from(data['Soft Skills'] as List<dynamic>? ?? []),
+        hardSkills: List<String>.from(data['Hard Skills'] as List<dynamic>? ?? [])
+
     );
   }
 

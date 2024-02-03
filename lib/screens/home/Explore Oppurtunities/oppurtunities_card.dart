@@ -96,12 +96,13 @@ class _CustomCardState extends State<CustomCard> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        '${widget.companyType} • ${widget.clothingType}',
+                        '${widget.clothingType}',
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff3f3f3f),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 4.h),
                       Text(
@@ -111,6 +112,7 @@ class _CustomCardState extends State<CustomCard> {
                           fontWeight: FontWeight.w400,
                           color: Color(0xff8a8a8a),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

@@ -1,3 +1,5 @@
+import 'package:country_state_city/utils/city_utils.dart';
+import 'package:country_state_city/utils/country_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +22,9 @@ class OppurtunitiesScreen extends StatefulWidget {
 
 class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
   bool isLoading = false;
+  List countryCitis=[];
+  List<String> countryCitisStringList=[];
+
   Map<String, bool>  selectedSkills= {
     'Illustrating' : false,
     'Stylist': false,
@@ -75,8 +80,22 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
     'Test Fashion'
   ];
 
+  Future<void> getData()async{
+    final country = await getCountryFromCode('IN');
+    if (country != null) {
+      countryCitis = await getCountryCities(country.isoCode);
+      for(int i=0; i<countryCitis.length;i++){
+        countryCitisStringList.add(countryCitis[i].name);
+      }
+    }
+  }
 
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +226,8 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                               if(value==true){
                                 LoginData().writeIsInterestsSelected(true);
                                 LoginData().writeIsLoggedIn(true);
+                                LoginData().writeCitiesList(countryCitisStringList);
+                                print(LoginData().getListOfAllCities());
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
                                   return const ConfirmedLoginScreen();
                                 }));
@@ -222,8 +243,11 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                               if(value==true){
                                 LoginData().writeIsInterestsSelected(true);
                                 LoginData().writeIsLoggedIn(true);
+                                // Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                //   return const InstaVerification(map: {},);
+                                // }));
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                  return const InstaVerification(map: {},);
+                                  return const ConfirmedLoginScreen();
                                 }));
                               }
                             });

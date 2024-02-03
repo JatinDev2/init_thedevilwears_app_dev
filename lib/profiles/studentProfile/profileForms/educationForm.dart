@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
+import 'package:rxdart/rxdart.dart';
 import '../../../Models/formModels/educationModel.dart';
 
 class AddNewEducationForm extends StatefulWidget {
@@ -22,8 +23,9 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
   final _formKey = GlobalKey<FormState>();
   String cityValue = "";
   bool isOpen=false;
-  List countryCitis=[];
-  List<String> countryCitisStringList=[];
+  // List countryCitis=[];
+  List<String> countryCitisStringList=LoginData().getListOfAllCities();
+  List<String>schoolsList=[];
 
   bool isLoadingData=true;
 
@@ -49,12 +51,37 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
       print('User ID is null or empty');
       return false;
     }
+
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot schoolsCollection = await firestore.collection('Schools').limit(1).get();
+    DocumentSnapshot firstSchoolsDoc;
+    if (schoolsCollection.docs.isNotEmpty) {
+      firstSchoolsDoc = schoolsCollection.docs.first;
+    } else {
+      DocumentReference newSchoolsDocRef = firestore.collection('Schools').doc();
+      await newSchoolsDocRef.set({'Schools': []});
+      firstSchoolsDoc = await newSchoolsDocRef.get();
+    }
+
+
+    List<dynamic> schoolsList = firstSchoolsDoc.get('Schools');
+    if (!schoolsList.contains(education.instituteName)) {
+      await firestore.collection('Schools').doc(firstSchoolsDoc.id).update({
+        'Schools': FieldValue.arrayUnion([education.instituteName])
+      });
+    } else {
+      print('School already exists in the list');
+      // return false;
+    }
+
     Map<String, dynamic> workData = education.toJson();
     DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('studentProfiles').doc(userId);
+    firestore.collection('studentProfiles').doc(userId);
     try {
       await userDoc.set({
         'Education': FieldValue.arrayUnion([workData])
@@ -64,8 +91,13 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
     } catch (error) {
       print('Error adding Education: $error');
       return false;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
+
 
   @override
   void initState() {
@@ -80,12 +112,17 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
         });
       }
     });
-
-    getData().then((value) {
+    fetchSchoolsList().then((value) {
       setState(() {
+        schoolsList=value;
         isLoadingData=false;
       });
     });
+    // getData().then((value) {
+    //   setState(() {
+    //     isLoadingData=false;
+    //   });
+    // });
   }
 
   Future<void> _selectDate(BuildContext context) async{
@@ -102,15 +139,42 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
     }
   }
 
-  Future<void> getData()async{
-    final country = await getCountryFromCode('IN');
-    if (country != null) {
-      countryCitis = await getCountryCities(country.isoCode);
-      for(int i=0; i<countryCitis.length;i++){
-        countryCitisStringList.add(countryCitis[i].name);
+  // Future<void> getData()async{
+  //   final country = await getCountryFromCode('IN');
+  //   if (country != null) {
+  //     countryCitis = await getCountryCities(country.isoCode);
+  //     for(int i=0; i<countryCitis.length;i++){
+  //       countryCitisStringList.add(countryCitis[i].name);
+  //     }
+  //   }
+  // }
+
+
+  Future<List<String>> fetchSchoolsList() async {
+    List<String> schoolsList = [];
+
+    try {
+      // Assuming 'Schools' collection has documents and each document has a field 'Schools' which is a list of strings
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Schools').get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Extracting the 'Schools' list from the first document in the collection
+        var document = querySnapshot.docs.first;
+        var schoolsData = document.get('Schools');
+
+        if (schoolsData is List) {
+          // Add all schools to the list
+          schoolsList.addAll(schoolsData.map((e) => e.toString()).toList());
+        }
       }
+    } catch (error) {
+      print('Error fetching schools list: $error');
+      // Handle the error appropriately
     }
+
+    return schoolsList;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +200,9 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
           textAlign: TextAlign.left,
         ),
       ),
-      body: isLoadingData? Center(child: CircularProgressIndicator(),) :
+      body:
+      isLoadingData?
+      Center(child: CircularProgressIndicator(),) :
       SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding:  const EdgeInsets.only(
@@ -153,6 +219,35 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(height: 25.h,),
+                // const Text(
+                //   "School",
+                //   style: TextStyle(
+                //     fontFamily: "Poppins",
+                //     fontSize: 16,
+                //     fontWeight: FontWeight.w600,
+                //     color: Color(0xff2d2d2d),
+                //   ),
+                //   textAlign: TextAlign.left,
+                // ),
+                // TextFormField(
+                //   controller: schoolName,
+                //   decoration:const InputDecoration(
+                //     border: InputBorder.none,
+                //     hintText: "eg: ISDI School Of Design|",
+                //     hintStyle:  TextStyle(
+                //       fontFamily: "Poppins",
+                //       fontSize: 14,
+                //       fontWeight: FontWeight.w400,
+                //       color: Color(0xffb2b2b2),
+                //     ),
+                //   ),
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter School name.';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 const Text(
                   "School",
                   style: TextStyle(
@@ -163,25 +258,84 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                   ),
                   textAlign: TextAlign.left,
                 ),
-                TextFormField(
-                  controller: schoolName,
-                  decoration:const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "eg: ISDI School Of Design|",
-                    hintStyle:  TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xffb2b2b2),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter School name.';
+                // Autocomplete<String>(
+                //   optionsBuilder: (TextEditingValue textEditingValue) {
+                //     if (textEditingValue.text == '') {
+                //       return const Iterable<String>.empty();
+                //     }
+                //     return schoolsList.where((String option) {
+                //       return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                //     });
+                //   },
+                //   onSelected: (String selection) {
+                //     schoolName.text = selection;
+                //   },
+                //   fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                //     return TextFormField(
+                //       controller: fieldTextEditingController,
+                //       focusNode: fieldFocusNode,
+                //       decoration: const InputDecoration(
+                //         border: InputBorder.none,
+                //         hintText: "eg: ISDI School Of Design",
+                //         hintStyle: TextStyle(
+                //           fontFamily: "Poppins",
+                //           fontSize: 14,
+                //           fontWeight: FontWeight.w400,
+                //           color: Color(0xffb2b2b2),
+                //         ),
+                //       ),
+                //       validator: (value) {
+                //         if (value == null || value.isEmpty) {
+                //           return 'Please enter School name.';
+                //         }
+                //         return null;
+                //       },
+                //     );
+                //   },
+                // ),
+
+                Autocomplete<String>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text == '') {
+                      return const Iterable<String>.empty();
                     }
-                    return null;
+                    return schoolsList.where((String option) {
+                      return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                    });
+                  },
+                  onSelected: (String selection) {
+                    schoolName.text = selection;
+                  },
+                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                    // Set up a listener for the field text editing controller
+                    fieldTextEditingController.addListener(() {
+                      schoolName.text = fieldTextEditingController.text;
+                    });
+
+                    return TextFormField(
+                      controller: fieldTextEditingController,
+                      focusNode: fieldFocusNode,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "eg: ISDI School Of Design",
+                        hintStyle: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffb2b2b2),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter School name.';
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
+
+
                 const Divider(height: 1,thickness: 1,color: Color(0xffE7E7E7),),
                 const SizedBox(height: 13,),
 

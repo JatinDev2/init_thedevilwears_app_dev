@@ -112,7 +112,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                       onTap: (){
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (_){
-                              return HomeScreen(tabVal: 0,);
+                              return HomeScreen();
                             }));
                       },
                       child: Container(
