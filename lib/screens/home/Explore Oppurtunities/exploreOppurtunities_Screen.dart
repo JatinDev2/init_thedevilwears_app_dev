@@ -60,7 +60,7 @@ class OpportunitiesGrid extends StatelessWidget {
                 }));
               },
               child: CustomCard(
-                imageUrl:"https://cdn-academyblog.pressidium.com/wp-content/uploads/2020/01/fashion-abby-yang-spring-2020-collections-8.jpg",
+                imageUrl:profile.brandProfilePicture,
                 companyName: profile.brandName,
                 companyType: profile.companyName,
                 clothingType:profile.brandDescription.join(' • '),

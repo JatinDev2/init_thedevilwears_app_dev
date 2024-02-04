@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lookbook/Models/ProfileModels/brandModel.dart';
 
+import '../../App Constants/pfpClass.dart';
 import '../../profiles/ProfileViews/brandProfileView/brandProfileView.dart';
 
 class _AZItem extends ISuspensionBean{
@@ -82,7 +83,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
     this.items = items.map((item) => _AZItem(
       title: item.brandName,
       tag: item.brandName[0].toUpperCase(),
-      imageUrl: "https://t4.ftcdn.net/jpg/04/24/15/27/360_F_424152729_5jNBK6XVjsoWvTtGEljfSCOWv4Taqivl.jpg",
+      imageUrl: item.brandProfilePicture,
       category: formatSubCategories(item.brandDescription) ?? 'No description',
       location: item.location,
       numberOfJobOpenings: item.numberOfApplications,
@@ -195,52 +196,49 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
             child:  Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  radius: 24.r,
-                  backgroundImage: NetworkImage(
-                    item.imageUrl,
-                  ),
-                ),
+                BrandProfilePicRadiusClass(imgUrl: item.imageUrl, radius: 24.r,),
                  SizedBox(width: 12.w,),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff0f1015),
-                        height: 19/13,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        style: const TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff0f1015),
+                          height: 19/13,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "${item.category}",
-                      style: const TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff3f3f3f),
-                        height: 21/13,
+                      Text(
+                        item.category,
+                        style: const TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff3f3f3f),
+                          height: 21/13,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "${item.numberOfJobOpenings} Job Openings , ${item.location}",
-                      style: const TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff8a8a8a),
-                        height: 19/13,
-                      ),
-                      textAlign: TextAlign.left,
-                    )
-                  ],
+                      Text(
+                        "${item.numberOfJobOpenings} Job Openings , ${item.location}",
+                        style: const TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff8a8a8a),
+                          height: 19/13,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../App Constants/pfpClass.dart';
 import '../../Models/ProfileModels/studentModel.dart';
 import '../../Models/formModels/workModel.dart';
 import '../../profiles/ProfileViews/studentProfileView/studentProfileView.dart';
@@ -92,7 +93,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
     this.items = items.map((item) => _AZItem(
       title: "${item.firstName} ${item.lastName}",
       tag: item.firstName![0].toUpperCase(),
-      imgUrl: "https://t4.ftcdn.net/jpg/04/24/15/27/360_F_424152729_5jNBK6XVjsoWvTtGEljfSCOWv4Taqivl.jpg",
+      imgUrl: item.userProfilePicture!,
       role: formatSubCategories(item.userDescription!),
       // item.userDescription?.join(" • ") ?? 'No description',
       companiesWorkedIn: formatCompanyNames(item.workExperience),
@@ -202,13 +203,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
             child:  Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  radius: 24.r,
-                  backgroundImage: NetworkImage(
-                    item.imgUrl,
-                  ),
-                ),
+                StudentProfilePicClassRadiusClass(imgUrl: item.imgUrl, radius: 24.r,),
                 SizedBox(width: 12.w,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,

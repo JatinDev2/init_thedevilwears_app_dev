@@ -58,7 +58,8 @@ class _CustomCardState extends State<CustomCard> {
               children: [
                 AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: CachedNetworkImage(
+                  child: widget.imageUrl.isNotEmpty
+                      ? CachedNetworkImage(
                     imageUrl: widget.imageUrl,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
@@ -79,8 +80,17 @@ class _CustomCardState extends State<CustomCard> {
                       ),
                       child: Icon(Icons.error, color: Colors.red),
                     ),
+                  )
+                      : Container( // If imageUrl is empty, display the local asset image
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/brand.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 10.h),
                   child: Column(
