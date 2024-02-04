@@ -365,42 +365,42 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                     Material(
-                                    elevation: 4,
-                                    shape: const CircleBorder(),
-                                    clipBehavior: Clip.none,
-                                    child: Stack(
-                                      alignment: Alignment.bottomRight,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 40,
-                                          backgroundColor: Colors.transparent,
-                                          child: (userProfilePic != null && userProfilePic.isNotEmpty)
-                                              ? ClipOval(
-                                            child: Image.network(
-                                              userProfilePic,
-                                              fit: BoxFit.cover,
-                                              width: 80,
-                                              height: 80,
-                                            ),
-                                          )
-                                              : ClipRRect(
-                                            borderRadius: BorderRadius.circular(40),
-                                                child: Image.asset("assets/brand.png",
-                                                                                          width: 80,
-                                                                                          height: 80,
-                                                                                          fit: BoxFit.cover,
-                                                                                        ),
-                                              )
-                                        ),
+                                     InkWell(
+                                       onTap:(){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return EditBrandProfile(brandProfile: brandProfile,);
+                                  }));
+                                  },
+                                       child: Material(
+                                                                           elevation: 4,
+                                                                           shape: const CircleBorder(),
+                                                                           clipBehavior: Clip.none,
+                                                                           child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 40,
+                                            backgroundColor: Colors.transparent,
+                                            child: (userProfilePic != null && userProfilePic.isNotEmpty)
+                                                ? ClipOval(
+                                              child: Image.network(
+                                                userProfilePic,
+                                                fit: BoxFit.cover,
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                            )
+                                                : ClipRRect(
+                                              borderRadius: BorderRadius.circular(40),
+                                                  child: Image.asset("assets/brand.png",
+                                                                                            width: 80,
+                                                                                            height: 80,
+                                                                                            fit: BoxFit.cover,
+                                                                                          ),
+                                                )
+                                          ),
 
-                                        GestureDetector(
-                                          onTap: (){
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                              return EditBrandProfile(brandProfile: brandProfile,);
-                                            }));
-                                          },
-                                          child: Material(
+                                          Material(
                                             elevation: 4,
                                             shape: CircleBorder(),
                                             child: Container(
@@ -418,10 +418,10 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                                   shape: BoxShape.circle, color: Colors.white),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                        ],
+                                                                           ),
+                                                                         ),
+                                     ),
                                   // SizedBox(
                                   //   width: 48,
                                   // ),

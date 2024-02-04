@@ -300,39 +300,39 @@ else{
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Material(
-                                      elevation: 4,
-                                      shape: const CircleBorder(),
-                                      clipBehavior: Clip.none,
-                                      child: Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 40,
-                                            backgroundColor: Colors.transparent,
-                                            child: (userProfilePic != null && userProfilePic.isNotEmpty)
-                                                ? ClipOval(
-                                              child: Image.network(
-                                                userProfilePic,
-                                                fit: BoxFit.cover,
+                                    InkWell(
+                                      onTap:(){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                              return EditProfile(studentProfile: studentProfile,);
+                              }));
+                              },
+                                      child: Material(
+                                        elevation: 4,
+                                        shape: const CircleBorder(),
+                                        clipBehavior: Clip.none,
+                                        child: Stack(
+                                          alignment: Alignment.bottomRight,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 40,
+                                              backgroundColor: Colors.transparent,
+                                              child: (userProfilePic != null && userProfilePic.isNotEmpty)
+                                                  ? ClipOval(
+                                                child: Image.network(
+                                                  userProfilePic,
+                                                  fit: BoxFit.cover,
+                                                  width: 80,
+                                                  height: 80,
+                                                ),
+                                              )
+                                                  : SvgPicture.asset(
+                                                "assets/devil.svg",
                                                 width: 80,
                                                 height: 80,
                                               ),
-                                            )
-                                                : SvgPicture.asset(
-                                              "assets/devil.svg",
-                                              width: 80,
-                                              height: 80,
                                             ),
-                                          ),
 
-                                          GestureDetector(
-                                            onTap: (){
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                                return EditProfile(studentProfile: studentProfile,);
-                                              }));
-                                            },
-                                            child: Material(
+                                            Material(
                                               elevation: 4,
                                               shape: CircleBorder(),
                                               child: Container(
@@ -350,8 +350,8 @@ else{
                                                     shape: BoxShape.circle, color: Colors.white),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     // SizedBox(

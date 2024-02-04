@@ -183,30 +183,29 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   BuildInfoColumns(
+                      heading_text: "Role",
+                      info_text: widget.listing.jobProfile),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
+                    height: 50.h,
+                    width: 1.w,
+                    color: const Color(0xffB7B7B9),
+                  ),
+                  BuildInfoColumns(
+                      heading_text: "Job Type",
+                      info_text: widget.listing.jobType),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: 2.0.h, horizontal: 2.0.h),
+                    height: 50.h,
+                    width: 1.w,
+                    color: const Color(0xffB7B7B9),
+                  ),
+                  BuildInfoColumns(
                       heading_text: "Work Mode",
-                      info_text: widget.listing.workMode),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: 2.0.h, horizontal: 2.0.h),
-                    height: 50.h,
-                    width: 1.w,
-                    color: const Color(0xffB7B7B9),
+                      info_text: widget.listing.workMode
                   ),
-                  BuildInfoColumns(
-                      heading_text: "Location",
-                      info_text: widget.listing.officeLoc),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: 2.0.h, horizontal: 2.0.h),
-                    height: 50.h,
-                    width: 1.w,
-                    color: const Color(0xffB7B7B9),
-                  ),
-                  BuildInfoColumns(
-                      heading_text: "Stipend",
-                      info_text: widget.listing.stipend != "Unpaid"
-                          ? "${widget.listing.stipendAmount}${widget.listing.stipendVal}"
-                          : "${widget.listing.stipend}"),
                 ],
               ),
             ),
@@ -403,7 +402,8 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   BuildInfoColumns(
-                      heading_text: "Work Mode", info_text: listing.workMode),
+                      heading_text: "Role",
+                      info_text:listing.jobProfile),
                   Container(
                     margin: EdgeInsets.symmetric(
                         vertical: 2.0.h, horizontal: 2.0.h),
@@ -412,7 +412,8 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                     color: const Color(0xffB7B7B9),
                   ),
                   BuildInfoColumns(
-                      heading_text: "Location", info_text: listing.officeLoc),
+                      heading_text: "Job Type",
+                      info_text: listing.jobType),
                   Container(
                     margin: EdgeInsets.symmetric(
                         vertical: 2.0.h, horizontal: 2.0.h),
@@ -421,10 +422,8 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                     color: const Color(0xffB7B7B9),
                   ),
                   BuildInfoColumns(
-                      heading_text: "Stipend",
-                      info_text: listing.stipend != "Unpaid"
-                          ? "${listing.stipendAmount}${listing.stipendVal}"
-                          : "${listing.stipend}"),
+                      heading_text: "Work Mode",
+                      info_text: listing.workMode),
                 ],
               ),
             ),

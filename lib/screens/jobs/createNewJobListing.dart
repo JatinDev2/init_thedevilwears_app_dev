@@ -1125,10 +1125,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
 
                         List<String>tags=[];
                         if(jobDur=="Fixed"){
-                          tags=[dropdownValue,jobType,"${jobDurController.text} $jobDurValue"];
+                          tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,"${jobDurController.text} $jobDurValue"];
+
                         }
                         else{
-                          tags=[dropdownValue,jobType,jobDur];
+                          tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,jobDur];
                         }
                         DocumentReference docRef = listCollection.doc();
 
