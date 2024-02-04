@@ -131,7 +131,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
+              margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 18.h),
               height: 50.h,
               width: MediaQuery.of(context).size.width,
               child: Row(
@@ -150,7 +150,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              padding: EdgeInsets.symmetric(horizontal: 14.w),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -164,7 +164,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                       child: Text(
                     widget.listing.createdBy,
                     style: TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xff0f1015),
@@ -177,7 +177,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
             ),
             Container(
               padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
-              margin: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              margin: EdgeInsets.symmetric(vertical: 18.h, horizontal: 14.w),
               color: const Color(0xffF9F9F9),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -189,7 +189,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                     margin: EdgeInsets.symmetric(
                         vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
-                    width: 2.w,
+                    width: 1.w,
                     color: const Color(0xffB7B7B9),
                   ),
                   BuildInfoColumns(
@@ -199,7 +199,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                     margin: EdgeInsets.symmetric(
                         vertical: 2.0.h, horizontal: 2.0.h),
                     height: 50.h,
-                    width: 2.w,
+                    width: 1.w,
                     color: const Color(0xffB7B7B9),
                   ),
                   BuildInfoColumns(
@@ -211,7 +211,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 8.0.h),
+              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
