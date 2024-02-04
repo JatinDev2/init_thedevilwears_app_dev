@@ -36,7 +36,7 @@ class BuildInfoColumns extends StatelessWidget {
             Text(
               heading_text,
               style: const TextStyle(
-                fontFamily: "Poppins",
+                // fontFamily: "Poppins",
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff9a9a9a),
@@ -51,9 +51,9 @@ class BuildInfoColumns extends StatelessWidget {
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontFamily: "Poppins",
+                    // fontFamily: "Poppins",
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w700,
                     color: Color(0xff424242),
                   ),
                 ),
@@ -245,7 +245,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                         getTimeAgo(widget.listing.createdAt),
                         // "37 Mins ago",
                         style: TextStyle(
-                          fontFamily: "Poppins",
+                          // fontFamily: "Poppins",
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xff8b8b8b),
@@ -383,7 +383,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                       child: Text(
                     listing.createdBy,
                     style: TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xff0f1015),
@@ -463,7 +463,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                         getTimeAgo(listing.createdAt),
                         // "37 Mins ago",
                         style: TextStyle(
-                          fontFamily: "Poppins",
+                          // fontFamily: "Poppins",
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xff8b8b8b),
@@ -483,7 +483,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                           child: Text(
                             "New",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
@@ -523,7 +523,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                           child: Text(
                             "${listing.applicationCount} Applications",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).colorScheme.primary,
@@ -606,7 +606,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
     }
 
     return TextStyle(
-      fontFamily: "Poppins",
+      // fontFamily: "Poppins",
       fontSize: 12,
       fontWeight: FontWeight.w500,
       color: color, // This is dynamically assigned based on the status
@@ -689,7 +689,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                       Text(
                         "Applied to:",
                         style: TextStyle(
-                          fontFamily: "Poppins",
+                          // fontFamily: "Poppins",
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           color: Colors.grey,
@@ -703,7 +703,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                       Text(
                         widget.listing.createdBy,
                         style: TextStyle(
-                          fontFamily: "Poppins",
+                          // fontFamily: "Poppins",
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                           color: const Color(0xff0f1015),
@@ -718,7 +718,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                     getTimeAgo(widget.applicationData['timeStamp'].toString()),
                     // "37 Mins ago",
                     style: TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xff8b8b8b),
@@ -868,11 +868,11 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                                               borderRadius:
                                                   BorderRadius.circular(15.0),
                                             ),
-                                            child: Center(
-                                              child: const Text(
+                                            child: const Center(
+                                              child: Text(
                                                 "Yes",
                                                 style: TextStyle(
-                                                  fontFamily: "Poppins",
+                                                  // fontFamily: "Poppins",
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w700,
                                                   color: Color(0xff373737),
@@ -897,11 +897,11 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                                               borderRadius:
                                                   BorderRadius.circular(15.0),
                                             ),
-                                            child: Center(
-                                              child: const Text(
+                                            child: const Center(
+                                              child: Text(
                                                 "No",
                                                 style: TextStyle(
-                                                  fontFamily: "Poppins",
+                                                  // fontFamily: "Poppins",
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w700,
                                                   color: Color(0xff373737),
@@ -925,7 +925,7 @@ class _BuildJobCardForStudentState extends State<BuildJobCardForStudent> {
                           child: const Text(
                             "Delete Application",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff111111),
@@ -1049,7 +1049,7 @@ class FilterOptionChip extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontFamily: "Poppins",
+                // fontFamily: "Poppins",
                 fontSize: 12,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                 color: selected ? Colors.white : Color(0xff303030),

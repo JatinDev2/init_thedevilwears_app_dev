@@ -499,7 +499,7 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                             fontFamily: "Poppins",
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w700,
-                                            color: const Color(0xff010100),
+                                            color: Colors.white,
                                             height: (24/16).h,
                                           ),
                                           textAlign: TextAlign.left,
