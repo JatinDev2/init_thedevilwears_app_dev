@@ -24,18 +24,18 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "I am a... ",
                   style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 32,
+                    // fontFamily: "Poppins",
+                    fontSize: 32.sp,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff12121d),
                     height: 32/32,
                   ),
                   // textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 79,),
+                SizedBox(height: 40,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -60,8 +60,8 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                           child: Text(
                             "Company",
                             style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 20,
+                              // fontFamily: "Poppins",
+                              fontSize: 20.sp,
                               fontWeight: isCompany? FontWeight.w600 : FontWeight.w400 ,
                               color: isCompany? Colors.white : Color(0xff000000),
                               height: 30/20,
@@ -93,8 +93,8 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                           child: Text(
                             "Person",
                             style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 20,
+                              // fontFamily: "Poppins",
+                              fontSize: 20.sp,
                               fontWeight:isPerson? FontWeight.w600 : FontWeight.w400,
                               color: isPerson? Colors.white : Color(0xff000000),
                               height: 30/20,
@@ -127,10 +127,10 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                          Text(
                             "You will not be able to change this later",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color: Color(0xff12121d),
+                              color: Color(0x9912121d),
                               height: 16/12,
                             ),
                             textAlign: TextAlign.center,
@@ -163,12 +163,20 @@ class _OptionsInScreenState extends State<OptionsInScreen> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x40000000),
+                              blurRadius: 10,
+                              spreadRadius: 0,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: const Center(
                           child: Text(
                             "Next",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,

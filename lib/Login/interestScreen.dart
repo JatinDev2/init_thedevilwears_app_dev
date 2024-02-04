@@ -72,28 +72,28 @@ class _InterestScreenState extends State<InterestScreen> {
           },
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.black),
         ),
-        actions: [
-          Container(
-            height: 49.h,
-            width: 48.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xff12121D0D),
-            ),
-            child: IconButton(
-              onPressed: () {
-                // textEditingController.clear();
-                setState(() {
-                  selectedSkills.forEach((key, value) {
-                    selectedSkills[key]=false;
-                  });
-                });
-              },
-              icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
-            ),
-          ),
-          SizedBox(width: 20.w),
-        ],
+        // actions: [
+        //   Container(
+        //     height: 49.h,
+        //     width: 48.w,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Color(0xff12121D0D),
+        //     ),
+        //     child: IconButton(
+        //       onPressed: () {
+        //         // textEditingController.clear();
+        //         setState(() {
+        //           selectedSkills.forEach((key, value) {
+        //             selectedSkills[key]=false;
+        //           });
+        //         });
+        //       },
+        //       icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
+        //     ),
+        //   ),
+        //   SizedBox(width: 20.w),
+        // ],
       ),
       body: Container(
               padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -101,18 +101,21 @@ class _InterestScreenState extends State<InterestScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                   LoginData().getUserType()=="Company"?"Choose what describes your brand the best": "Choose what describes you the best",
-                    style:  TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff0f1015),
-                      // height: 58/32,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40.h),
+                    child: Text(
+                     LoginData().getUserType()=="Company"?"Choose what describes your brand the best": "Choose what describes you the best",
+                      style:  TextStyle(
+                        // fontFamily: "Poppins",
+                        fontSize: 32.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff0f1015),
+                        // height: 58/32,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
-                  SizedBox(height: 40),
+                  // SizedBox(height: 40),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
@@ -130,7 +133,7 @@ class _InterestScreenState extends State<InterestScreen> {
                           selectedColor: Theme.of(context).colorScheme.primary,
                           labelStyle: TextStyle(
                             color: selectedSkills[skill]! ? Colors.white : Colors.black,
-                            fontFamily: "Poppins",
+                            // fontFamily: "Poppins",
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
@@ -144,15 +147,18 @@ class _InterestScreenState extends State<InterestScreen> {
                     child: Column(
                       // mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Text(
-                          "Selecting the right tags will help right opportunities come your way. You can always modify these later.",
-                          style:  TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff12121d),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 20.h),
+                          child: const Text(
+                            "Selecting the right tags will help right opportunities come your way. You can always modify these later.",
+                            style:  TextStyle(
+                              // fontFamily: "Poppins",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0x9912121d),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16,),
                         GestureDetector(
@@ -178,6 +184,14 @@ class _InterestScreenState extends State<InterestScreen> {
                             decoration: BoxDecoration(
                               color: Colors.orange,
                               borderRadius: BorderRadius.circular(8.0.r),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  blurRadius: 10,
+                                  spreadRadius: 0,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: Center(
                               child: isLoading
@@ -187,7 +201,7 @@ class _InterestScreenState extends State<InterestScreen> {
                                   : Text(
                                 "Next",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
+                                  // fontFamily: "Poppins",
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                   color:  Colors.white,

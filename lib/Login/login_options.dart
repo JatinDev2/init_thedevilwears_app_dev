@@ -60,7 +60,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                   const Text(
                     "Welcome,",
                     style: TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff12121d),
@@ -68,16 +68,19 @@ class _LoginOptionsState extends State<LoginOptions> {
                     ),
                     textAlign: TextAlign.left,
                   ),
-                  const Text(
-                    "Get started with...",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff12121d),
-                      height: 16/14,
+                  const Padding(
+                    padding: EdgeInsets.only(top: 11),
+                    child: Text(
+                      "Get started with...",
+                      style: TextStyle(
+                        // fontFamily: "Poppins",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0x9912121d),
+                        height: 16/14,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   if(Platform.isIOS)
                   GestureDetector(
@@ -114,10 +117,10 @@ class _LoginOptionsState extends State<LoginOptions> {
                             const Text(
                               "Use your Apple ID",
                               style: TextStyle(
-                                fontFamily: "Poppins",
+                                // fontFamily: "Poppins",
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
-                                color: Color(0xff12121d),
+                                color: Color(0x9912121d),
                                 height: 16/16,
                               ),
                               textAlign: TextAlign.center,
@@ -175,41 +178,41 @@ class _LoginOptionsState extends State<LoginOptions> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:  [
-                    const Text(
-                      "Have an account? ",
-                      style: TextStyle(
-                        fontSize: 14,
-                        // fontWeight: ,
-                        height: 16/14,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 14,
-                        // fontWeight: ,
-                        height: 16/14,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  ],
-                ),
-                const SizedBox(height: 45,),
-                const SizedBox(height: 49,),
-              ],
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.bottomCenter,
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: [
+          //       Row(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children:  [
+          //           const Text(
+          //             "Have an account? ",
+          //             style: TextStyle(
+          //               fontSize: 14,
+          //               // fontWeight: ,
+          //               height: 16/14,
+          //             ),
+          //             textAlign: TextAlign.center,
+          //           ),
+          //           Text(
+          //             "Login",
+          //             style: TextStyle(
+          //               fontSize: 14,
+          //               // fontWeight: ,
+          //               height: 16/14,
+          //               color: Theme.of(context).colorScheme.primary,
+          //             ),
+          //             textAlign: TextAlign.center,
+          //           )
+          //         ],
+          //       ),
+          //       const SizedBox(height: 45,),
+          //       const SizedBox(height: 49,),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
@@ -242,10 +245,10 @@ class _LoginOptionsState extends State<LoginOptions> {
             const Text(
               "Use your Gmail",
               style: TextStyle(
-                fontFamily: "Poppins",
+                // fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
-                color: Color(0xff12121d),
+                color: Color(0x9912121d),
                 height: 16/16,
               ),
               textAlign: TextAlign.left,

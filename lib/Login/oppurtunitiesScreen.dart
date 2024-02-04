@@ -109,28 +109,28 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
             },
             icon: const Icon(Icons.arrow_back_rounded, color: Colors.black),
           ),
-          actions: [
-            Container(
-              height: 49.h,
-              width: 48.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xff12121D0D),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  // textEditingController.clear();
-                  setState(() {
-                    selectedSkills.forEach((key, value) {
-                      selectedSkills[key]=false;
-                    });
-                  });
-                },
-                icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
-              ),
-            ),
-            SizedBox(width: 20.w),
-          ],
+          // actions: [
+          //   Container(
+          //     height: 49.h,
+          //     width: 48.w,
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       color: Color(0xff12121D0D),
+          //     ),
+          //     child: IconButton(
+          //       onPressed: () {
+          //         // textEditingController.clear();
+          //         setState(() {
+          //           selectedSkills.forEach((key, value) {
+          //             selectedSkills[key]=false;
+          //           });
+          //         });
+          //       },
+          //       icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
+          //     ),
+          //   ),
+          //   SizedBox(width: 20.w),
+          // ],
         ),
         body: Container(
           padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -138,22 +138,25 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-               Text(
-              LoginData().getUserType()=="Company"?  "What kind of talent profiles are you looking for" :  "What kind of opportunities are you looking for",
-                style: const TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff0f1015),
-                  // height: 58/32,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 30),
+               Padding(
+                 padding: EdgeInsets.symmetric(vertical: 47.h),
+                 child: Text(
+                               LoginData().getUserType()=="Company"?  "What kind of talent profiles are you looking for" :  "What kind of opportunities are you looking for",
+                  style: TextStyle(
+                    // fontFamily: "Poppins",
+                    fontSize: 32.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff0f1015),
+                    // height: 58/32,
+                  ),
+                  textAlign: TextAlign.left,
+                               ),
+               ),
+              // SizedBox(height: 30),
              const Text(
                 "Business & Analytics",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
+                  // fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff000000),
@@ -179,7 +182,7 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                       selectedColor: Theme.of(context).colorScheme.primary,
                       labelStyle: TextStyle(
                         color: selectedSkills[skill]! ? Colors.white : Colors.black,
-                        fontFamily: "Poppins",
+                        // fontFamily: "Poppins",
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
@@ -193,15 +196,18 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                 child: Column(
                   // mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      "Don’t worry, you’ll get to see all opportunities anyway.This will ensure, the one’s you like are served right on top.",
-                      style:  TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff12121d),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 20.0.h),
+                      child: Text(
+                        "Don’t worry, you’ll get to see all opportunities anyway. This will ensure, the one’s you like are served right on top.",
+                        style:  TextStyle(
+                          // fontFamily: "Poppins",
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0x9912121d),
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 16,),
                     GestureDetector(
@@ -261,6 +267,14 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                         decoration: BoxDecoration(
                           color: Colors.orange,
                           borderRadius: BorderRadius.circular(8.0.r),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x40000000),
+                              blurRadius: 10,
+                              spreadRadius: 0,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Center(
                           child: isLoading
@@ -270,7 +284,7 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
                               : Text(
                             "Next",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                               color:  Colors.white,

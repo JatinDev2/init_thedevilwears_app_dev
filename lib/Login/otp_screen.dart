@@ -91,23 +91,23 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
           },
           icon: Icon(Icons.arrow_back, color: Colors.black),
         ),
-        actions: [
-          Container(
-            height: 49.h,
-            width: 48.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xff12121D0D),
-            ),
-            child: IconButton(
-              onPressed: () {
-                textEditingController.clear();
-              },
-              icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
-            ),
-          ),
-          SizedBox(width: 20.w),
-        ],
+        // actions: [
+        //   Container(
+        //     height: 49.h,
+        //     width: 48.w,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: Color(0xff12121D0D),
+        //     ),
+        //     child: IconButton(
+        //       onPressed: () {
+        //         textEditingController.clear();
+        //       },
+        //       icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
+        //     ),
+        //   ),
+        //   SizedBox(width: 20.w),
+        // ],
       ),
       body: GestureDetector(
         onTap: () {},
@@ -117,16 +117,16 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
             height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  padding: EdgeInsets.symmetric(vertical: 50.h),
                   margin: EdgeInsets.only(left: 25.w),
                   child: Text(
                     "Phone Number Verification",
                     style: TextStyle(
-                      fontSize: 22.sp,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff0f1015),
                       height: 32 / 22,
@@ -255,7 +255,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     },
                     child: Container(
                       margin: EdgeInsets.only(
-                        top: 100.h,
+                        top: 32.h,
                       ),
                       height: 50.h,
                       width: 142.w,

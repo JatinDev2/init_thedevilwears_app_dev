@@ -87,6 +87,7 @@ class _MyAppState extends State<MyApp> {
               textTheme: GoogleFonts.poppinsTextTheme(),
             ),
           home: SplashScreen(),
+
             debugShowCheckedModeBanner: false,
           ),
         );

@@ -91,7 +91,10 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.black),
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: const Icon(Icons.arrow_back_rounded, color: Colors.black),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -103,7 +106,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding:EdgeInsets.symmetric(horizontal: 26.w,),
+                  padding:EdgeInsets.symmetric(horizontal: 26.w, vertical: 50.h),
                   child: Text(
                     "Help us get to know you better",
                     style: TextStyle(
@@ -115,7 +118,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                SizedBox(height: 50.h),
+                // SizedBox(height: 50.h),
                 Container(
                   padding:EdgeInsets.symmetric(horizontal: 26.w,),
                   child: Text(
@@ -251,7 +254,7 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                 Container(
                   padding:EdgeInsets.symmetric(horizontal: 26.w,),
                   child: Text(LoginData().getUserEmail(), style: const TextStyle(
-                    fontFamily: "Poppins",
+                    // fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff000000),
@@ -273,6 +276,14 @@ class _PhoneNumber_ScreenState extends State<PhoneNumber_Screen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x40000000),
+                            blurRadius: 10,
+                            spreadRadius: 0,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Center(
                         child: isLoading

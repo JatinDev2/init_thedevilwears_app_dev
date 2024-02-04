@@ -31,7 +31,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                   const Text(
                     "Woo hoo!",
                     style:  TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 36,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2d2d2d),
@@ -51,7 +51,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                  const Text(
                     "Let’s help you build that dream\n career of yours",
                     style:  TextStyle(
-                      fontFamily: "Poppins",
+                      // fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff737373),
@@ -96,7 +96,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                           child: Text(
                             "Build your profile",
                             style: TextStyle(
-                              fontFamily: "Poppins",
+                              // fontFamily: "Poppins",
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -131,7 +131,7 @@ class ConfirmedLoginScreen extends StatelessWidget {
                             child: Text(
                               "Remind me later",
                               style: TextStyle(
-                                fontFamily: "Poppins",
+                                // fontFamily: "Poppins",
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
