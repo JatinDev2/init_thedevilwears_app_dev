@@ -37,7 +37,9 @@ class FirebaseAuthAPIs{
         'bookmarkedStudentProfiles':[],
         'Work Experience':[],
         'Projects':[],
-        'Education':[]
+        'Education':[],
+        'Soft Skills':[],
+        'Hard Skills':[]
       });
       return true;
     }catch(e){

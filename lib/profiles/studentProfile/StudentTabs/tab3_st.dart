@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lookbook/Models/ProfileModels/brandModel.dart';
 import 'package:lookbook/App%20Constants/pfpClass.dart';
 import 'package:lookbook/Common%20Widgets/common_widgets.dart';
+import 'package:lookbook/profiles/ProfileViews/studentProfileView/studentProfileView.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
@@ -168,12 +169,19 @@ class _Tab3StState extends State<Tab3St> with TickerProviderStateMixin{
                         padding: EdgeInsets.all(4),
                         child:
                      ListView.builder(
+                       physics: BouncingScrollPhysics(),
                       itemCount: combinedList.length,
                       itemBuilder: (context, index) {
 
                         var profile = combinedList[index];
                         if(profile.userType=="Company"){
-                          return JobCard(brandProfile: profile,);
+                          return InkWell(
+                              onTap: (){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return BrandProfileView(brandProfile: profile);
+                                }));
+                              },
+                              child: JobCard(brandProfile: profile,));
                         }
                         else{
                           String companies="";
@@ -207,6 +215,7 @@ class _Tab3StState extends State<Tab3St> with TickerProviderStateMixin{
                             workedAs: workedAs_profiles,
                             education: education,
                             uid: newProfile.userId!,
+                            studentProfile: profile,
                           );
                         }
 
@@ -220,6 +229,7 @@ class _Tab3StState extends State<Tab3St> with TickerProviderStateMixin{
                           padding: EdgeInsets.all(4),
                           child:
                           ListView.builder(
+                            physics: BouncingScrollPhysics(),
                             itemCount: jobListings.length,
                             itemBuilder: (context, index) {
                               jobModel listing = jobListings[index];
@@ -374,6 +384,7 @@ class ProfileCard extends StatefulWidget {
   final String workedWith;
   final String workedAs;
   final String education;
+  final StudentProfile studentProfile;
 
   ProfileCard({
     required this.imageUrl,
@@ -383,6 +394,7 @@ class ProfileCard extends StatefulWidget {
     required this.workedAs,
     required this.education,
     required this.uid,
+    required this.studentProfile
   });
 
   @override
@@ -404,186 +416,168 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
     print(LoginData().getBookmarkedStudentProfiles());
   }
 
-  void toggleBookmark() {
-    setState(() {
-      isBookmarked = !isBookmarked;
-    });
-    if (isBookmarked) {
-      ProfileServices().bookmarkStudentProfile(LoginData().getUserId(),widget.uid);
-      _animationController.forward();
-    } else {
-      ProfileServices().removeBookmarkedStudentProfile(LoginData().getUserId(),widget.uid);
-      _animationController.reverse();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4.w,
-      shadowColor: Colors.grey.withOpacity(0.5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.r),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (_){
+          return StudentProfileView(studentProfile: widget.studentProfile);
+        }));
+      },
+      child: Card(
+        elevation: 4.w,
+        shadowColor: Colors.grey.withOpacity(0.5),
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r),
-          gradient: const LinearGradient(
-            colors: [
-              Colors.white,
-              Colors.white70,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
         ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.r),
+            gradient: const LinearGradient(
+              colors: [
+                Colors.white,
+                Colors.white70,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
 
-        child: Padding(
-          padding: EdgeInsets.all(12.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 32.r,
-                    backgroundColor: widget.imageUrl!.isNotEmpty? Colors.white : Colors.transparent,
-                    child: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
-                        ? CachedNetworkImage(
-                      imageUrl: widget.imageUrl!, // Actual image URL
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: CircleAvatar(
-                          radius: 32.r,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      imageBuilder: (context, imageProvider) => CircleAvatar(
-                        radius: 32.r,
-                        backgroundImage: imageProvider,
-                      ),
-                    )
-                        : CircleAvatar( // Fallback to asset image
-                      radius: 32.r,
-                      backgroundColor: Colors.transparent,
-                      child: SvgPicture.asset("assets/devil.svg", fit: BoxFit.cover,height: 70,), // Provide the path to your asset image
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              widget.name,
-                              style:  TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff0f1015),
+          child: Padding(
+            padding: EdgeInsets.all(12.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  StudentProfilePicClassRadiusClass(imgUrl: widget.imageUrl, radius: 32.r),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                widget.name,
+                                style:  TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff0f1015),
+                                ),
                               ),
-                            ),
-                            const Spacer(),
-                            InkWell(
-                                onTap: () {
-                                  String deepLink =
-                                      'myapp://next_page';
+                              const Spacer(),
+                              InkWell(
+                                  onTap: () {
+                                    String deepLink =
+                                        'myapp://next_page';
 
-                                  Share.share('Check out this listing: $deepLink',
-                                      subject: 'Listing Details');
+                                    Share.share('Check out this listing: $deepLink',
+                                        subject: 'Listing Details');
+                                  },
+                                  child:  Icon(IconlyLight.send,size: 32.sp,)),
+                              SizedBox(width: 16,),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isBookmarked = !isBookmarked;
+                                  });
+                                  if (isBookmarked) {
+                                    print("hihihi");
+                                    ProfileServices().bookmarkStudentProfile(LoginData().getUserId(),widget.uid);
+                                    _animationController.forward();
+                                  } else {
+                                    print("klkk");
+                                    ProfileServices().removeBookmarkedStudentProfile(LoginData().getUserId(),widget.uid);
+                                    _animationController.reverse();
+                                  }
                                 },
-                                child:  Icon(IconlyLight.send,size: 32.sp,)),
-                            SizedBox(width: 16,),
-                            InkWell(
-                              onTap: (){},
-                              child: AnimatedBuilder(
-                                animation: _animationController,
-                                builder: (_, Widget? child) {
-                                  return Icon(
-                                    isBookmarked
-                                        ? IconlyBold.bookmark
-                                        : IconlyLight.bookmark,
-                                    color: Colors.black,
-                                    size: 32.sp,
+                                child: AnimatedBuilder(
+                                  animation: _animationController,
+                                  builder: (_, Widget? child) {
+                                    return Icon(
+                                      isBookmarked
+                                          ? IconlyBold.bookmark
+                                          : IconlyLight.bookmark,
+                                      color: Colors.black,
+                                      size: 32.sp,
+                                    );
+                                  },
+                                ),
+                              ),
+                                  // Icon(
+                                  //   // isBookmarked
+                                  //   //     ?
+                                  // IconlyBold.bookmark,
+                                  //       // : IconlyLight.bookmark,
+                                  //   color: Colors.black,
+                                  // ),
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Description'),
+                                    content: SingleChildScrollView(
+                                      child: Text(
+                                        widget.jobProfile,
+                                        style: const TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                        // overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Close'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); // Close the dialog
+                                        },
+                                      ),
+                                    ],
+                                    shape: RoundedRectangleBorder( // Add this line
+                                      borderRadius: BorderRadius.circular(10), // Adjust the radius
+                                    ),
                                   );
                                 },
-                              ),
+                              );
+                            },
+                            child: Text(
+                                DisplayFunctions().concatToDisplay(widget.jobProfile.split(' • '),2),
+                              style:  TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff616161),
+                              // height: 19/12,
                             ),
-                                // Icon(
-                                //   // isBookmarked
-                                //   //     ?
-                                // IconlyBold.bookmark,
-                                //       // : IconlyLight.bookmark,
-                                //   color: Colors.black,
-                                // ),
-                          ],
-                        ),
-                        InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Description'),
-                                  content: SingleChildScrollView(
-                                    child: Text(
-                                      widget.jobProfile,
-                                      style: const TextStyle(
-                                        fontFamily: "Poppins",
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                      ),
-                                      // overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Close'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(); // Close the dialog
-                                      },
-                                    ),
-                                  ],
-                                  shape: RoundedRectangleBorder( // Add this line
-                                    borderRadius: BorderRadius.circular(10), // Adjust the radius
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Text(
-                              DisplayFunctions().concatToDisplay(widget.jobProfile.split(' • '),2),
-                            style:  TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff616161),
-                            // height: 19/12,
+                            ),
                           ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 6,),
-              _buildInfoSection('Worked with:', widget.workedWith),
-              SizedBox(height: 6,),
-              _buildInfoSection('Worked as:', widget.workedAs),
-              SizedBox(height: 6,),
-              _buildInfoSection('Education', widget.education),
-            ],
+                  ],
+                ),
+                SizedBox(height: 6,),
+                _buildInfoSection('Worked with:', widget.workedWith),
+                SizedBox(height: 6,),
+                _buildInfoSection('Worked as:', widget.workedAs),
+                SizedBox(height: 6,),
+                _buildInfoSection('Education', widget.education),
+              ],
+            ),
           ),
         ),
       ),

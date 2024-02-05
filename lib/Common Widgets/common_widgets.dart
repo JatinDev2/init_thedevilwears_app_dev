@@ -70,10 +70,11 @@ class BuildInfoColumns extends StatelessWidget {
 // ----------------------------------Building Job Listing Card-----------------------------------------------------------
 class BuildCustomJobCard extends StatefulWidget {
   final jobModel listing;
+  String? label;
 
-  const BuildCustomJobCard({
+   BuildCustomJobCard({
     super.key,
-    required this.listing,
+    required this.listing,this.label,
   });
 
   @override
@@ -272,7 +273,7 @@ class _BuildCustomJobCardState extends State<BuildCustomJobCard>
                           },
                           icon: const Icon(IconlyLight.send)),
                       IconButton(
-                        onPressed: toggleBookmark,
+                        onPressed: widget.label!="view"? toggleBookmark : null,
                         icon: AnimatedBuilder(
                           animation: _animationController,
                           builder: (_, Widget? child) {
