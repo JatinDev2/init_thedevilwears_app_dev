@@ -9,7 +9,7 @@ import '../../App Constants/launchingFunctions.dart';
 import 'StudentTabs/tab1_st.dart';
 import 'StudentTabs/tab2_st.dart';
 import 'StudentTabs/tab3_st.dart';
-import 'edit_profile.dart';
+import 'editProfile/edit_profile.dart';
 
 class StudentProfileScreen extends StatefulWidget{
   const StudentProfileScreen({Key? key}) : super(key: key);
@@ -66,7 +66,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
   }
 
   double calculateProfileCompletion(Map<String, dynamic> data) {
-    int totalCriteria = 13; // The number of fields you are checking
+    int totalCriteria = 12;
     int completedCriteria = 0;
 
     // Increment completedCriteria for every non-null and non-empty field.
@@ -82,7 +82,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
     if (data['userFacebook'] != null && (data['userFacebook'] as String).isNotEmpty) completedCriteria++;
     if (data['projects'] != null && (data['projects'] as List).isNotEmpty) completedCriteria++;
     if (data['Work Experience'] != null && (data['Work Experience'] as List).isNotEmpty) completedCriteria++;
-    if (data['userGmail'] != null && (data['userGmail'] as String).isNotEmpty) completedCriteria++;
+   // if (data['userGmail'] != null && (data['userGmail'] as String).isNotEmpty) completedCriteria++;
 
     return completedCriteria / totalCriteria;
   }
@@ -104,7 +104,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
     if (data['userFacebook'] == null || (data['userFacebook'] as String).isNotEmpty) incompleteItems.add('Facebook Handle');
     if (data['projects'] == null || (data['projects'] as List).isNotEmpty) incompleteItems.add('Projects');
     if (data['Work Experience'] == null || (data['Work Experience'] as List).isNotEmpty) incompleteItems.add('Work Experience');
-    if (data['userGmail'] == null || (data['userGmail'] as String).isEmpty) incompleteItems.add('Gmail');
+   // if (data['userGmail'] == null || (data['userGmail'] as String).isEmpty) incompleteItems.add('Gmail');
 
 
     return Column(
@@ -207,7 +207,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen>
       listItems.add(createListItem('userFacebook', 'Add Facebook', data['userFacebook']));
       listItems.add(createListItem('projects', 'Add Projects', data['projects']));
       listItems.add(createListItem('Work Experience', 'Add Work Experience', data['Work Experience']));
-      listItems.add(createListItem('userGmail', 'Add Gmail', data['userGmail']));
+     // listItems.add(createListItem('userGmail', 'Add Gmail', data['userGmail']));
 
       return listItems;
     }

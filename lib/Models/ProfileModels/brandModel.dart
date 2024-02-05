@@ -73,7 +73,7 @@ class BrandProfile {
       brandTwitter: doc['brandTwitter'] ?? '',
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
       accessToken: doc['accessToken'] ?? '',
-      instaUserId: doc['instaUserId'] ?? '',
+      instaUserId: doc['instaUserID'] ?? '',
       openings: doc['openings'] ?? '',
 
     );
@@ -101,7 +101,7 @@ class BrandProfile {
       brandTwitter: doc['brandTwitter'] ?? '',
       brandLinkedIn: doc['brandLinkedIn'] ?? '',
       accessToken: doc['accessToken'] ?? '',
-      instaUserId: doc['instaUserId'] ?? '',
+      instaUserId: doc['instaUserID'] ?? '',
       openings: doc['openings'] ?? '',
     );
   }

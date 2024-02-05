@@ -77,7 +77,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                         SliverAppBar(
                           leading: Container(),
                           backgroundColor: Colors.white,
-                          expandedHeight: 280,
+                          expandedHeight: 340,
                           floating: true,
                           pinned: false,
                           flexibleSpace: FlexibleSpaceBar(
@@ -338,6 +338,9 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                       textAlign: TextAlign.left,
                                       overflow: TextOverflow.ellipsis,
                                     )),
+                                SizedBox(height: 8,),
+                                if(LoginData().getUserId()!=widget.studentProfile.userId)
+                                  ElevatedButton(onPressed:(){} , child: Text("Connect"))
                               ],
                             ),
                           ),

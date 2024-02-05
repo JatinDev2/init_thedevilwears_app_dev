@@ -42,7 +42,7 @@ class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(8.h),
+      margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
       child: Stack(
         alignment: Alignment.topRight,
         children: [
@@ -116,7 +116,7 @@ class _CustomCardState extends State<CustomCard> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        '${widget.jobOpenings} Job openings, ${widget.location}',
+                        '${widget.location.isNotEmpty? '${widget.jobOpenings} Job openings, ${widget.location}': '${widget.jobOpenings} Job openings' }'  ,
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
@@ -130,6 +130,7 @@ class _CustomCardState extends State<CustomCard> {
               ],
             ),
           ),
+          if(LoginData().getUserId()!=widget.brandId)
           Padding(
             padding: EdgeInsets.all(12.h),
             child: GestureDetector(

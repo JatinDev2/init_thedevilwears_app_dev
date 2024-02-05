@@ -77,6 +77,8 @@ dependencies:
   get_storage: ^2.1.1
   rxdart: ^0.27.7
   fluttertoast: ^8.2.4
+  multi_select_flutter: ^4.1.3
+  multi_dropdown: ^2.1.3
 
 
 

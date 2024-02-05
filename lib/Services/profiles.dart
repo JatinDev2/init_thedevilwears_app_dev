@@ -260,7 +260,7 @@ class ProfileServices {
   //-----------------------------------------------Update Student Profile---------------------------------------------------------
 
   Future<void> updateUserProfile(
-      {required String userDescription,
+      {required List<String> userDescription,
         required String userBio,
         required String userInsta,
         required String userLinkedin,
@@ -285,11 +285,11 @@ class ProfileServices {
     }
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference profileRef = firestore.collection('studentProfiles').doc(userId);
-    List<String> userDescriptionList = userDescription.split(',');
-    userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
+    // List<String> userDescriptionList = userDescription.split(',');
+    // userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
 
     return profileRef.update({
-      'userDescription': userDescriptionList,
+      'userDescription': userDescription,
       'userBio': userBio,
       'userInsta': userInsta,
       'userLinkedin': userLinkedin,

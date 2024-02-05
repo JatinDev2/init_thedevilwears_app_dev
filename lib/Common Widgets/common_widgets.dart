@@ -496,7 +496,7 @@ class BuildCustomBrandJobListingCard extends StatelessWidget {
                       SizedBox(
                         width: 5.w,
                       ),
-                      if (LoginData().getUserType() != "Person")
+                      if (LoginData().getUserType() != "Person" && LoginData().getUserId()==listing.userId)
                         InkWell(
                           onTap: () {
                             if (!listing.clicked) {

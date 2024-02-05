@@ -109,28 +109,28 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
             },
             icon: const Icon(Icons.arrow_back_rounded, color: Colors.black),
           ),
-          // actions: [
-          //   Container(
-          //     height: 49.h,
-          //     width: 48.w,
-          //     decoration: BoxDecoration(
-          //       shape: BoxShape.circle,
-          //       color: Color(0xff12121D0D),
-          //     ),
-          //     child: IconButton(
-          //       onPressed: () {
-          //         // textEditingController.clear();
-          //         setState(() {
-          //           selectedSkills.forEach((key, value) {
-          //             selectedSkills[key]=false;
-          //           });
-          //         });
-          //       },
-          //       icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
-          //     ),
-          //   ),
-          //   SizedBox(width: 20.w),
-          // ],
+          actions: [
+            Container(
+              height: 32.h,
+              width: 42.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xff12121D0D),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  // textEditingController.clear();
+                  setState(() {
+                    selectedSkills.forEach((key, value) {
+                      selectedSkills[key]=false;
+                    });
+                  });
+                },
+                icon: Icon(Icons.close, color: Colors.black, size: 24.sp),
+              ),
+            ),
+            SizedBox(width: 20.w),
+          ],
         ),
         body: Container(
           padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -139,7 +139,7 @@ class _OppurtunitiesScreenState extends State<OppurtunitiesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
                Padding(
-                 padding: EdgeInsets.symmetric(vertical: 47.h),
+                 padding: EdgeInsets.symmetric(vertical: 16.h),
                  child: Text(
                                LoginData().getUserType()=="Company"?  "What kind of talent profiles are you looking for" :  "What kind of opportunities are you looking for",
                   style: TextStyle(
