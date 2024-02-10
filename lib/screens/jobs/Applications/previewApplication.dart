@@ -496,7 +496,7 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         ) :  Text(
                                           "Submit",
                                           style: TextStyle(
-                                            fontFamily: "Poppins",
+                                            // fontFamily: "Poppins",
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white,
