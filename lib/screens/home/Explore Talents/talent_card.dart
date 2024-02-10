@@ -70,7 +70,7 @@ class _TalentCardState extends State<TalentCard> {
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                       style: TextStyle(
-                        fontFamily: "Poppins",
+                        // fontFamily: "Poppins",
                         color: Color(0xff0f1015),
                       ),
                       children: <TextSpan>[
