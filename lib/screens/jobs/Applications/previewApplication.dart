@@ -99,7 +99,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                 title: const Text(
                   "Preview your Application",
                   style:  TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Color(0xff0f1015),
@@ -167,7 +166,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         Text(
                                           projectsList.length.toString(),
                                           style: const TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xff000000),
@@ -178,7 +176,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         const Text(
                                           "Projects",
                                           style: TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xff6b6b6b),
@@ -198,7 +195,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         Text(
                                           workList.length.toString(),
                                           style: const TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xff000000),
@@ -209,7 +205,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         const Text(
                                           "Work X",
                                           style: TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xff6b6b6b),
@@ -249,7 +244,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                           const Text(
                                             "Contact",
                                             style: TextStyle(
-                                              fontFamily: "Poppins",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
                                               color: Color(0xff6b6b6b),
@@ -272,7 +266,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                   Text(
                                     "Hey,\nI’m $userName",
                                     style: const TextStyle(
-                                      fontFamily: "Poppins",
                                       fontSize: 24,
                                       fontWeight: FontWeight.w700,
                                       color: Color(0xff0f1015),
@@ -295,7 +288,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                       child: Text(
                                         descriptionsWithBullets,
                                         style: const TextStyle(
-                                          fontFamily: "Poppins",
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
@@ -322,7 +314,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                               child: Text(
                                 descriptionsWithBullets,
                                 style: const TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.black,
@@ -339,7 +330,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                               child:  Text(
                                 (userBio!=null && userBio.isNotEmpty) ? userBio : "No Description yet!",
                                 style: const TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xff5a5a5a),
@@ -383,7 +373,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                       child:  Text(
                                         "Cancel",
                                         style: TextStyle(
-                                          fontFamily: "Poppins",
                                           fontSize: 16.sp,
                                           fontWeight: FontWeight.w700,
                                           color: const Color(0xff373737),
@@ -496,7 +485,6 @@ class _PreviewJobApplocationState extends State<PreviewJobApplocation>
                                         ) :  Text(
                                           "Submit",
                                           style: TextStyle(
-                                            // fontFamily: "Poppins",
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white,

@@ -540,7 +540,6 @@ class _EditProfileState extends State<EditProfile> {
                 : Text(
                     "Save Changes",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,

@@ -110,7 +110,7 @@ class FirebaseAuthAPIs{
         LoginData().writeUserType(userData["userType"]);
         LoginData().writeUserPhoneNumber(userData["phoneNumber"]);
         LoginData().writeUserAccessToken(userData["accessToken"]);
-        LoginData().writeInstaUserId(userData["instaUserId"]);
+        LoginData().writeInstaUserId(userData["instaUserID"]);
         List<dynamic> bookMarkedStudent = userData["bookmarkedStudentProfiles"] ?? [];
         if(bookMarkedStudent.isNotEmpty){
           List<String> bookMarkedStudentProfiles = bookMarkedStudent.map((item) => item.toString()).toList();

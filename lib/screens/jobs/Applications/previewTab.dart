@@ -144,7 +144,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                               child: Text(
                                 "Additional Info",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xff1a1a1a),
@@ -157,7 +156,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                               child: Text(
                                 widget.additionalInfo,
                                 style: const TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xff000000),
@@ -202,7 +200,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                     const Text(
                       "No projects added yet",
                       style: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff000000),
@@ -247,7 +244,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                     const Text(
                       "No work experiences yet",
                       style: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff000000),
@@ -298,7 +294,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
                     const Text(
                       "No education yet",
                       style: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff000000),
@@ -325,7 +320,6 @@ class _previewApplicationTabBodyState extends State<previewApplicationTabBody> {
               //   child: Text(
               //     "Skillset",
               //     style: const TextStyle(
-              //       fontFamily: "Poppins",
               //       fontSize: 16,
               //       fontWeight: FontWeight.w600,
               //       color: Color(0xff1a1a1a),
@@ -380,7 +374,6 @@ class Header extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontFamily: "Poppins",
               fontSize:
                   (label == "Hard skills" || label == "Soft skills") ? 14 : 16,
               fontWeight: (label == "Hard skills" || label == "Soft skills")
@@ -432,7 +425,6 @@ class ProjectCard extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff000000),
@@ -443,7 +435,6 @@ class ProjectCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: const TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff000000),
@@ -463,7 +454,6 @@ class ProjectCard extends StatelessWidget {
                   child: const Text(
                     "Check out my work",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xfff54e44),
@@ -484,7 +474,6 @@ class ProjectCard extends StatelessWidget {
                     maxLines: 2,
                     linkColor: Color(0xffa8a8a8),
                     linkStyle: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffa8a8a8),
@@ -590,7 +579,6 @@ class WorkCard extends StatelessWidget {
                 Text(
                   "$roleInCompany • $workType",
                   style: const TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff000000),
@@ -601,7 +589,6 @@ class WorkCard extends StatelessWidget {
                 Text(
                   "$companyName, $location",
                   style: const TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff000000),
@@ -612,7 +599,6 @@ class WorkCard extends StatelessWidget {
                 Text(
                   formatTimePeriod(timePeriod),
                   style: const TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff000000),
@@ -633,7 +619,6 @@ class WorkCard extends StatelessWidget {
                     child: const Text(
                       "Check out my work",
                       style: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: Color(0xfff54e44),
@@ -654,7 +639,6 @@ class WorkCard extends StatelessWidget {
                     maxLines: 2,
                     linkColor: Color(0xffa8a8a8),
                     linkStyle: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffa8a8a8),
@@ -756,7 +740,6 @@ class EducationCard extends StatelessWidget {
                   Text(
                     instituteName,
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff000000),
@@ -767,7 +750,6 @@ class EducationCard extends StatelessWidget {
                   Text(
                     degreeName,
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff000000),
@@ -778,7 +760,6 @@ class EducationCard extends StatelessWidget {
                   Text(
                     "$location, India • ${formatTimePeriod(timePeriod)}",
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff000000),
@@ -798,7 +779,6 @@ class EducationCard extends StatelessWidget {
                       maxLines: 2,
                       linkColor: Color(0xffa8a8a8),
                       linkStyle: const TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: Color(0xffa8a8a8),
@@ -955,7 +935,6 @@ class _TagChipsState extends State<TagChips> {
               Text(
                 tag,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff303030),

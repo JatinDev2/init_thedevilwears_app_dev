@@ -43,7 +43,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                 const Text(
                   "Call",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff0f1015),
@@ -62,7 +61,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                 const Text(
                   "Message",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff0f1015),
@@ -130,7 +128,7 @@ class _BrandProfileViewState extends State<BrandProfileView>
               return [
                 SliverAppBar(
                   backgroundColor: Colors.white,
-                  expandedHeight: 280,
+                  expandedHeight: 300,
                   floating: true,
                   leading: Container(),
                   pinned: false,
@@ -147,7 +145,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                 title: const Text(
                                   "Profile",
                                   style:  TextStyle(
-                                    fontFamily: "Poppins",
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                     color: Color(0xff0f1015),
@@ -214,7 +211,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                             const Text(
                                               "Website",
                                               style: TextStyle(
-                                                fontFamily: "Poppins",
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400,
                                                 color: Color(0xff6b6b6b),
@@ -235,7 +231,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                             const Text(
                                               "Email",
                                               style: TextStyle(
-                                                fontFamily: "Poppins",
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400,
                                                 color: Color(0xff6b6b6b),
@@ -267,7 +262,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                               const Text(
                                                 "Contact",
                                                 style: TextStyle(
-                                                  fontFamily: "Poppins",
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                   color: Color(0xff6b6b6b),
@@ -290,7 +284,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                       Text(
                                         "Hey,\nWe are ${widget.brandProfile.brandName}",
                                         style: const TextStyle(
-                                          fontFamily: "Poppins",
                                           fontSize: 24,
                                           fontWeight: FontWeight.w700,
                                           color: Color(0xff0f1015),
@@ -312,7 +305,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                           child: Text(
                                             descriptionsWithBullets,
                                             style: const TextStyle(
-                                              fontFamily: "Poppins",
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -339,7 +331,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                   child: Text(
                                     descriptionsWithBullets,
                                     style: const TextStyle(
-                                      fontFamily: "Poppins",
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black,
@@ -356,7 +347,6 @@ class _BrandProfileViewState extends State<BrandProfileView>
                                   child:  Text(
                                     widget.brandProfile.brandBio.isNotEmpty ? widget.brandProfile.brandBio : "No Description yet!",
                                     style:const TextStyle(
-                                      fontFamily: "Poppins",
                                       fontSize: 13,
                                       fontWeight: FontWeight.w400,
                                       color: Color(0xff5a5a5a),

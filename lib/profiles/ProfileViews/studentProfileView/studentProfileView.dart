@@ -77,7 +77,7 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                         SliverAppBar(
                           leading: Container(),
                           backgroundColor: Colors.white,
-                          expandedHeight: 340,
+                          expandedHeight: 300,
                           floating: true,
                           pinned: false,
                           flexibleSpace: FlexibleSpaceBar(
@@ -92,7 +92,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                   title: const Text(
                                     "Profile",
                                     style:  TextStyle(
-                                      fontFamily: "Poppins",
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                       color: Color(0xff0f1015),
@@ -159,7 +158,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                               Text(
                                       widget.studentProfile.projects!=null && widget.studentProfile.projects!.length!=0? widget.studentProfile.projects!.length.toString() : "0",
                                                 style: const TextStyle(
-                                                  fontFamily: "Poppins",
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xff000000),
@@ -170,7 +168,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                               const Text(
                                                 "Projects",
                                                 style: TextStyle(
-                                                  fontFamily: "Poppins",
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                   color: Color(0xff6b6b6b),
@@ -190,7 +187,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                               Text(
                                                 widget.studentProfile.workExperience!=null && widget.studentProfile.workExperience!.length!=0? widget.studentProfile.workExperience!.length.toString() : "0",
                                                 style: const TextStyle(
-                                                  fontFamily: "Poppins",
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xff000000),
@@ -201,7 +197,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                               const Text(
                                                 "Work X",
                                                 style: TextStyle(
-                                                  fontFamily: "Poppins",
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w400,
                                                   color: Color(0xff6b6b6b),
@@ -241,7 +236,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                                 const Text(
                                                   "Contact",
                                                   style: TextStyle(
-                                                    fontFamily: "Poppins",
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w400,
                                                     color: Color(0xff6b6b6b),
@@ -264,7 +258,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                         Text(
                                           "Hey,\nI’m ${widget.studentProfile.firstName} ${widget.studentProfile.lastName}",
                                           style: const TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 24,
                                             fontWeight: FontWeight.w700,
                                             color: Color(0xff0f1015),
@@ -286,7 +279,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                             child: Text(
                                               descriptionsWithBullets,
                                               style: const TextStyle(
-                                                fontFamily: "Poppins",
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.black,
@@ -313,7 +305,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                     child: Text(
                                       descriptionsWithBullets,
                                       style: const TextStyle(
-                                        fontFamily: "Poppins",
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -330,7 +321,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                     child:  Text(
                       widget.studentProfile.userBio!.isNotEmpty? widget.studentProfile.userBio! : "No Description yet!",
                                       style:const TextStyle(
-                                        fontFamily: "Poppins",
                                         fontSize: 13,
                                         fontWeight: FontWeight.w400,
                                         color: Color(0xff5a5a5a),
@@ -338,9 +328,6 @@ class _StyudentProfileViewState extends State<StudentProfileView>
                                       textAlign: TextAlign.left,
                                       overflow: TextOverflow.ellipsis,
                                     )),
-                                SizedBox(height: 8,),
-                                if(LoginData().getUserId()!=widget.studentProfile.userId)
-                                  ElevatedButton(onPressed:(){} , child: Text("Connect"))
                               ],
                             ),
                           ),

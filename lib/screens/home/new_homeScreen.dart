@@ -43,7 +43,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                    Text(
                     "The Devil Wears",
                     style: TextStyle(
-                      // fontFamily: "Poppins",
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                       color: Color(0xff000000),
@@ -63,7 +62,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 child: Text(
                 "Explore Talents",
                 style: TextStyle(
-                  // fontFamily: "Poppins",
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   height: 24/16,
@@ -74,7 +72,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 child: Text(
                 "Explore opportunities",
                 style: TextStyle(
-                  // fontFamily: "Poppins",
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   height: 24/16,

@@ -164,7 +164,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                   Text(
                     tab,
                     style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xff4a4a4a),
@@ -178,7 +178,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                       child: Text(
                         selectedOptionsCount.toString(),
                         style: TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xff4a4a4a),
@@ -374,7 +374,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                     ),
                     hintText: "Search Location",
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 15.sp,
                       color: const Color(0xffaaaaaa),
                       height: (30 / 14).h,
@@ -486,7 +486,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                     ),
                     hintText: "Search Location",
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 15.sp,
                       color: const Color(0xffaaaaaa),
                       height: (30 / 14).h,
@@ -618,7 +618,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                 ),
                 hintText: "Search Category",
                 hintStyle: TextStyle(
-                  fontFamily: "Poppins",
+
                   fontSize: 14,
                   color: Color(0xffaaaaaa),
                 ),
@@ -1045,7 +1045,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                 Text(
                   option,
                   style: const TextStyle(
-                    fontFamily: "Poppins",
+
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -1150,7 +1150,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
         title: const Text(
           "Filters",
           style: TextStyle(
-            fontFamily: "Poppins",
+
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: Color(0xff0f1015),
@@ -1170,7 +1170,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
               child: const Text(
                 "Clear All",
                 style: TextStyle(
-                  fontFamily: "Poppins",
+
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff4a4a4a),
@@ -1247,7 +1247,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
                   child: Text(
                     "APPLY FILTERS",
                     style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff4a4a4a),

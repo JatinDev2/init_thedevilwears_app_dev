@@ -79,7 +79,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
         title: const Text(
           "Add a project",
           style: TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -108,7 +107,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                 const Text(
                   "Project heading",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -121,7 +119,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                     border: InputBorder.none,
                     hintText: "eg: Fashion Stylist|",
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffb2b2b2),
@@ -148,7 +145,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                 const Text(
                   "Project type",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -161,7 +157,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                     border: InputBorder.none,
                     hintText: "eg: Fashion Styling",
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffb2b2b2),
@@ -188,7 +183,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                 const Text(
                   "Project Link",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -201,7 +195,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                     border: InputBorder.none,
                     hintText: "Paste your project link here|",
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffb2b2b2),
@@ -228,7 +221,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                 const Text(
                   "Description",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -256,7 +248,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                       hintText:
                           "Mention your key achievements, responsibilities or learnings",
                       hintStyle: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Colors.grey.shade400,
@@ -311,7 +302,6 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
                                   : Text(
                                       "Publish",
                                       style: TextStyle(
-                                        fontFamily: "Poppins",
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w700,
                                         color: const Color(0xff010100),

@@ -179,7 +179,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
         title: const Text(
           "Edit details of Company",
           style:  TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -197,7 +196,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             const Text(
               "Founded in*",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff2d2d2d),
@@ -231,7 +229,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value,style: const TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff020202),
@@ -257,7 +254,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                       border: InputBorder.none,
                       hintText: "Year",
                       hintStyle: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff919191),
@@ -281,7 +277,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             const Text(
               "Company Size*",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff2d2d2d),
@@ -313,7 +308,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text("${value} employees",style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff020202),
@@ -329,7 +323,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             const Text(
               "Industry*",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff2d2d2d),
@@ -361,7 +354,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value,style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff020202),
@@ -378,7 +370,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             const Text(
               "Location*",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff2d2d2d),
@@ -475,7 +466,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
             const Text(
               "Additional Information",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff2d2d2d),
@@ -498,7 +488,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                   border: InputBorder.none,
                   hintText: "Additional Information",
                   hintStyle:  TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey.shade400,
@@ -554,7 +543,6 @@ class _EditBrandProfilePageState extends State<EditBrandProfilePage> {
                         ) :  Text(
                           "Publish",
                           style: TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xff010100),

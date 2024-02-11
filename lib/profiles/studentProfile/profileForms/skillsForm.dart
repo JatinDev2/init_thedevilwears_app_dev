@@ -144,7 +144,6 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
         title: const Text(
           "Skillset",
           style:  TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -185,7 +184,6 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
                   const Text(
                     "Hard Skills",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff2d2d2d),
@@ -211,7 +209,6 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
                           selectedColor: Theme.of(context).colorScheme.primary,
                           labelStyle: TextStyle(
                             color: selectedSkills[skill]! ? Colors.white : Colors.black,
-                            fontFamily: "Poppins",
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
@@ -269,7 +266,6 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
                               : Text(
                             "Save",
                             style: TextStyle(
-                              fontFamily: "Poppins",
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                               color: const Color(0xff010100),

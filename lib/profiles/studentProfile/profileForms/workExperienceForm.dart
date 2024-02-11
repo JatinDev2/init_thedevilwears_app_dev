@@ -164,7 +164,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
           title: const Text(
             "Add Work Experience",
             style:  TextStyle(
-              fontFamily: "Poppins",
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: Color(0xff0f1015),
@@ -192,7 +191,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Job Type",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -218,7 +216,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Job Title",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -245,7 +242,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                         child: Text(
                           value,
                           style: const TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff020202),
@@ -262,7 +258,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Company/stylist name",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -275,7 +270,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                       border: InputBorder.none,
                       hintText: "eg: Gucci|",
                     hintStyle:  TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Color(0xffb2b2b2),
@@ -304,7 +298,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Send a request for verifying your experience",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff404040),
@@ -319,7 +312,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Location",
                   style:  TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -413,7 +405,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Start Date",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -452,7 +443,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "End Date",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -478,7 +468,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Project Link",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -491,7 +480,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                     border: InputBorder.none,
                     hintText: "This link will be displayed next to this experience|",
                     hintStyle:  TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffb2b2b2),
@@ -504,7 +492,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                 const Text(
                   "Description",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -527,7 +514,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                         border: InputBorder.none,
                         hintText: "Mention your key roles, responsibilities or learnings from the job",
                       hintStyle:  TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Colors.grey.shade400,
@@ -585,7 +571,6 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
                                 ) :  Text(
                                   "Publish",
                                   style: TextStyle(
-                                    fontFamily: "Poppins",
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w700,
                                     color: const Color(0xff010100),
@@ -703,7 +688,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
           Text(
             label,
             style: const TextStyle(
-              fontFamily: "Poppins",
               fontSize: 14,
               fontWeight: FontWeight.w400,
               color: Color(0xff030303),
@@ -750,7 +734,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
             Text(
               label,
               style: const TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff030303),

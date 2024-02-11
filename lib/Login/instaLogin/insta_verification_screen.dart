@@ -42,7 +42,6 @@ class _InstaVerificationState extends State<InstaVerification> {
                 const Text(
                   "Let’s get you verified!",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff12121d),
@@ -55,7 +54,6 @@ class _InstaVerificationState extends State<InstaVerification> {
                 const Text(
                   "Click on the icon to verify your Instagram ",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey,
@@ -87,7 +85,6 @@ class _InstaVerificationState extends State<InstaVerification> {
                     Text(
                       "5",
                       style: TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         height: 24 / 16,
@@ -97,7 +94,6 @@ class _InstaVerificationState extends State<InstaVerification> {
                     Text(
                       "/5",
                       style: TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           height: 24 / 16,

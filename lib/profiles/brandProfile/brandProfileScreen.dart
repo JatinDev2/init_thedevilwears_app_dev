@@ -63,7 +63,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                 const Text(
                   "Call",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff0f1015),
@@ -82,7 +81,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                 const Text(
                   "Message",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff0f1015),
@@ -323,7 +321,7 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                         return [
                           SliverAppBar(
                             backgroundColor: Colors.white,
-                            expandedHeight: 280,
+                            expandedHeight: 305,
                             floating: true,
                             pinned: false,
                             flexibleSpace: FlexibleSpaceBar(
@@ -437,7 +435,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                           const Text(
                                             "Website",
                                             style: TextStyle(
-                                              fontFamily: "Poppins",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
                                               color: Color(0xff6b6b6b),
@@ -458,7 +455,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                           const Text(
                                             "Email",
                                             style: TextStyle(
-                                              fontFamily: "Poppins",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
                                               color: Color(0xff6b6b6b),
@@ -490,7 +486,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                             const Text(
                                               "Contact",
                                               style: TextStyle(
-                                                fontFamily: "Poppins",
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400,
                                                 color: Color(0xff6b6b6b),
@@ -513,7 +508,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                     Text(
                                       "Hey,\nWe are $userName",
                                       style: const TextStyle(
-                                        fontFamily: "Poppins",
                                         fontSize: 24,
                                         fontWeight: FontWeight.w700,
                                         color: Color(0xff0f1015),
@@ -537,7 +531,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                         child: Text(
                                           descriptionsWithBullets,
                                           style: const TextStyle(
-                                            fontFamily: "Poppins",
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black,
@@ -564,7 +557,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                 child: Text(
                                   descriptionsWithBullets,
                                   style: const TextStyle(
-                                    fontFamily: "Poppins",
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
@@ -590,7 +582,6 @@ class _BrandProfileScreenState extends State<BrandProfileScreen>
                                   child:  Text(
                                     (userBio!=null && userBio.isNotEmpty) ? userBio : "How would you like to describe yourself?",
                                     style: const TextStyle(
-                                      fontFamily: "Poppins",
                                       fontSize: 13,
                                       fontWeight: FontWeight.w400,
                                       color: Color(0xff5a5a5a),

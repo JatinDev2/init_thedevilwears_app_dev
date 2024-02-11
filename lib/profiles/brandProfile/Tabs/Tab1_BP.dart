@@ -83,7 +83,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
                       const Text(
                         "About ",
                         style: TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Color(0xff1a1a1a),
@@ -193,7 +192,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
                           const Text(
                             "Create a new Listing",
                             style: TextStyle(
-                              fontFamily: "Poppins",
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff000000),
@@ -218,11 +216,10 @@ class _Tab1_BPState extends State<Tab1_BP> {
                           const Text(
                             "Add additional information about your brand",
                             style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: 14,
+                              fontSize: 13,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff9e9e9e),
-                              height: 19 / 14,
+                              // height: 19 / 14,
                             ),
                             textAlign: TextAlign.left,
                           ),
@@ -237,7 +234,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
                     Text(
                       additionalInfo,
                       style: const TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff5a5a5a),
@@ -268,11 +264,10 @@ class _Tab1_BPState extends State<Tab1_BP> {
                               const Text(
                                 "Add social media handles",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xff9e9e9e),
-                                  height: 19 / 14,
+                                  // height: 19 / 14,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
@@ -290,7 +285,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
                               const Text(
                                 "Add social Media handles",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xff9e9e9e),
@@ -418,7 +412,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
               Text(
                 head1,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff171717),
@@ -429,7 +422,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
               Text(
                 data1.isNotEmpty ? data1 : "+ Add",
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff000000),
@@ -459,7 +451,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
               Text(
                 head2,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff171717),
@@ -470,7 +461,6 @@ class _Tab1_BPState extends State<Tab1_BP> {
               Text(
                 data2.isNotEmpty ? data2 : "+ Add",
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff000000),
@@ -518,7 +508,6 @@ class Header extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontFamily: "Poppins",
               fontSize:
                   // (label == "Hard skills" || label == "Soft skills" ) ? 14 :
                   24,
@@ -527,8 +516,8 @@ class Header extends StatelessWidget {
                   //     ? FontWeight.w500
                   //     :
                   FontWeight.bold,
-              color: Color(0xff1a1a1a),
-              height: 19 / 16,
+              color: Colors.black,
+              // height: 19 / 16,
             ),
             textAlign: TextAlign.left,
           ),

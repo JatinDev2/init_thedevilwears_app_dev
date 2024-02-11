@@ -191,7 +191,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
         title: const Text(
           "Add your education",
           style:  TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -222,7 +221,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 // const Text(
                 //   "School",
                 //   style: TextStyle(
-                //     fontFamily: "Poppins",
                 //     fontSize: 16,
                 //     fontWeight: FontWeight.w600,
                 //     color: Color(0xff2d2d2d),
@@ -235,7 +233,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 //     border: InputBorder.none,
                 //     hintText: "eg: ISDI School Of Design|",
                 //     hintStyle:  TextStyle(
-                //       fontFamily: "Poppins",
                 //       fontSize: 14,
                 //       fontWeight: FontWeight.w400,
                 //       color: Color(0xffb2b2b2),
@@ -251,7 +248,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "School",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -278,7 +274,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 //         border: InputBorder.none,
                 //         hintText: "eg: ISDI School Of Design",
                 //         hintStyle: TextStyle(
-                //           fontFamily: "Poppins",
                 //           fontSize: 14,
                 //           fontWeight: FontWeight.w400,
                 //           color: Color(0xffb2b2b2),
@@ -319,7 +314,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                         border: InputBorder.none,
                         hintText: "eg: ISDI School Of Design",
                         hintStyle: TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Color(0xffb2b2b2),
@@ -342,7 +336,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "Degree",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -355,7 +348,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                     border: InputBorder.none,
                     hintText: "eg: Fashion Design & Communication|",
                     hintStyle:  TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xffb2b2b2),
@@ -373,7 +365,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "Location",
                   style:  TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -467,7 +458,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "Start Date",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -506,7 +496,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "End Date",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -532,7 +521,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                 const Text(
                   "Description",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff2d2d2d),
@@ -555,7 +543,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                       border: InputBorder.none,
                       hintText: "Mention your key achievements, responsibilities or learnings",
                       hintStyle:  TextStyle(
-                        fontFamily: "Poppins",
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: Colors.grey.shade400,
@@ -607,7 +594,6 @@ class _AddNewEducationFormState extends State<AddNewEducationForm> {
                               ) :  Text(
                                 "Publish",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xff010100),
@@ -725,7 +711,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
           Text(
             label,
             style: const TextStyle(
-              fontFamily: "Poppins",
               fontSize: 14,
               fontWeight: FontWeight.w400,
               color: Color(0xff030303),
@@ -772,7 +757,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
             Text(
               label,
               style: const TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff030303),

@@ -76,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   Text(
                     "Call",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff0f1015),
@@ -95,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   Text(
                     "Message",
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff0f1015),
@@ -154,46 +152,69 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: _tabItems[_selected],
       bottomNavigationBar: !isPopupVisible?SizedBox(
         height: 70,
-        child: BottomNavigationBar(
-          elevation: 0,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(IconlyLight.home),
-              activeIcon: CustomIcon(selectedIcon: IconlyBold.home),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(IconlyLight.search),
-              activeIcon: CustomIcon(selectedIcon: IconlyBold.search),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(IconlyLight.document),
-              activeIcon: CustomIcon(selectedIcon: IconlyBold.document),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(IconlyLight.profile),
-              activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
-              label: '',
-            ),
-            // BottomNavigationBarItem(
-            //   backgroundColor: Colors.white,
-            //   icon: Icon(IconlyLight.profile),
-            //   activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
-            //   label: '',
-            // ),
-          ],
-          currentIndex: _selected,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: const Color(0xFF0F1015),
-          onTap: _onItemTapped,
-          // type: BottomNavigationBarType.fixed,
+        child:   Stack(
+      children: [
+      Positioned(
+      left: 0,
+        right: 0,
+        bottom: 0,
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 0,
+                blurRadius: 15,
+                offset: Offset(7, -10),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            elevation: 0,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: Colors.white,
+                icon: Icon(IconlyLight.home),
+                activeIcon: CustomIcon(selectedIcon: IconlyBold.home),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: Colors.white,
+                icon: Icon(IconlyLight.search),
+                activeIcon: CustomIcon(selectedIcon: IconlyBold.search),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: Colors.white,
+                icon: Icon(IconlyLight.document),
+                activeIcon: CustomIcon(selectedIcon: IconlyBold.document),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: Colors.white,
+                icon: Icon(IconlyLight.profile),
+                activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
+                label: '',
+              ),
+              // BottomNavigationBarItem(
+              //   backgroundColor: Colors.white,
+              //   icon: Icon(IconlyLight.profile),
+              //   activeIcon: CustomIcon(selectedIcon: IconlyBold.profile),
+              //   label: '',
+              // ),
+
+            ],
+            currentIndex: _selected,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: const Color(0xFF0F1015),
+            onTap: _onItemTapped,
+            // type: BottomNavigationBarType.fixed,
+          ),
         ),
+      ),
+
+      ],
+    ),
       ) :  null,
     );
   }

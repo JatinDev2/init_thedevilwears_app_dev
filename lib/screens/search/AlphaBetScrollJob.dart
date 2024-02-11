@@ -206,7 +206,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       Text(
                         item.title,
                         style: const TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: Color(0xff0f1015),
@@ -217,7 +217,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       Text(
                         item.category,
                         style: const TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff3f3f3f),
@@ -228,7 +228,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       Text(
                         "${item.numberOfJobOpenings} Job Openings , ${item.location}",
                         style: const TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff8a8a8a),
@@ -260,7 +260,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
       child: Text(
        tag,
         style: const TextStyle(
-          fontFamily: "Poppins",
+
           fontSize: 20,
           fontWeight: FontWeight.w500,
           color: Color(0xff000000),
@@ -295,7 +295,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
               Text(
                 tag,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
+
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff303030),

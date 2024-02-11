@@ -39,7 +39,6 @@ class _AllAplicationsScreenState extends State<AllAplicationsScreen> {
         title: const Text(
           "Applications for listing",
           style: TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -277,7 +276,6 @@ class _CandidateCardState extends State<CandidateCard> {
                   Text(
                     widget.name,
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff0f1015),
@@ -288,7 +286,6 @@ class _CandidateCardState extends State<CandidateCard> {
                   Text(
                     widget.jobType,
                     style: const TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff8b8b8b),
@@ -351,7 +348,6 @@ class _CandidateCardState extends State<CandidateCard> {
               child: Text(
                 "Worked at",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff1a1a1a),
@@ -366,7 +362,6 @@ class _CandidateCardState extends State<CandidateCard> {
               child: Text(
                 widget.workString,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff1a1a1a),
@@ -383,7 +378,6 @@ class _CandidateCardState extends State<CandidateCard> {
               child: Text(
                 "Education",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff1a1a1a),
@@ -398,7 +392,6 @@ class _CandidateCardState extends State<CandidateCard> {
               child: Text(
                 widget.educationString,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff1a1a1a),

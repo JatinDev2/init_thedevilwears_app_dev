@@ -271,7 +271,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                         child: Text(
                                           "Companies",
                                           style: TextStyle(
-                                            // fontFamily: "Poppins",
+                                            //
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             height: 24 / 16,
@@ -287,7 +287,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                         child: Text(
                                           "People",
                                           style: TextStyle(
-                                            // fontFamily: "Poppins",
+                                            //
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             height: 24 / 16,
@@ -339,7 +339,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                     Text(
                                                       "No search results found",
                                                       style: TextStyle(
-                                                        // fontFamily: "Poppins",
+                                                        //
                                                         fontSize: 16,
                                                         fontWeight: FontWeight.w400,
                                                         color: Color(0xff9d9d9d),
@@ -395,7 +395,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                 Text(
                                                   "No search results found",
                                                   style: TextStyle(
-                                                    // fontFamily: "Poppins",
+                                                    //
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
                                                     color: Color(0xff9d9d9d),

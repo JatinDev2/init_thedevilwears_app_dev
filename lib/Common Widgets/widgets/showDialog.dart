@@ -42,7 +42,6 @@ class ShowDialog{
                       child: Text(
                         "Yes",
                         style: TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff373737),
@@ -71,7 +70,6 @@ class ShowDialog{
                       child: Text(
                         "No",
                         style: TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff373737),

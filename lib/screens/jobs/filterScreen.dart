@@ -157,7 +157,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                   Text(
                     tab,
                     style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xff4a4a4a),
@@ -171,7 +171,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                       child: Text(
                         selectedOptionsCount.toString(),
                         style: TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xff4a4a4a),
@@ -231,7 +231,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                     ),
                     hintText: getString(),
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 15.sp,
                       color: const Color(0xffaaaaaa),
                       height: (30 / 14).h,
@@ -390,7 +390,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           decoration: InputDecoration(
                               hintText: "Eg: 3",
                               hintStyle: TextStyle(
-                                fontFamily: "Poppins",
+
                                 fontSize: 16.sp, // Ensure this is proportionate
                                 fontWeight: FontWeight.w400,
                                 color: const Color(0xff666666),
@@ -463,7 +463,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                               child: Text(
                                 value,
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
+
                                   fontSize: 16.sp, // Ensure this is proportionate
                                   fontWeight: FontWeight.w400,
                                   color: const Color(0xff666666),
@@ -559,7 +559,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                           decoration: InputDecoration(
                               hintText: "Mention an Amount",
                               hintStyle: TextStyle(
-                                fontFamily: "Poppins",
+
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w400,
                                 color: const Color(0xff666666),
@@ -628,7 +628,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                               child: Text(
                                 value,
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
+
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w400,
                                   color: const Color(0xff666666),
@@ -673,7 +673,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                     ),
                     hintText: getString(),
                     hintStyle: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 15.sp,
                       color: const Color(0xffaaaaaa),
                       height: (30 / 14).h,
@@ -988,7 +988,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                   Text(
                     option,
                     style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -1080,7 +1080,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
         title: Text(
           "Filters",
           style: TextStyle(
-            fontFamily: "Poppins",
+
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: const Color(0xff0f1015),
@@ -1100,7 +1100,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
               child: Text(
                 "Clear All",
                 style: TextStyle(
-                  fontFamily: "Poppins",
+
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff4a4a4a),
@@ -1172,7 +1172,7 @@ class _FilterJobListingsState extends State<FilterJobListings> {
                   child: Text(
                     "APPLY FILTERS",
                     style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xff4a4a4a),

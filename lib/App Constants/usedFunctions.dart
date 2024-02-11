@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../Models/ProfileModels/studentModel.dart';
 import '../Models/formModels/educationModel.dart';
 import '../Models/formModels/workModel.dart';
@@ -69,6 +70,16 @@ class DisplayFunctions{
     } else {
       return 0;
     }
+  }
+
+  //---------------------------Text Style Function-----------------------------------------------------------
+  TextStyle getTextStyle(BuildContext context, {double? fontSize, FontWeight? fontWeight, Color? color}) {
+    return Theme.of(context).textTheme.bodyText1!.copyWith(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color
+      // fontFamily is inherited from the global theme
+    );
   }
 
 

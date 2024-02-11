@@ -132,7 +132,6 @@ class LaunchingFunction{
                   const Text(
                     "Call",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff0f1015),
@@ -154,7 +153,6 @@ class LaunchingFunction{
                   const Text(
                     "Message",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff0f1015),

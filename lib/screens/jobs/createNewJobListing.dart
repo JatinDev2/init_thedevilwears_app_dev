@@ -333,7 +333,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
         title: const Text(
           "Create a new listing",
           style: TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -359,7 +358,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                const Text(
                 "Job Type",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -384,7 +382,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                const Text(
                 "Job profile",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -412,7 +409,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                       child: Text(
                         value,
                         style: const TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff020202),
@@ -429,7 +425,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                const Text(
                 "Day to day responsibilities should include:",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -468,7 +463,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                const Text(
                 "Job duration",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color:Color(0xff2d2d2d),
@@ -544,7 +538,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value, style: const TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff666666),
@@ -563,7 +556,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Type",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -588,7 +580,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Office location",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -796,7 +787,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                const Text(
                 "Tentative start Date",
                 style: TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -823,7 +813,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Stipend",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -862,7 +851,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                           border: InputBorder.none,
                           hintText: "Mention an Amount here",
                         hintStyle: TextStyle(
-    fontFamily: "Poppins",
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: Color(0xff919191),
@@ -907,7 +895,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value,style: const TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff020202),
@@ -923,7 +910,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Number of openings (optional)",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -949,7 +935,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Perks",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -975,7 +960,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                       Text(
                         option,
                         style:  const TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff2d2d2d),
@@ -992,7 +976,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
               const Text(
                 "Employee profile preferences",
                 style:  TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff2d2d2d),
@@ -1014,7 +997,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                   selectedColor: Theme.of(context).colorScheme.primary,
                   labelStyle: TextStyle(
                     color: selectedSkills[skill]! ? Colors.white : Colors.black,
-                    fontFamily: "Poppins",
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
@@ -1094,7 +1076,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                             child:  Text(
                               "Preview",
                               style: TextStyle(
-                                fontFamily: "Poppins",
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
                                 color: const Color(0xff373737),
@@ -1208,7 +1189,6 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                               ) :  Text(
                                 "Submit",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xff010100),
@@ -1325,7 +1305,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
           Text(
             label,
             style: const TextStyle(
-              fontFamily: "Poppins",
               fontSize: 14,
               fontWeight: FontWeight.w400,
               color: Color(0xff030303),
@@ -1372,7 +1351,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup>{
             Text(
               label,
               style: const TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff030303),

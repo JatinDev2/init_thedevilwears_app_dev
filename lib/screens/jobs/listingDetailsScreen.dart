@@ -67,7 +67,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                        Text(
                         "Your Application",
                         style: TextStyle(
-                          // fontFamily: "Poppins",
+                          //
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
                           color: Color(0xff0f1015),
@@ -106,7 +106,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                Text(
                                  name,
                                  style: const TextStyle(
-                                   // fontFamily: "Poppins",
+                                   //
                                    fontSize: 16,
                                    fontWeight: FontWeight.w600,
                                    color: Color(0xff0f1015),
@@ -125,7 +125,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                            child: Text(
                                              completeJobType,
                                              style: const TextStyle(
-                                               // fontFamily: "Poppins",
+                                               //
                                                fontSize: 16,
                                                fontWeight: FontWeight.w400,
                                                color: Colors.black,
@@ -152,7 +152,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                    child: Text(
                                      jobType,
                                      style: const TextStyle(
-                                       // fontFamily: "Poppins",
+                                       //
                                        fontSize: 14,
                                        fontWeight: FontWeight.w400,
                                        color: Color(0xff616161),
@@ -173,7 +173,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         const Text(
                           "Worked with",
                           style: TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Color(0xff7d7d7d),
@@ -184,7 +184,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         ExpandableText(
                           workString, // Your text goes here
                           style: const TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff7d7d7d),
@@ -194,7 +194,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                           maxLines: 2,
                           linkColor: Color(0xffa8a8a8),
                           linkStyle: const TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             color: Color(0xffa8a8a8),
@@ -210,7 +210,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         const Text(
                           "Education",
                           style:  TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Color(0xff7d7d7d),
@@ -219,7 +219,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                           textAlign: TextAlign.left,
                         ),
                         Text(education, style:  TextStyle(
-                          // fontFamily: "Poppins",
+                          //
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff7d7d7d),
@@ -228,7 +228,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         const Text(
                           "Additional Information",
                           style: TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Color(0xff000000),
@@ -250,7 +250,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                               hintText: "What additional information would you like to provide?\n\nWe recommend adding relevant projects links & giving a small write-up about why you are the right fit for this role",
                               border: InputBorder.none,
                               hintStyle: TextStyle(
-                              // fontFamily: "Poppins",
+                              //
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff787878),
@@ -289,7 +289,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                     child:  Text(
                                       "Preview",
                                       style: TextStyle(
-                                        // fontFamily: "Poppins",
+                                        //
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w700,
                                         color: const Color(0xff373737),
@@ -413,7 +413,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                       ) :  Text(
                                         "Submit",
                                         style: TextStyle(
-                                          // fontFamily: "Poppins",
+                                          //
                                           fontSize: 16.sp,
                                           fontWeight: FontWeight.w700,
                                           color: Colors.white,
@@ -468,7 +468,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
         title: const Text(
           "Listing",
           style: TextStyle(
-            // fontFamily: "Poppins",
+            //
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -535,7 +535,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         ),
                         SizedBox(width: 13.w,),
                         Text(widget.newJobModel.createdBy, style: const TextStyle(
-                          // fontFamily: "Poppins",
+                          //
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff0f1015),
@@ -564,7 +564,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
 
                     SizedBox(height: 40.h,),
                     const Text("Day to day responsibilities",style: TextStyle(
-                      // fontFamily: "Poppins",
+                      //
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2e2e2e),
@@ -572,7 +572,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     ),),
                     SizedBox(height: 7.h,),
                     Text(widget.newJobModel.responsibilities, style: const TextStyle(
-                      // fontFamily: "Poppins",
+                      //
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff666666),
@@ -582,7 +582,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     SizedBox(height: 30.h,),
 
                     const Text("Job Perks",style: TextStyle(
-                      // fontFamily: "Poppins",
+                      //
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2e2e2e),
@@ -595,7 +595,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                         itemCount: widget.newJobModel.perks.length,
                         itemBuilder: (BuildContext context, int index){
                           return Text("• ${widget.newJobModel.perks[index]}",style: const TextStyle(
-                            // fontFamily: "Poppins",
+                            //
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff666666),
@@ -605,7 +605,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
 
                     SizedBox(height: 30.h,),
                     const Text("Tentative Start Date",style: TextStyle(
-                      // fontFamily: "Poppins",
+                      //
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2e2e2e),
@@ -620,7 +620,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     SizedBox(height: 30.h,),
                     if(widget.newJobModel.numberOfOpenings.isNotEmpty)
                     const Text("Number of openings",style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2e2e2e),
@@ -635,7 +635,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                     ),),
                     SizedBox(height: 30.h,),
                     const Text("Profile preferences",style: TextStyle(
-                      fontFamily: "Poppins",
+
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff2e2e2e),
@@ -717,7 +717,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                       child: isLoading ? const CircularProgressIndicator( color:  Colors.white,) :  Text(
                        widget.hasApplied? "Already Applied!": "Send your application",
                         style: TextStyle(
-                          fontFamily: "Poppins",
+
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color:widget.hasApplied? Colors.black: Colors.white,
@@ -755,7 +755,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: const TextStyle(
-              // fontFamily: "Poppins",
+              //
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: Color(0xff2e2e2e),
@@ -768,7 +768,7 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: const TextStyle(
-              // fontFamily: "Poppins",
+              //
               fontSize: 12,
               fontWeight: FontWeight.w400,
               color: Color(0xff7f7f7f),

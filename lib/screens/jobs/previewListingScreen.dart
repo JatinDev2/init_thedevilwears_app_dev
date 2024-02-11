@@ -35,7 +35,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
         title: const Text(
           "Preview your listing",
           style:  TextStyle(
-            fontFamily: "Poppins",
+
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Color(0xff0f1015),
@@ -80,7 +80,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                       ),
                       SizedBox(width: 13.w,),
                       Text(widget.newJobModel.createdBy, style: const TextStyle(
-                        fontFamily: "Poppins",
+
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: Color(0xff0f1015),
@@ -109,7 +109,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
 
                   SizedBox(height: 40.h,),
                   const Text("Day to day responsibilities",style: TextStyle(
-                    fontFamily: "Poppins",
+
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff2e2e2e),
@@ -117,7 +117,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                   ),),
                   SizedBox(height: 5.h,),
                   Text(widget.newJobModel.responsibilities, style: const TextStyle(
-                    fontFamily: "Poppins",
+
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff666666),
@@ -127,7 +127,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                   SizedBox(height: 19.h,),
 
             const Text("Job Perks",style: TextStyle(
-              fontFamily: "Poppins",
+
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xff2e2e2e),
@@ -140,7 +140,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                 itemCount: widget.newJobModel.perks.length,
                 itemBuilder: (BuildContext context, int index){
                   return Text("• ${widget.newJobModel.perks[index]}",style: const TextStyle(
-                    fontFamily: "Poppins",
+
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff666666),
@@ -150,7 +150,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
 
                   SizedBox(height: 18.h,),
                   const Text("Tentative Start Date",style: TextStyle(
-                    fontFamily: "Poppins",
+
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff2e2e2e),
@@ -164,7 +164,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
 
             SizedBox(height: 18.h,),
             const Text("Number of openings",style: TextStyle(
-              fontFamily: "Poppins",
+
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xff2e2e2e),
@@ -196,7 +196,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                               child:  Text(
                                 "Back",
                                 style: TextStyle(
-                                  fontFamily: "Poppins",
+
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xff373737),
@@ -259,7 +259,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
                                 ) :  Text(
                                   "Submit",
                                   style: TextStyle(
-                                    fontFamily: "Poppins",
+
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w700,
                                     color: const Color(0xff010100),
@@ -304,7 +304,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: const TextStyle(
-              fontFamily: "Poppins",
+
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: Color(0xff2e2e2e),
@@ -317,7 +317,7 @@ class _PreviewJobListingState extends State<PreviewJobListing> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: const TextStyle(
-              fontFamily: "Poppins",
+
               fontSize: 12,
               fontWeight: FontWeight.w400,
               color: Color(0xff7f7f7f),

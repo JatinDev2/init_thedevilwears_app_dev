@@ -2,9 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lookbook/App%20Constants/launchingFunctions.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/Services/profiles.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../App Constants/usedFunctions.dart';
 
 class TalentCard extends StatefulWidget {
   final String name;
@@ -70,26 +74,29 @@ class _TalentCardState extends State<TalentCard> {
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                       style: TextStyle(
-                        // fontFamily: "Poppins",
                         color: Color(0xff0f1015),
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: widget.name,
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w600,
-                            // height: 18 / 12,
-                          ),
+                          style:DisplayFunctions().getTextStyle(context,fontSize:15.sp ,fontWeight: FontWeight.w600)
+                          // TextStyle(
+                          //   fontSize: 15.sp,
+                          //   fontFamily: GoogleFonts.poppinsTextTheme(),
+                          //   fontWeight: FontWeight.w600,
+                          //   // height: 18 / 12,
+                          // ),
                         ),
                         TextSpan(
                           text: ' • ${widget.designation}',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff000000),
-                            // height: 19 / 11,
-                          ),
+    style:DisplayFunctions().getTextStyle(context,fontSize:14.sp ,fontWeight: FontWeight.w400,color: Color(0xff000000))
+                          // style:
+                          // TextStyle(
+                          //   fontSize: 14.sp,
+                          //   fontWeight: FontWeight.w400,
+                          //   color: Color(0xff000000),
+                          //   // height: 19 / 11,
+                          // ),
                         ),
                       ],
                     ),
@@ -99,7 +106,6 @@ class _TalentCardState extends State<TalentCard> {
                   Text(
                     widget.company,
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff5d5d5d),
@@ -111,7 +117,6 @@ class _TalentCardState extends State<TalentCard> {
                   Text(
                     widget.education,
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff8b8b8b),

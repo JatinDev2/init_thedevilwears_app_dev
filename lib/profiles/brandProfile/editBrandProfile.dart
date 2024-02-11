@@ -397,7 +397,6 @@ class _EditBrandProfileState extends State<EditBrandProfile> {
             ) :  Text(
               "Save Changes",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,

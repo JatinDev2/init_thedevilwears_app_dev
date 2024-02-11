@@ -96,7 +96,6 @@ class _Tab4_BTState extends State<Tab4_BT> with TickerProviderStateMixin{
                         child: Text(
                           "Saved Profiles",
                           style: TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 24 / 16,
@@ -112,7 +111,6 @@ class _Tab4_BTState extends State<Tab4_BT> with TickerProviderStateMixin{
                         child: Text(
                           "Saved Listings",
                           style: TextStyle(
-                            fontFamily: "Poppins",
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 24 / 16,
@@ -296,7 +294,6 @@ class _JobCardState extends State<JobCard> {
                       Text(
                         widget.brandProfile.brandName,
                         style:  TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 17.sp,
                           fontWeight: FontWeight.w600,
                           color: Color(0xff0f1015),
@@ -307,7 +304,6 @@ class _JobCardState extends State<JobCard> {
                       Text(
                         DisplayFunctions().concatToDisplay(widget.brandProfile.brandDescription, 3),
                         style:  TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff3f3f3f),
@@ -318,7 +314,6 @@ class _JobCardState extends State<JobCard> {
                       Text(
                         "${widget.brandProfile.numberOfApplications} Job openings ${widget.brandProfile.location.isNotEmpty?",${widget.brandProfile.location}" : ""}",
                         style:  TextStyle(
-                          fontFamily: "Poppins",
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff8a8a8a),
@@ -486,7 +481,6 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
                             Text(
                               widget.name,
                               style:  TextStyle(
-                                fontFamily: "Poppins",
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xff0f1015),
@@ -538,7 +532,6 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
                                     child: Text(
                                       widget.jobProfile,
                                       style: const TextStyle(
-                                        fontFamily: "Poppins",
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -564,7 +557,6 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
                           child: Text(
                             DisplayFunctions().concatToDisplay(widget.jobProfile.split(' • '),2),
                             style:  TextStyle(
-                              fontFamily: "Poppins",
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff616161),
@@ -598,7 +590,6 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
         Text(
           title,
           style:  TextStyle(
-            fontFamily: "Poppins",
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
             color: Color(0xffadadad),
@@ -607,7 +598,6 @@ class _ProfileCardState extends State<ProfileCard> with SingleTickerProviderStat
         ),
         // SizedBox(height: 1.h),
         Text(items,style:  TextStyle(
-          fontFamily: "Poppins",
           fontSize: 15.sp,
           fontWeight: FontWeight.w400,
           color: Color(0xff000000),

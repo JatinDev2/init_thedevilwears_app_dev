@@ -212,7 +212,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
                     Text(
                       item.title,
                       style: const TextStyle(
-                        fontFamily: "Poppins",
+
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Color(0xff0f1015),
@@ -223,7 +223,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
                     Text(
                       "${item.role}",
                       style: const TextStyle(
-                        fontFamily: "Poppins",
+
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff3f3f3f),
@@ -237,7 +237,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
                     Text(
                       "${item.companiesWorkedIn}",
                       style: const TextStyle(
-                        fontFamily: "Poppins",
+
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                         color: Color(0xff8a8a8a),
@@ -267,7 +267,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
         child: Text(
           tag,
           style: const TextStyle(
-            fontFamily: "Poppins",
+
             fontSize: 20,
             fontWeight: FontWeight.w500,
             color: Color(0xff000000),
@@ -302,7 +302,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
               Text(
                 tag,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
+
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff303030),

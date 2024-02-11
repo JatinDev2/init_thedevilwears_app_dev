@@ -42,7 +42,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                 Text(
                   "About ",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff1a1a1a),
@@ -64,7 +63,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                 const Text(
                   "Job Openings",
                   style: TextStyle(
-                    fontFamily: "Poppins",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xff1a1a1a),
@@ -78,7 +76,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                   child: const Text(
                     "View all",
                     style: TextStyle(
-                      fontFamily: "Poppins",
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                       color: Color(0xfff54e44),
@@ -94,7 +91,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
             const Text(
               "Additional Info",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff1a1a1a),
@@ -106,7 +102,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
             const Text(
               "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff5a5a5a),
@@ -117,7 +112,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
             const Text(
               "Social media",
               style: TextStyle(
-                fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff1a1a1a),
@@ -193,7 +187,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               Text(
                 head1,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff171717),
@@ -204,7 +197,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               Text(
                 data1,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff000000),
@@ -232,7 +224,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               Text(
                 head2,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff171717),
@@ -243,7 +234,6 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               Text(
                 data2,
                 style: const TextStyle(
-                  fontFamily: "Poppins",
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Color(0xff000000),
