@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
@@ -52,8 +53,13 @@ class _AddNewProjectFormState extends State<AddNewProjectForm> {
       }, SetOptions(merge: true));
       print('Project added successfully');
       return true;
-    } catch (error) {
-      print('Error adding project: $error');
+    } catch (e,s) {
+      print('Error adding project: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error adding project: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false;
     }
   }

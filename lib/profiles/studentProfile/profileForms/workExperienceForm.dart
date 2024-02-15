@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city/utils/city_utils.dart';
 import 'package:country_state_city/utils/country_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,8 +100,13 @@ class _AddNewWorkExperienceState extends State<AddNewWorkExperience> {
       }
       print('Work added successfully');
       return true;
-    } catch (error) {
-      print('Error adding Work: $error');
+    } catch (e,s) {
+      print('Error adding Work: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error adding Work: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false;
     }
   }

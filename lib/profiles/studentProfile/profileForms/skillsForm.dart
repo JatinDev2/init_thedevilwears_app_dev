@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,10 +56,15 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
       await userDoc.set({
         'Soft Skills': selectedSkillsList
         }, SetOptions(merge: true));
-      print('Work added successfully');
+      print('Soft Skills added successfully');
       return true;
-    } catch (error) {
-      print('Error adding Work: $error');
+    } catch (e,s) {
+      print('Error adding Soft Skills: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error adding Soft Skills: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false;
     }
   }
@@ -82,10 +88,14 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
       await userDoc.set({
         'Hard Skills': selectedSkillsList
       }, SetOptions(merge: true));
-      print('Work added successfully');
+      print('Hard Skills added successfully');
       return true;
-    } catch (error) {
-      print('Error adding Work: $error');
+    } catch (e,s) {
+      print('Error adding Hard Skills: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error adding Hard Skills: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       return false;
     }
   }
@@ -105,8 +115,12 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
       } else {
         print('No such document!');
       }
-    } catch (error) {
-      print('Error reading document: $error');
+    } catch (e,s) {
+      print('Error fetching Soft Skills: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching Soft Skills: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
 
     return softSkillsList;
@@ -126,8 +140,13 @@ class _SkillsSelectionScreenState extends State<SkillsSelectionScreen> {
       } else {
         print('No such document!');
       }
-    } catch (error) {
-      print('Error reading document: $error');
+    } catch (e,s) {
+      print('Error fetching Hard Skills: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching Hard Skills: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
     }
 
     return hardSkillsList;

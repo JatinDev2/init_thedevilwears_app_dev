@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -1090,89 +1091,98 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     if(!isLoading)
                       GestureDetector(
                       onTap: ()async{
-                        List<String>_perks=[];
-                        checkboxes.forEach((key, value) {
-                          if(value==true){
-                            _perks.add(key);
+                        try{
+                          List<String>_perks=[];
+                          checkboxes.forEach((key, value) {
+                            if(value==true){
+                              _perks.add(key);
+                            }
+                          });
+
+                          List <String> selectedOpportunitiesList=[];
+                          selectedSkills.forEach((key, value) {
+                            if(value==true && !selectedOpportunitiesList.contains(key)){
+                              selectedOpportunitiesList.add(key);
+                            }
+                          });
+
+                          List<String>tags=[];
+                          if(jobDur=="Fixed"){
+                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,"${jobDurController.text} $jobDurValue"];
+
                           }
-                        });
-
-                        List <String> selectedOpportunitiesList=[];
-                        selectedSkills.forEach((key, value) {
-                          if(value==true && !selectedOpportunitiesList.contains(key)){
-                            selectedOpportunitiesList.add(key);
+                          else{
+                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,jobDur];
                           }
-                        });
+                          DocumentReference docRef = listCollection.doc();
 
-                        List<String>tags=[];
-                        if(jobDur=="Fixed"){
-                          tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,"${jobDurController.text} $jobDurValue"];
-
-                        }
-                        else{
-                          tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,jobDur];
-                        }
-                        DocumentReference docRef = listCollection.doc();
-
-                        if(_formKey.currentState!.validate()){
-                          docRef.set({
-                            "jobType": jobType,
-                            "jobProfile": dropdownValue,
-                            "responsibilities": responsibilityText.text,
-                            "jobDuration": jobDur,
-                            "jobDurationExact": jobDurController.text,
-                            "workMode": jobLoc,
-                            "officeLoc": "$cityValue, $stateValue, India",
-                            "tentativeStartDate": startDate.toString(),
-                            "stipend": stipend,
-                            "stipendAmount":stipendController.text,
-                            "numberOfOpenings": openingsController.text,
-                            "perks": _perks,
-                            "createdAt": DateTime.now().toString(),
-                            "createdBy": userName,
-                            "userId": userId,
-                            "jobDurVal":jobDurValue,
-                            "stipendVal":stipendValue,
-                            "tags": tags,
-                            "docId": docRef.id,
-                            "clicked": false,
-                            "applicationCount": 0,
-                            "interests": selectedOpportunitiesList,
-                            "brandPfp":LoginData().getUserProfilePicture(),
-                            "phoneNumber":LoginData().getUserPhoneNumber()
-                          }).then((value) {
-                            jobListingsData()
-                            .then((value){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                                return const ConfirmJobListingScreen();
-                              }));
+                          if(_formKey.currentState!.validate()){
+                            docRef.set({
+                              "jobType": jobType,
+                              "jobProfile": dropdownValue,
+                              "responsibilities": responsibilityText.text,
+                              "jobDuration": jobDur,
+                              "jobDurationExact": jobDurController.text,
+                              "workMode": jobLoc,
+                              "officeLoc": "$cityValue, $stateValue, India",
+                              "tentativeStartDate": startDate.toString(),
+                              "stipend": stipend,
+                              "stipendAmount":stipendController.text,
+                              "numberOfOpenings": openingsController.text,
+                              "perks": _perks,
+                              "createdAt": DateTime.now().toString(),
+                              "createdBy": userName,
+                              "userId": userId,
+                              "jobDurVal":jobDurValue,
+                              "stipendVal":stipendValue,
+                              "tags": tags,
+                              "docId": docRef.id,
+                              "clicked": false,
+                              "applicationCount": 0,
+                              "interests": selectedOpportunitiesList,
+                              "brandPfp":LoginData().getUserProfilePicture(),
+                              "phoneNumber":LoginData().getUserPhoneNumber()
+                            }).then((value) {
+                              jobListingsData()
+                                  .then((value){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                                  return const ConfirmJobListingScreen();
+                                }));
+                              });
                             });
-                          });
-                          DocumentReference brandProfileDoc = FirebaseFirestore.instance.collection('brandProfiles').doc(LoginData().getUserId());
+                            DocumentReference brandProfileDoc = FirebaseFirestore.instance.collection('brandProfiles').doc(LoginData().getUserId());
 
-                          return FirebaseFirestore.instance.runTransaction((transaction) async {
-                            // Get the document
-                            DocumentSnapshot snapshot = await transaction.get(brandProfileDoc);
+                            return FirebaseFirestore.instance.runTransaction((transaction) async {
+                              // Get the document
+                              DocumentSnapshot snapshot = await transaction.get(brandProfileDoc);
 
-                            if (!snapshot.exists) {
-                              throw Exception("Brand Profile does not exist!");
-                            }
+                              if (!snapshot.exists) {
+                                throw Exception("Brand Profile does not exist!");
+                              }
 
-                            // Get the current openings
-                            String currentOpenings = snapshot.get('openings') as String;
-                            List<String> openingsList = currentOpenings.split(',');
+                              // Get the current openings
+                              String currentOpenings = snapshot.get('openings') as String;
+                              List<String> openingsList = currentOpenings.split(',');
 
-                            // Check if the opening already exists
-                            if (!openingsList.contains(jobType)) {
-                              // Append the new opening
-                              String updatedOpenings = openingsList.isEmpty ? jobType : '$currentOpenings,$jobType';
-                              transaction.update(brandProfileDoc, {'openings': updatedOpenings});
-                            }
-                          });
+                              // Check if the opening already exists
+                              if (!openingsList.contains(jobType)) {
+                                // Append the new opening
+                                String updatedOpenings = openingsList.isEmpty ? jobType : '$currentOpenings,$jobType';
+                                transaction.update(brandProfileDoc, {'openings': updatedOpenings});
+                              }
+                            });
+                        }
+
 
                           // .then((value) {
 
                           // });
+                        }catch(e,s){
+                          print("Error creating new listing : ${e}");
+                          FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+                          FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+                          FirebaseCrashlytics.instance.setCustomKey('details','Error creating new listing: $e');
+                          FirebaseCrashlytics.instance.recordError(e, s);
                         }
                         },
                         child: Container(

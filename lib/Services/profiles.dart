@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lookbook/Models/ProfileModels/studentModel.dart';
 import '../Models/ProfileModels/brandModel.dart';
@@ -26,116 +27,158 @@ class ProfileServices {
 
   //-----------------------------------------------Fetch Projects---------------------------------------------------------
   Future<List<ProjectModel>> fetchProjects() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user logged in');
-    }
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
 
-    var profileDocument = await _firestore.collection('Profiles').doc(
-        currentUser.uid).get();
-    if (profileDocument.exists) {
-      var data = profileDocument.data() as Map<String, dynamic>;
-      var projectsList = List<Map<String, dynamic>>.from(
-          data['projects'] ?? []);
-      return projectsList.map((projectData) =>
-          ProjectModel.fromMap(projectData)).toList();
-    } else {
-      print('Profile document does not exist');
+      var profileDocument = await _firestore.collection('Profiles').doc(currentUser.uid).get();
+      if (profileDocument.exists) {
+        var data = profileDocument.data() as Map<String, dynamic>;
+        var projectsList = List<Map<String, dynamic>>.from(data['projects'] ?? []);
+        return projectsList.map((projectData) => ProjectModel.fromMap(projectData)).toList();
+      } else {
+        print('Profile document does not exist');
+        return [];
+      }
+    } catch (e, s) {
+      print('Error fetching projects: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching projects: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       return [];
     }
   }
+
 
   //-----------------------------------------------Fetch Work Experience---------------------------------------------------------
   Future<List<WorkModel>> fetchWorkExperiences() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user logged in');
-    }
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
 
-    var profileDocument = await _firestore.collection('Profiles').doc(
-        currentUser.uid).get();
-    if (profileDocument.exists) {
-      var data = profileDocument.data() as Map<String, dynamic>;
-      var workList = List<Map<String, dynamic>>.from(
-          data['Work Experience'] ?? []);
-      return workList.map((workData) => WorkModel.fromMap(workData)).toList();
-    } else {
-      print('Profile document does not exist');
+      var profileDocument = await _firestore.collection('Profiles').doc(currentUser.uid).get();
+      if (profileDocument.exists) {
+        var data = profileDocument.data() as Map<String, dynamic>;
+        var workList = List<Map<String, dynamic>>.from(data['Work Experience'] ?? []);
+        return workList.map((workData) => WorkModel.fromMap(workData)).toList();
+      } else {
+        print('Profile document does not exist');
+        return [];
+      }
+    } catch (e, s) {
+      // Handle the exception
+      print('Error fetching work experiences: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching work experiences: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return [];
     }
   }
+
 
   //-----------------------------------------------Fetch Education---------------------------------------------------------
   Future<List<EducationModel>> fetchEducationEntries() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user logged in');
-    }
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
 
-    var profileDocument = await _firestore.collection('Profiles').doc(
-        currentUser.uid).get();
-    if (profileDocument.exists) {
-      var data = profileDocument.data() as Map<String, dynamic>;
-      var educationList = List<Map<String, dynamic>>.from(
-          data['Education'] ?? []);
-      return educationList.map((educationData) =>
-          EducationModel.fromMap(educationData)).toList();
-    } else {
-      print('Profile document does not exist');
+      var profileDocument = await _firestore.collection('Profiles').doc(currentUser.uid).get();
+      if (profileDocument.exists) {
+        var data = profileDocument.data() as Map<String, dynamic>;
+        var educationList = List<Map<String, dynamic>>.from(data['Education'] ?? []);
+        return educationList.map((educationData) => EducationModel.fromMap(educationData)).toList();
+      } else {
+        print('Profile document does not exist');
+        return [];
+      }
+    } catch (e, s) {
+      // Handle the exception
+      print('Error fetching education entries: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching education entries: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       return [];
     }
   }
 
+
   //-----------------------------------------------Fetch Work Experience---------------------------------------------------------
   Future<String> fetchWorkExperienceCompanies() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user logged in');
-    }
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
 
-    var profileDocument = await _firestore.collection('studentProfiles').doc(
-        currentUser.uid).get();
-    if (profileDocument.exists) {
-      var data = profileDocument.data() as Map<String, dynamic>;
-      var workList = List<Map<String, dynamic>>.from(
-          data['Work Experience'] ?? []);
-      List<WorkModel> workExperiences = workList.map((workData) =>
-          WorkModel.fromMap(workData)).toList();
+      var profileDocument = await _firestore.collection('studentProfiles').doc(currentUser.uid).get();
+      if (profileDocument.exists) {
+        var data = profileDocument.data() as Map<String, dynamic>;
+        var workList = List<Map<String, dynamic>>.from(data['Work Experience'] ?? []);
+        List<WorkModel> workExperiences = workList.map((workData) => WorkModel.fromMap(workData)).toList();
 
-      String companies = workExperiences.map((work) => work.companyName).join(
-          ', ');
-      return companies;
-    } else {
-      print('Profile document does not exist');
+        String companies = workExperiences.map((work) => work.companyName).join(', ');
+        return companies;
+      } else {
+        print('Profile document does not exist');
+        return "";
+      }
+    } catch (e, s) {
+      // Handle the exception
+      print('Error fetching work experience companies: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching work experience companies: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       return "";
     }
   }
+
 
   //-----------------------------------------------Fetch Most Recent Education---------------------------------------------------------
   Future<String> fetchLatestEducation() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user logged in');
-    }
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
 
-    var profileDocument = await _firestore.collection('studentProfiles').doc(
-        currentUser.uid).get();
-    if (profileDocument.exists) {
-      var data = profileDocument.data() as Map<String, dynamic>;
-      var educationList = List<Map<String, dynamic>>.from(
-          data['Education'] ?? []);
-      List<EducationModel> educationEntries = educationList.map((
-          educationData) => EducationModel.fromMap(educationData)).toList();
-      educationEntries.sort((a, b) =>
-          b.timePeriod.compareTo(a.timePeriod));
-      return educationEntries.isNotEmpty
-          ? educationEntries.first.instituteName
-          : "";
-    } else {
-      print('Profile document does not exist');
+      var profileDocument = await _firestore.collection('studentProfiles').doc(currentUser.uid).get();
+      if (profileDocument.exists) {
+        var data = profileDocument.data() as Map<String, dynamic>;
+        var educationList = List<Map<String, dynamic>>.from(data['Education'] ?? []);
+        List<EducationModel> educationEntries = educationList.map((educationData) => EducationModel.fromMap(educationData)).toList();
+
+        // Sorting the education entries
+        educationEntries.sort((a, b) => b.timePeriod.compareTo(a.timePeriod));
+
+        // Returning the latest education institute's name
+        return educationEntries.isNotEmpty ? educationEntries.first.instituteName : "";
+      } else {
+        print('Profile document does not exist');
+        return "";
+      }
+    } catch (e, s) {
+      // Handle the exception
+      print('Error fetching latest education: $e');
+      print('Error fetching work experience companies: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching latest education: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       return "";
     }
   }
+
 
   //-----------------------------------------------Future Fetch Application---------------------------------------------------------
   Future<List<applicationModel>> fetchApplications(String jobId) async {
@@ -156,9 +199,14 @@ class ProfileServices {
           .toList();
 
       return applications;
-    } catch (e) {
+    } catch (e,s) {
       print(e);
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error fetching applications: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw Exception('Error fetching applications: $e');
+
     }
   }
 
@@ -184,40 +232,47 @@ class ProfileServices {
   //-----------------------------------------------Stream Fetch Application---------------------------------------------------------
   Future<void> updateApplicationStatus(
       String jobListingId, String applicationId, String status, String studentId) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    DocumentReference applicationDoc = firestore
-        .collection('jobListing')
-        .doc(jobListingId)
-        .collection('Applications')
-        .doc(applicationId);
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference applicationDoc = firestore
+          .collection('jobListing')
+          .doc(jobListingId)
+          .collection('Applications')
+          .doc(applicationId);
 
-    await applicationDoc.update({'statusOfApplication': status})
-        .catchError((error) => print('Error updating status: $error'));
-    DocumentReference studentProfileDoc = firestore
-        .collection('studentProfiles')
-        .doc(studentId);
+      await applicationDoc.update({'statusOfApplication': status});
 
-    await firestore.runTransaction((transaction) async {
-      DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileDoc);
+      DocumentReference studentProfileDoc = firestore
+          .collection('studentProfiles')
+          .doc(studentId);
 
-      if (!studentProfileSnapshot.exists) {
-        throw Exception("Student profile does not exist");
-      }
+      await firestore.runTransaction((transaction) async {
+        DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileDoc);
 
-      List<dynamic> applicationsApplied = studentProfileSnapshot.get('applicationsApplied');
-      int indexToUpdate = applicationsApplied.indexWhere((application) =>
-      application['jobId'] == jobListingId);
+        if (!studentProfileSnapshot.exists) {
+          throw Exception("Student profile does not exist");
+        }
 
-      if (indexToUpdate != -1) {
-        // Update the status in the specific application
-        applicationsApplied[indexToUpdate]['status'] = status;
+        List<dynamic> applicationsApplied = studentProfileSnapshot.get('applicationsApplied');
+        int indexToUpdate = applicationsApplied.indexWhere((application) =>
+        application['jobId'] == jobListingId);
 
-        // Update the student profile document
-        transaction.update(studentProfileDoc, {'applicationsApplied': applicationsApplied});
-      } else {
-        print("No matching application found in student profile");
-      }
-    }).catchError((error) => print('Error updating student profile: $error'));
+        if (indexToUpdate != -1) {
+          applicationsApplied[indexToUpdate]['status'] = status;
+          transaction.update(studentProfileDoc, {'applicationsApplied': applicationsApplied});
+        } else {
+          print("No matching application found in student profile");
+        }
+      });
+    } catch (e, s) {
+      // Handle exceptions here
+      print('Error updating application status: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating application status: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+      // You might also want to rethrow the exception or handle it differently
+    }
   }
 
   //---------------------------------Stream Fetch Application for particular student---------------------------------------------------------
@@ -249,8 +304,13 @@ class ProfileServices {
             print("Job listing document (ID: $jobId) does not exist or has no data.");
           }
         }
-      } catch (e) {
+      } catch (e,s) {
         print("An error occurred: $e");
+        FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+        FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+        FirebaseCrashlytics.instance.setCustomKey('details','Error streamJobListingsForStudent: $e');
+        FirebaseCrashlytics.instance.recordError(e, s);
+
       }
       return pairs;
     });
@@ -259,154 +319,190 @@ class ProfileServices {
 
   //-----------------------------------------------Update Student Profile---------------------------------------------------------
 
-  Future<void> updateUserProfile(
-      {required List<String> userDescription,
-        required String userBio,
-        required String userInsta,
-        required String userLinkedin,
-        required String userTwitter,
-        required File imageFile,
-        required bool isUpdated,
-        required String imgUrl,
-        required String firstName,
-        required String lastName,
-      }) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user is currently logged in.');
-    }
-    String userId = currentUser.uid;
-    if(isUpdated){
-      String imagePath = 'userImages/$userId';
-      FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref = storage.ref().child(imagePath);
-      await ref.putFile(imageFile);
-       imgUrl = await ref.getDownloadURL();
-    }
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    DocumentReference profileRef = firestore.collection('studentProfiles').doc(userId);
-    // List<String> userDescriptionList = userDescription.split(',');
-    // userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
+  Future<void> updateUserProfile({
+    required List<String> userDescription,
+    required String userBio,
+    required String userInsta,
+    required String userLinkedin,
+    required String userTwitter,
+    required File imageFile,
+    required bool isUpdated,
+    required String imgUrl,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user is currently logged in.');
+      }
+      String userId = currentUser.uid;
+      if (isUpdated) {
+        String imagePath = 'userImages/$userId';
+        FirebaseStorage storage = FirebaseStorage.instance;
+        Reference ref = storage.ref().child(imagePath);
+        await ref.putFile(imageFile);
+        imgUrl = await ref.getDownloadURL();
+      }
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference profileRef = firestore.collection('studentProfiles').doc(userId);
 
-    return profileRef.update({
-      'userDescription': userDescription,
-      'userBio': userBio,
-      'userInsta': userInsta,
-      'userLinkedin': userLinkedin,
-      'userTwitter': userTwitter,
-      'userProfilePicture': imgUrl,
-      'firstName':firstName,
-      'lastName':lastName,
-    });
+      await profileRef.update({
+        'userDescription': userDescription,
+        'userBio': userBio,
+        'userInsta': userInsta,
+        'userLinkedin': userLinkedin,
+        'userTwitter': userTwitter,
+        'userProfilePicture': imgUrl,
+        'firstName': firstName,
+        'lastName': lastName,
+      });
+    } catch (e, s) {
+      // Handle exceptions here
+      print('Error updating user profile: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating user profile: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+    }
   }
 
 
   //-----------------------------------------------Update Brand Profile---------------------------------------------------------
 
-  Future<void> updateBrandProfile(
-      {required String userDescription,
-        required String userBio,
-        required String userInsta,
-        required String userLinkedin,
-        required String userTwitter,
-        required File imageFile,
-        required bool isUpdated,
-        required String imgUrl,
-        required String firstName,
-        required String lastName,
-      }) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user is currently logged in.');
-    }
-    String userId = currentUser.uid;
-    if(isUpdated){
-      String imagePath = 'brandImages/$userId';
+  Future<void> updateBrandProfile({
+    required String userDescription,
+    required String userBio,
+    required String userInsta,
+    required String userLinkedin,
+    required String userTwitter,
+    required File imageFile,
+    required bool isUpdated,
+    required String imgUrl,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user is currently logged in.');
+      }
+      String userId = currentUser.uid;
+      if (isUpdated) {
+        String imagePath = 'brandImages/$userId';
 
-      FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref = storage.ref().child(imagePath);
-      await ref.putFile(imageFile);
+        FirebaseStorage storage = FirebaseStorage.instance;
+        Reference ref = storage.ref().child(imagePath);
+        await ref.putFile(imageFile);
 
-      imgUrl = await ref.getDownloadURL();
+        imgUrl = await ref.getDownloadURL();
+      }
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
+      List<String> userDescriptionList = userDescription.split(',');
+      userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
+
+      await profileRef.update({
+        'brandDescription': userDescriptionList,
+        'brandBio': userBio,
+        'brandInsta': userInsta,
+        'brandLinkedin': userLinkedin,
+        'brandTwitter': userTwitter,
+        'brandProfilePicture': imgUrl,
+        'brandtName': firstName,
+      });
+    } catch (e, s) {
+      // Handle exceptions here
+      print('Error updating brand profile: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating brand profile: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
-    List<String> userDescriptionList = userDescription.split(',');
-    userDescriptionList = userDescriptionList.map((item) => item.trim()).toList();
-    return profileRef.update({
-      'brandDescription': userDescriptionList,
-      'brandBio': userBio,
-      'brandInsta': userInsta,
-      'brandLinkedin': userLinkedin,
-      'brandTwitter': userTwitter,
-      'brandProfilePicture': imgUrl,
-      'brandtName':firstName,
-    });
   }
 
   //--------------------------------Update Brand Profile Details(Company size,etc)---------------------------------------------------------
-  Future<void> updateBrandProfileDetails(
-      {required String month,
-        required String year,
-        required String companySize,
-        required String industry,
-        required String location,
-        required String additionalInfo,
-      }) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('No user is currently logged in.');
+  Future<void> updateBrandProfileDetails({
+    required String month,
+    required String year,
+    required String companySize,
+    required String industry,
+    required String location,
+    required String additionalInfo,
+  }) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw Exception('No user is currently logged in.');
+      }
+      String userId = currentUser.uid;
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
+
+      await profileRef.update({
+        'foundedIn': "${month}, ${year}",
+        'companySize': companySize.toString(),
+        'industry': industry,
+        'companyLocation': location,
+        'additionalInfo': additionalInfo,
+      });
+    } catch (e, s) {
+      // Handle exceptions here
+      print('Error updating brand profile details: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating brand profile details: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
-    String userId = currentUser.uid;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    DocumentReference profileRef = firestore.collection('brandProfiles').doc(userId);
-    return profileRef.update({
-      'foundedIn': "${month}, ${year}",
-      'companySize': companySize.toString(),
-      'industry': industry,
-      'companyLocation': location,
-      'additionalInfo': additionalInfo,
-    });
   }
 
   //--------------------------------Delete Application---------------------------------------------------------
   Future<void> deleteApplicationStatus(String docId) async {
-    String currentUserId = LoginData().getUserId();
-    if (currentUserId.isEmpty) {
-      print('User ID is not available. Make sure the user is logged in.');
-      return;
+    try{
+      String currentUserId = LoginData().getUserId();
+      if (currentUserId.isEmpty) {
+        print('User ID is not available. Make sure the user is logged in.');
+        return;
+      }
+      final jobListingRef = FirebaseFirestore.instance.collection('jobListing').doc(docId);
+      final studentProfileRef = FirebaseFirestore.instance.collection('studentProfiles').doc(currentUserId);
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot jobListingSnapshot = await transaction.get(jobListingRef);
+        DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileRef);
+        if (jobListingSnapshot.exists && jobListingSnapshot.data() is Map<String, dynamic>) {
+          final jobListingData = jobListingSnapshot.data() as Map<String, dynamic>;
+          if (jobListingData.containsKey('applicationCount')) {
+            final applicationCount = jobListingData['applicationCount'] as int;
+            transaction.update(jobListingRef, {'applicationCount': applicationCount - 1});
+          }
+
+          if (jobListingData.containsKey('applicationsIDS')) {
+            final applicationIds = List.from(jobListingData['applicationsIDS']);
+            applicationIds.remove(currentUserId);
+            transaction.update(jobListingRef, {'applicationsIDS': applicationIds});
+          }
+        }
+
+        DocumentReference applicationRef = jobListingRef.collection('Applications').doc(currentUserId);
+        transaction.delete(applicationRef);
+
+        if (studentProfileSnapshot.exists && studentProfileSnapshot.data() is Map<String, dynamic>) {
+          final studentProfileData = studentProfileSnapshot.data() as Map<String, dynamic>;
+          if (studentProfileData.containsKey('applicationsApplied')) {
+            final applicationsApplied = List<Map<String, dynamic>>.from(studentProfileData['applicationsApplied']);
+            applicationsApplied.removeWhere((application) => application['jobId'] == docId);
+            transaction.update(studentProfileRef, {'applicationsApplied': applicationsApplied});
+          }
+        }
+      });
+    } catch(e,s){
+      print('Error in deleteApplicationStatus: $e');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error in deleteApplicationStatus: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
     }
-    final jobListingRef = FirebaseFirestore.instance.collection('jobListing').doc(docId);
-    final studentProfileRef = FirebaseFirestore.instance.collection('studentProfiles').doc(currentUserId);
-    FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot jobListingSnapshot = await transaction.get(jobListingRef);
-      DocumentSnapshot studentProfileSnapshot = await transaction.get(studentProfileRef);
-      if (jobListingSnapshot.exists && jobListingSnapshot.data() is Map<String, dynamic>) {
-        final jobListingData = jobListingSnapshot.data() as Map<String, dynamic>;
-        if (jobListingData.containsKey('applicationCount')) {
-          final applicationCount = jobListingData['applicationCount'] as int;
-          transaction.update(jobListingRef, {'applicationCount': applicationCount - 1});
-        }
 
-        if (jobListingData.containsKey('applicationsIDS')) {
-          final applicationIds = List.from(jobListingData['applicationsIDS']);
-          applicationIds.remove(currentUserId);
-          transaction.update(jobListingRef, {'applicationsIDS': applicationIds});
-        }
-      }
-
-      DocumentReference applicationRef = jobListingRef.collection('Applications').doc(currentUserId);
-      transaction.delete(applicationRef);
-
-      if (studentProfileSnapshot.exists && studentProfileSnapshot.data() is Map<String, dynamic>) {
-        final studentProfileData = studentProfileSnapshot.data() as Map<String, dynamic>;
-        if (studentProfileData.containsKey('applicationsApplied')) {
-          final applicationsApplied = List<Map<String, dynamic>>.from(studentProfileData['applicationsApplied']);
-          applicationsApplied.removeWhere((application) => application['jobId'] == docId);
-          transaction.update(studentProfileRef, {'applicationsApplied': applicationsApplied});
-        }
-      }
-    });
   }
 //------------------------------------------------------------------------------------------------------------------------
   //--------------------------------BookMark Brand Profiles ---------------------------------------------------------
@@ -618,8 +714,13 @@ class ProfileServices {
         print('Brand not found');
         // Handle the case where the brandName does not exist
       }
-    } catch (e) {
+    } catch (e,s) {
       print(e.toString());
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error in sendRequestForVerification: $e');
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       // Handle any errors here
     }
   }

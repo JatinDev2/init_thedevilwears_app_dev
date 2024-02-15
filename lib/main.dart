@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,6 +22,13 @@ void main() async{
   runApp(const MyApp());
   print("Aceess token is : ${LoginData().getUserAccessToken()}");
   print("user id is : ${LoginData().getUserId()}");
+  FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+  FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FirebaseCrashlytics.instance.setCustomKey('details', details.exceptionAsString());
+    FirebaseCrashlytics.instance.recordFlutterError(details);
+  };
+
 
   if(LoginData().getIsLoggedIn()==true && LoginData().getUserType()=="Company" ){
     await InstagramModel().refreshLongLivedToken(LoginData().getUserAccessToken()).then((value) {

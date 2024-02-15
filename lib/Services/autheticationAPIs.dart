@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:lookbook/Preferences/LoginData.dart';
 
 class FirebaseAuthAPIs{
@@ -42,8 +43,13 @@ class FirebaseAuthAPIs{
         'Hard Skills':[]
       });
       return true;
-    }catch(e){
+    }catch(e,s){
       print("Error in addStudentToDatabase : $e");
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details', "Error in addStudentToDatabase : $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false;
     }
   }
@@ -133,8 +139,13 @@ class FirebaseAuthAPIs{
       else {
         return false;
       }
-    } catch (e) {
+    } catch (e,s) {
       print("Error checking userEmail in Firestore: $e");
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details',"Error checking userEmail in Firestore: $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false; // Return false in case of any error
     }
   }
@@ -169,8 +180,13 @@ class FirebaseAuthAPIs{
         'bookmarkedStudentProfiles':[]
       });
       return true;
-    }catch(e){
+    }catch(e,s){
       print("Error in addBrandToDatabase : $e");
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details',"Error in addBrandToDatabase : $e");
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       return false;
     }
   }
@@ -186,8 +202,13 @@ class FirebaseAuthAPIs{
       } else {
         return studentProfilesRef.set({'accessToken': newAccessToken});
       }
-    }).catchError((error) {
+    }).catchError((error,s) {
       print('Error updating accessToken: $error');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating accessToken: $error');
+      FirebaseCrashlytics.instance.recordError(error, s);
+
       throw error;
     });
   }
@@ -204,8 +225,13 @@ class FirebaseAuthAPIs{
         // Document does not exist, create it with the accessToken
         return studentProfilesRef.set({'instaUserId': instaUserId});
       }
-    }).catchError((error) {
+    }).catchError((error,s) {
       print('Error updating instaUserId: $error');
+      FirebaseCrashlytics.instance.setCustomKey('userType', LoginData().getUserType());
+      FirebaseCrashlytics.instance.setCustomKey('userId', LoginData().getUserId());
+      FirebaseCrashlytics.instance.setCustomKey('details','Error updating instaUserId: $error');
+      FirebaseCrashlytics.instance.recordError(error, s);
+
       throw error;
     });
   }
