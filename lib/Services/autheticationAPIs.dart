@@ -169,6 +169,8 @@ class FirebaseAuthAPIs{
         'companySize':'',
         'foundedIn':'',
         'industry':'',
+        'additionalInfo':'',
+        'companyLocation':'',
         'numberOfApplications':0,
         'userId':userId,
         'location':'',

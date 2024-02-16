@@ -61,7 +61,7 @@ class _TalentCardState extends State<TalentCard> {
             elevation: 4,
             child: Padding(
               padding: EdgeInsets.only(
-                top: avatarRadius + avatarBorderWidth + 8.h,
+                top: avatarRadius-13 + avatarBorderWidth + 8.h,
                 bottom: 18.h,
                 left: 16.w,
                 right: 16.w,
@@ -102,7 +102,7 @@ class _TalentCardState extends State<TalentCard> {
                     ),
                   ),
 
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 1.h),
                   Text(
                     widget.company,
                     style: TextStyle(
@@ -113,7 +113,7 @@ class _TalentCardState extends State<TalentCard> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 2.h),
                   Text(
                     widget.education,
                     style: TextStyle(

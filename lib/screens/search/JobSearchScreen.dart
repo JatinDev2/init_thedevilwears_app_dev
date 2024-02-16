@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:lookbook/Models/ProfileModels/brandModel.dart';
+import 'package:lookbook/Models/formModels/educationModel.dart';
 import 'package:lookbook/screens/search/filterScreenJob.dart';
 import '../../Models/ProfileModels/studentModel.dart';
+import '../../Models/formModels/workModel.dart';
 import 'AlphaBetScrollJob.dart';
 import 'AlphaBetScrollPeople.dart';
 
@@ -93,6 +94,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
 
   void _applyFilters() {
     Set<BrandProfile> tempFiltered = {};
+
+    // Filter by brand name if query_check is not empty
     if (query_check.isNotEmpty) {
       for (int i = 0; i < realData.length; i++) {
         if (realData[i].brandName.toLowerCase().contains(query_check.toLowerCase())) {
@@ -102,43 +105,181 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
     } else {
       tempFiltered.addAll(realData);
     }
+
+    // Further filter by selected chip if applicable
     if (_selectedChipIndex != null &&
         _selectedChipIndex >= 0 &&
         filterList[_selectedChipIndex] != "All") {
-      filteredJobOpenings = tempFiltered
-          .where((job) => job.brandDescription.join(",").contains(filterList[_selectedChipIndex]))
-          .toList();
+      tempFiltered.retainWhere((profile) =>
+          profile.brandDescription.join(",").contains(filterList[_selectedChipIndex]));
     }
-    else {
-      filteredJobOpenings = tempFiltered.toList();
+
+    // Handle opening filters
+    if (selectedOptions.isNotEmpty) {
+      bool filterAllOpenings = selectedOptions.contains("All openings");
+      bool filterNoOpenings = selectedOptions.contains("No openings");
+
+      // Remove "All openings" and "No openings" from the options to handle other filters normally
+      List<String> filterableOptions = List<String>.from(selectedOptions)
+        ..remove("All openings")
+        ..remove("No openings");
+
+      tempFiltered.retainWhere((profile) {
+        // Skip filtering by openings if "All openings" is selected
+        List<String> profileCities = profile.location.split(',').map((s) => s.trim().toLowerCase()).toList();
+
+        // Define a helper function to check if the profile location matches any part of the selected location
+        bool locationMatches(String locationOption) {
+          List<String> locationParts = locationOption.split(',').map((s) => s.trim().toLowerCase()).toList();
+          return profileCities.any((city) => locationParts.contains(city));
+        }
+
+
+        if (filterAllOpenings) {
+          return filterableOptions.every((option) =>
+          profile.brandDescription.join(",").toLowerCase().contains(option.toLowerCase()) ||
+              profile.location.toLowerCase().contains(option.toLowerCase())
+          );
+        }
+
+        // If "No openings" is selected, profile should have empty openings
+        if (filterNoOpenings) {
+          return profile.openings.isEmpty &&
+              filterableOptions.every((option) =>
+              profile.brandDescription.join(",").toLowerCase().contains(option.toLowerCase()) ||
+                  profile.location.toLowerCase().contains(option.toLowerCase())
+              );
+        }
+
+        List<String> openingTypes = profile.openings.split(",").map((s) => s.trim().toLowerCase()).toList();
+
+        return filterableOptions.every((option) =>
+        profile.brandDescription.join(",").toLowerCase().contains(option.toLowerCase()) ||
+            profile.location.toLowerCase().contains(option.toLowerCase()) ||
+            openingTypes.contains(option.toLowerCase()) || locationMatches(option)
+        );
+      });
     }
+
+    filteredJobOpenings = tempFiltered.toList();
+
+    // Debug print
     print("Length is:");
     print(filteredJobOpenings.length);
   }
 
-
-  void _applyFiltersPeoople() {
+  void _applyFiltersPeople() {
     Set<StudentProfile> tempFiltered = {};
+    // Filter by name if query_check is not empty
     if (query_check.isNotEmpty) {
       for (int i = 0; i < realPeopleData.length; i++) {
-        if ("${realPeopleData[i].firstName}${realPeopleData[i].lastName}".toLowerCase().contains(query_check.toLowerCase())) {
+        String fullName = "${realPeopleData[i].firstName} ${realPeopleData[i].lastName}".toLowerCase();
+        if (fullName.contains(query_check.toLowerCase())) {
           tempFiltered.add(realPeopleData[i]);
         }
       }
-    }
-    else {
+    } else {
       tempFiltered.addAll(realPeopleData);
     }
+
     if (_selectedIndexPeople != null &&
         _selectedIndexPeople >= 0 &&
         roles[_selectedIndexPeople] != "All") {
-      filteredPeopleList = tempFiltered
-          .where((job) => job.userDescription!.join(",").contains(roles[_selectedIndexPeople]))
-          .toList();
-    } else {
-      filteredPeopleList = tempFiltered.toList();
+      tempFiltered.retainWhere((profile) =>
+          profile.userDescription!.join(",").contains(filterList[_selectedChipIndex]));
     }
+
+    if(selectedOptions.isNotEmpty){
+      List<String> filterableOptions = List<String>.from(selectedOptions);
+
+      tempFiltered.retainWhere((student) {
+        bool _matchesEducationFilter(List<EducationModel>? education, String selectedFilter) {
+          return education?.any((edu) {
+            if (selectedFilter == "Graduate") {
+              return edu.degreeName.toLowerCase().contains("bachelor");
+            } else if (selectedFilter == "Post Graduate") {
+              return edu.degreeName.toLowerCase().contains("master") || edu.degreeName.toLowerCase().contains("phd");
+            }
+            return false;
+          }) ?? false;
+        }
+
+        bool _matchesExperienceFilter(List<WorkModel>? workExperience, String selectedFilter) {
+          // If workExperience is empty and the selected filter is "Fresher", return true
+          if (workExperience == null || workExperience.isEmpty) {
+            return selectedFilter == "Fresher";
+          }
+
+          // If there are work experiences, calculate the total years of experience
+          for (var work in workExperience) {
+            int experienceYears = _calculateExperienceYears(work.timePeriod);
+            switch (selectedFilter.toLowerCase()) {
+              case "fresher":
+              // Since there's work experience, the person is not a fresher
+                return false;
+              case "2+ years experience":
+                if (experienceYears >= 2) return true;
+                break;
+              case "5+ years experience":
+                if (experienceYears >= 5) return true;
+                break;
+              case "10+ years experience":
+                if (experienceYears >= 10) return true;
+                break;
+            }
+          }
+          // If no condition matches, return false
+          return false;
+        }
+
+        return filterableOptions.every((option) =>
+        student.userDescription!.join(",").toLowerCase().contains(option.toLowerCase()) ||
+            _matchesEducationFilter(student.education,option) || _matchesExperienceFilter(student.workExperience,option)
+        );
+      });
+    }
+    filteredPeopleList = tempFiltered.toList();
+    // Debug print
+    print("Length of people list is:");
+    print(filteredPeopleList.length);
   }
+
+  int _calculateExperienceYears(String timePeriod) {
+    // Split the time period into start and end parts
+    List<String> parts = timePeriod.split(' - ');
+    if (parts.length != 2) {
+      return 0; // Return 0 if the format is unexpected
+    }
+
+    DateTime startDate = _parseDate(parts[0]);
+    DateTime endDate = parts[1].toLowerCase() == 'present' ? DateTime.now() : _parseDate(parts[1]);
+
+    // Calculate the difference in years
+    int years = endDate.year - startDate.year;
+    // If the current month is before the start month, or it's the same month but the day is earlier, subtract a year
+    if (endDate.month < startDate.month || (endDate.month == startDate.month && endDate.day < startDate.day)) {
+      years--;
+    }
+
+    return years;
+  }
+
+  DateTime _parseDate(String dateStr) {
+    // Expecting dateStr in the format DD/MM/YYYY
+    List<String> dateParts = dateStr.split('/');
+    if (dateParts.length != 3) {
+      return DateTime.now(); // Return current date if the format is unexpected
+    }
+
+    int day = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int year = int.parse(dateParts[2]);
+
+    return DateTime(year, month, day);
+  }
+
+
+
 
   Future<JobAndPeopleData?> fetchJobOpeningsAndPeopleData() async {
     final firestore = FirebaseFirestore.instance;
@@ -190,7 +331,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                             setState(() {
                               query_check = value;
                                 _applyFilters();
-                                _applyFiltersPeoople();
+                                _applyFiltersPeople();
                             });
                           },
                           cursorColor: Colors.black,
@@ -233,7 +374,13 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                        tabSelectedInFilterScreen=value["tab"];
                                        value["tab"]=="Companies"? _tabController.index=0 : _tabController.index=1;
                                      }
-                                     ;
+                                     if(_tabController.index==0){
+                                       print("INDEX : ${_tabController.index}");
+                                       _applyFilters();
+                                     }
+                                     else{
+                                       _applyFiltersPeople();
+                                     }
                                    });
                                  });
                                 },
@@ -318,6 +465,8 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                   List<StudentProfile> dataPeople = snapshot.data!.people;
                                   realData=data;
                                   realPeopleData=dataPeople;
+                                  _applyFilters();
+                                  _applyFiltersPeople();
                                   return Expanded(
                                     child: TabBarView(
                                         controller: _tabController,
@@ -373,9 +522,18 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                     .height),
                                                 query_check: query_check,
                                                 onClickedItem: (item) {},
-                                                jobList: filterList[_selectedChipIndex]!="All" ||  filteredJobOpenings.isNotEmpty
-                                                    ? filteredJobOpenings
-                                                    : data, selectedOptionsMap: tabSelectedInFilterScreen=="Companies"? _selectedOptionMap : {},
+                                                jobList:
+                                                // filteredJobOpenings.isNotEmpty
+                                                //     ?
+                                                filteredJobOpenings
+                                                    // : data
+                                                ,
+                                                selectedOptionsMap: tabSelectedInFilterScreen=="Companies"? _selectedOptionMap : {},
+                                                onListUpdated: (){
+                                                  setState(() {
+                                                    _applyFilters();
+                                                  });
+                                                },
                                               ),
                                             ),
                                           ],
@@ -429,8 +587,18 @@ class _JobSearchScreenState extends State<JobSearchScreen> with TickerProviderSt
                                                 .height),
                                             query_check: query_check,
                                             onClickedItem: (item) {},
-                                             peopleList: roles[_selectedIndexPeople]!="All" ||  filteredPeopleList.isNotEmpty? filteredPeopleList: dataPeople,
+                                             peopleList:
+                                             // roles[_selectedIndexPeople]!="All" ||
+                                             //     filteredPeopleList.isNotEmpty ?
+                                             filteredPeopleList
+                                                 // : dataPeople
+                                            ,
                                             selectedItems: tabSelectedInFilterScreen=="People"? selectedOptions : [],
+                                            onListUpdated: (){
+                                  setState(() {
+                                    _applyFiltersPeople();
+                                  });
+                                            },
                                           ),
                                         ),
 
@@ -492,7 +660,7 @@ if(_selectedTab==0)
                           onSelected: (bool isSelected){
                             setState((){
                               _selectedIndexPeople = (isSelected ? index : null)!;
-                              _applyFiltersPeoople();
+                              _applyFiltersPeople();
                             });
                           },
                           selectedColor: Theme.of(context).colorScheme.primary,

@@ -38,7 +38,7 @@ class AlphaBetScrollPageJob extends StatefulWidget{
   final ValueChanged<String> onClickedItem;
   final List selectedItems;
   final Map<String,dynamic> selectedOptionsMap;
-  // final VoidCallback onListUpdated;
+  final VoidCallback onListUpdated;
 
   AlphaBetScrollPageJob({
     required this.height,
@@ -47,7 +47,7 @@ class AlphaBetScrollPageJob extends StatefulWidget{
     required this.onClickedItem,
     required this.selectedItems,
     required this.selectedOptionsMap,
-    // required this.onListUpdated,
+    required this.onListUpdated,
   });
 
   @override
@@ -324,6 +324,7 @@ class _AlphaBetScrollPageJobState extends State<AlphaBetScrollPageJob> with Widg
                       }
                     });
                     widget.selectedItems.remove(tag);
+                    widget.onListUpdated();
                   });
                 },
                 child: Icon(

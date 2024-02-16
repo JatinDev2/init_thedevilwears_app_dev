@@ -27,34 +27,7 @@ class _BrandListing_ViewState extends State<BrandListing_View> {
           .map((querySnapshot) {
         return querySnapshot.docs.map((docSnapshot) {
           Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-
-          return jobModel(
-            jobType : data["jobType"] ?? "",
-            jobProfile : data["jobProfile"] ?? "",
-            responsibilities : data["responsibilities"] ?? "",
-            jobDuration : data["jobDuration"] ?? "",
-            jobDurExact : data["jobDurationExact"] ?? "",
-            workMode : data["workMode"] ?? "",
-            officeLoc : data["officeLoc"] ?? "",
-            tentativeStartDate : data["tentativeStartDate"] ?? "",
-            stipend : data["stipend"] ?? "",
-            stipendAmount : data["stipendAmount"] ?? "",
-            numberOfOpenings : data["numberOfOpenings"] ?? "",
-            perks : data["perks"] ?? [],
-            createdBy : data["createdBy"] ?? "",
-            createdAt : data["createdAt"] ?? "",
-            userId : data["userId"] ?? "",
-            jobDurVal : data["jobDurVal"] ?? "",
-            stipendVal : data["stipendVal"] ?? "",
-            tags : data["tags"] ?? [],
-            applicationCount: data["applicationCount"] ?? 0,
-            clicked: data["clicked"] ?? false,
-            docId: data["docId"] ?? "",
-            applicationsIDS: data["applicationsIDS"] ?? [],
-            interests: data["interests"] ?? [],
-            brandPfp: data["brandPfp"] ?? "",
-            phoneNumber: data["phoneNumber"] ?? ""
-          );
+          return jobModel.fromMap(data);
         }).toList();
       });
     } catch (e) {

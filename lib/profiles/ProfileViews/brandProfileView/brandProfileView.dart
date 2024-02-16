@@ -6,6 +6,8 @@ import 'package:lookbook/Preferences/LoginData.dart';
 import 'package:lookbook/profiles/ProfileViews/brandProfileView/tab1_bt_view.dart';
 import 'package:lookbook/profiles/ProfileViews/brandProfileView/tab2_bt_view.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../brandProfile/Tabs/Tab3_BP.dart';
+import '../../brandProfile/Tabs/Tab4_BP.dart';
 
 class BrandProfileView extends StatefulWidget{
   final BrandProfile brandProfile;
@@ -19,7 +21,7 @@ class _BrandProfileViewState extends State<BrandProfileView>
     with SingleTickerProviderStateMixin {
   String uid=LoginData().getUserId();
   late TabController _tabController;
-  List<bool> _tabSelectedState = [true, false, false]; // Initially, the first tab is selected
+  List<bool> _tabSelectedState=[];
   String descriptionsWithBullets="";
 
 
@@ -96,7 +98,13 @@ class _BrandProfileViewState extends State<BrandProfileView>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: widget.brandProfile.userId==LoginData().getUserId()? 4 : 2, vsync: this);
+    if(widget.brandProfile.userId==LoginData().getUserId()){
+      _tabSelectedState = [true, false, false,false];
+    }
+    else{
+      _tabSelectedState = [true, false];
+    }
     _tabController.addListener(_handleTabChange);
     List<String> userDescriptionList = widget.brandProfile.brandDescription!;
 
@@ -108,12 +116,15 @@ class _BrandProfileViewState extends State<BrandProfileView>
   void _handleTabChange() {
     setState(() {
       // Reset all tab selected states to false
-      _tabSelectedState = [false, false, false];
-      // Set the selected tab's state to true
+      if(widget.brandProfile.userId==LoginData().getUserId()){
+        _tabSelectedState = [false, false, false,false];
+      }
+      else{
+        _tabSelectedState = [false, false];
+      }
       _tabSelectedState[_tabController.index] = true;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -358,7 +369,7 @@ class _BrandProfileViewState extends State<BrandProfileView>
                   ),
                 ),
                 DefaultTabController(
-                  length: 3,
+                  length: widget.brandProfile.userId==LoginData().getUserId()? 4 :  2,
                   child: SliverPersistentHeader(
                     delegate: _SliverAppBarDelegate(
                       TabBar(
@@ -367,14 +378,21 @@ class _BrandProfileViewState extends State<BrandProfileView>
                         indicatorColor: Colors.black,
                         tabs: [
                           Tab(
-                              icon: SvgPicture.asset("assets/tab1_bp.svg", color: _tabSelectedState[0] ? Colors.black : Colors.grey, )
+                            icon: SvgPicture.asset("assets/tab1_bp.svg", color: _tabSelectedState[0] ? Colors.black : Colors.grey),
                           ),
                           Tab(
-                            icon: SvgPicture.asset("assets/tab2_bp.svg", color: _tabSelectedState[1] ? Colors.black : Colors.grey, ),
+                           icon: SvgPicture.asset(
+                              "assets/tab2_bp.svg",
+                              color: _tabSelectedState[1] ? Colors.black : Colors.grey,
+                            ),
                           ),
-
+                          if(widget.brandProfile.userId==LoginData().getUserId())
                           Tab(
-                            icon: SvgPicture.asset("assets/tab3_bp.svg", color: _tabSelectedState[2] ? Colors.black : Colors.grey, ),
+                            icon: SvgPicture.asset("assets/tab3_bp.svg", color: _tabSelectedState[2] ? Colors.black : Colors.grey),
+                          ),
+                          if(widget.brandProfile.userId==LoginData().getUserId())
+                          Tab(
+                            icon: SvgPicture.asset("assets/tab4_s.svg", color: _tabSelectedState[3] ? Colors.black : Colors.grey),
                           ),
                         ],
                       ),
@@ -399,7 +417,11 @@ class _BrandProfileViewState extends State<BrandProfileView>
                 // tabFour(),
                 // Container(),
                 BrandListing_View(brandProfile: widget.brandProfile,),
-                Container(),
+                if(widget.brandProfile.userId==LoginData().getUserId())
+                  RequestsTab(companyName: widget.brandProfile.companyName,),
+                  if(widget.brandProfile.userId==LoginData().getUserId())
+                    Tab4_BT()
+
                 // RequestsTab(),
               ],
             ),
@@ -435,6 +457,6 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }

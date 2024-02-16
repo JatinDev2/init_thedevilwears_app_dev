@@ -1108,11 +1108,11 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
 
                           List<String>tags=[];
                           if(jobDur=="Fixed"){
-                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,"${jobDurController.text} $jobDurValue"];
+                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}${stipendValue}",selectedCity,"${jobDurController.text} $jobDurValue"];
 
                           }
                           else{
-                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}/${stipendValue}",selectedCity,jobDur];
+                            tags=[stipend=="Unpaid"?stipend : "${stipendController.text}${stipendValue}",selectedCity,jobDur];
                           }
                           DocumentReference docRef = listCollection.doc();
 

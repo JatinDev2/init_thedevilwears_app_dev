@@ -121,7 +121,7 @@ class _FiltersTabJobScreenState extends State<FiltersTabJobScreen> {
       for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
         Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
         print(data["officeLoc"]);
-        if (!locations.contains(data["officeLoc"])) {
+        if (!locations.contains(data["officeLoc"])){
           locations.add(data["officeLoc"]);
         }
       }

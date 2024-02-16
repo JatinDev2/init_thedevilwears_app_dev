@@ -34,6 +34,8 @@ class AlphaBetScrollPagePeople extends StatefulWidget {
   final ValueChanged<String> onClickedItem;
   final List selectedItems;
   final Map<String,dynamic> selectedOptionsMap;
+  final VoidCallback onListUpdated;
+
 
   AlphaBetScrollPagePeople({
     required this.height,
@@ -43,6 +45,7 @@ class AlphaBetScrollPagePeople extends StatefulWidget {
     required this.onClickedItem,
     required this.selectedOptionsMap,
     required this.selectedItems,
+    required this.onListUpdated,
   });
 
   @override
@@ -332,6 +335,7 @@ class _AlphaBetScrollPagePeopleState extends State<AlphaBetScrollPagePeople> wit
                     });
                     widget.selectedItems.remove(tag);
                   });
+                  widget.onListUpdated();
                 },
                 child: Icon(
                   Icons.close,

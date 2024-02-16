@@ -54,9 +54,12 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               ],
             ),
             SizedBox(height: 16.h,),
-            buildProfileContainer("Founded in" , "Company Size" , "January,2018", "28 employees"),
-            SizedBox(height: 8.h,),
-            buildProfileContainer("Location" , "Industry" , "Mumbai, India", "Styling"),
+            buildProfileContainer(
+                "Founded in",
+                "Company Size",
+                widget.brandProfile.foundedIn,
+                "${widget.brandProfile.companySize.isNotEmpty ? "${widget.brandProfile.companySize} employees" : ""}"),         SizedBox(height: 8.h,),
+            buildProfileContainer("Location" , "Industry" , "${widget.brandProfile.companyLocation.isNotEmpty ? "${widget.brandProfile.companyLocation}, India" : ""}", widget.brandProfile.industry),
             SizedBox(height: 30.h,),
             Row(
               children: [
@@ -99,9 +102,9 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
               textAlign: TextAlign.left,
             ),
             SizedBox(height: 11.h,),
-            const Text(
-              "Hello, I am a Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-              style: TextStyle(
+             Text(
+              widget.brandProfile.additionalInfo.isNotEmpty? widget.brandProfile.additionalInfo : "Not added yet!",
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff5a5a5a),
@@ -195,7 +198,7 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                data1,
+                data1.isNotEmpty? data1 : "Not added yet!" ,
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -203,6 +206,7 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                   height: 19/12,
                 ),
                 textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
               )
             ],
           ),
@@ -232,7 +236,7 @@ class _Tab1_BP_ViewState extends State<Tab1_BP_View> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                data2,
+                data2.isNotEmpty? data2 : "Not added yet!",
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
