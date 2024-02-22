@@ -304,6 +304,10 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                             if(!isSubmitLoading)
                               GestureDetector(
                                 onTap: () async {
+                                  if(LoginData().getUserId()=="NuX2GWhsHrdwL5u9aPVfxnNJns12"){
+                                    Navigator.of(context).pop();
+                                    return;
+                                  }
                                   if (!widget.hasApplied) {
                                     setState(() {
                                       isSubmitLoading = true;
@@ -386,7 +390,8 @@ class _JobListingDetailsScreenState extends State<JobListingDetailsScreen> {
                                       });
                                       Navigator.of(context).pop();
                                       Navigator.of(context).pop();
-                                    } catch (e) {
+                                    }
+                                    catch (e) {
                                       print('Error creating application: $e');
                                       setState(() {
                                         isSubmitLoading = false;

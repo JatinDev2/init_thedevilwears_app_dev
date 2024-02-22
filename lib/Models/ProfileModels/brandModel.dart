@@ -115,9 +115,16 @@ class BrandProfile {
 
 }
 
+
 Future<List<BrandProfile>> fetchBrandProfiles() async {
-  // Assuming 'brandProfiles' is the collection where profiles are stored
+
   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('brandProfiles').get();
 
-  return querySnapshot.docs.map((doc) => BrandProfile.fromDocument(doc)).toList();
+  return querySnapshot.docs
+      .where((doc) {
+    var data = doc.data();
+    return data is Map<String, dynamic> && data['userId'] != "FiNHu4B0uqXbRTPuZpSJjC3VvMP2";
+  })
+      .map((doc) => BrandProfile.fromMap(doc.data() as Map<String, dynamic>))
+      .toList();
 }

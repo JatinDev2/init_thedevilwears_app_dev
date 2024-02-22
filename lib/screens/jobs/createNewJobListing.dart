@@ -1091,6 +1091,12 @@ class _CreateNewJobListingState extends State<CreateNewJobListing> {
                     if(!isLoading)
                       GestureDetector(
                       onTap: ()async{
+                        if(LoginData().getUserId()=="FiNHu4B0uqXbRTPuZpSJjC3VvMP2"){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_){
+                            return const ConfirmJobListingScreen();
+                          }));
+                          return;
+                        }
                         try{
                           List<String>_perks=[];
                           checkboxes.forEach((key, value) {

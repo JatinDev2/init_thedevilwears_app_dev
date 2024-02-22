@@ -409,7 +409,7 @@ class ProfileServices {
         'brandLinkedin': userLinkedin,
         'brandTwitter': userTwitter,
         'brandProfilePicture': imgUrl,
-        'brandtName': firstName,
+        'brandName': firstName,
       });
     } catch (e, s) {
       // Handle exceptions here

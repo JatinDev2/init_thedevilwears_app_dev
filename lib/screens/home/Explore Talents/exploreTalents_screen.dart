@@ -43,6 +43,8 @@ class _TalentGridState extends State<TalentGrid> {
         }
 
         List<StudentProfile> profiles = snapshot.data!;
+        profiles = profiles.where((profile) => profile.userId != "NuX2GWhsHrdwL5u9aPVfxnNJns12").toList();
+
         profiles=DisplayFunctions().sortStudentProfiles(profiles, LoginData().getUserJobProfile() ,LoginData().getUserInterests());
         return GridView.builder(
           physics: const BouncingScrollPhysics(),
@@ -58,13 +60,13 @@ class _TalentGridState extends State<TalentGrid> {
             StudentProfile profile = profiles[index];
             String workString = DisplayFunctions().formatCompanyNames(profile.workExperience);
 
-            return GestureDetector(
+            return  GestureDetector(
               onTap: (){
                 Navigator.of(context).push(MaterialPageRoute(builder: (_){
                   return StudentProfileView(studentProfile: profile,);
                 }));
               },
-              child: TalentCard(
+              child:  TalentCard(
                 name: "${profile.firstName ?? 'Unknown'} ${profile.lastName ?? ''}",
                 designation: profile.userDescription?.join(" • ") ?? 'No description',
                 company: workString,

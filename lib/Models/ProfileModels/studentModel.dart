@@ -106,16 +106,17 @@ class StudentProfile {
 
     );
   }
-
 }
 
 Future<List<StudentProfile>> fetchStudentProfiles() async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   QuerySnapshot querySnapshot = await firestore.collection('studentProfiles').get();
 
-  return querySnapshot.docs.map((doc) {
-    return StudentProfile.fromMap(doc.data() as Map<String, dynamic>);
-  }).toList();
+  return querySnapshot.docs
+      .where((doc) {
+    var data = doc.data();
+    return data is Map<String, dynamic> && data['userId'] != "NuX2GWhsHrdwL5u9aPVfxnNJns12";
+  })
+      .map((doc) => StudentProfile.fromMap(doc.data() as Map<String, dynamic>))
+      .toList();
 }
-
-

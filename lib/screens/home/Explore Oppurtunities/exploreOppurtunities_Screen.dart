@@ -37,6 +37,9 @@ class OpportunitiesGrid extends StatelessWidget {
         }
 
         List<BrandProfile> profiles = snapshot.data!;
+
+        profiles = profiles.where((profile) => profile.userId != "FiNHu4B0uqXbRTPuZpSJjC3VvMP2").toList();
+
         // profiles=sortStudentProfiles(profiles, LoginData().getUserJobProfile() ,LoginData().getUserInterests());
         return GridView.builder(
           physics: const BouncingScrollPhysics(),
