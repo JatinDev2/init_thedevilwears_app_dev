@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lookbook/screens/home/Explore%20Oppurtunities/shimmer_card.dart';
 import '../../../Models/ProfileModels/brandModel.dart';
-import '../../../profiles/ProfileViews/brandProfileView/brandProfileView.dart';
 import 'oppurtunities_card.dart';
+
 
 class OpportunitiesGrid extends StatelessWidget {
   final Future<List<BrandProfile>> futureList;
@@ -56,12 +57,9 @@ class OpportunitiesGrid extends StatelessWidget {
             BrandProfile profile = profiles[index];
             // String workString = formatCompanyNames(profile.workExperience);
 
-            return InkWell(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                  return BrandProfileView(brandProfile: profile,);
-                }));
-              },
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
+              // padding: ,
               child: CustomCard(
                 imageUrl:profile.brandProfilePicture,
                 companyName: profile.brandName,
@@ -70,6 +68,7 @@ class OpportunitiesGrid extends StatelessWidget {
                 jobOpenings:profile.numberOfApplications,
                 location:profile.location,
                 brandId:profile.userId,
+                brandProfile: profile,
               ),
             );
           },
